@@ -1,5 +1,7 @@
 package all.your.base.math;
 
+import all.your.base.geometry.Point;
+
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */

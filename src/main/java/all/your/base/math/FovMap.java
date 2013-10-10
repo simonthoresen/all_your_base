@@ -1,5 +1,8 @@
 package all.your.base.math;
 
+import all.your.base.geometry.Point;
+import all.your.base.geometry.Rectangle;
+
 import java.util.BitSet;
 
 /**

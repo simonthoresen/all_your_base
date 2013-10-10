@@ -1,11 +1,19 @@
 package all.your.base.tiled.demo;
 
-import all.your.base.application.*;
+import all.your.base.application.Application;
+import all.your.base.application.ApplicationListener;
+import all.your.base.application.ApplicationManager;
+import all.your.base.application.ApplicationState;
+import all.your.base.application.Applications;
+import all.your.base.geometry.Rectangle;
 import all.your.base.math.Board;
 import all.your.base.math.Light;
 import all.your.base.math.LightMap;
-import all.your.base.math.Rectangle;
-import all.your.base.tiled.*;
+import all.your.base.tiled.MazeBuilder;
+import all.your.base.tiled.Tile;
+import all.your.base.tiled.TileSet;
+import all.your.base.tiled.TileSheet;
+import all.your.base.tiled.TileSheetRenderer;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -95,7 +103,7 @@ public class MazeDemo implements ApplicationListener, ApplicationState, Componen
                                                                  playerPos.y - renderTileRows / 2,
                                                                  renderTileCols, renderTileRows),
                                             new Light(Color.WHITE, 8),
-                                            new all.your.base.math.Point(playerPos.x, playerPos.y));
+                                            new all.your.base.geometry.Point(playerPos.x, playerPos.y));
         }
     }
 

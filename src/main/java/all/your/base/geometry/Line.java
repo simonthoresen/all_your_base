@@ -1,4 +1,4 @@
-package all.your.base.math;
+package all.your.base.geometry;
 
 import java.util.Iterator;
 

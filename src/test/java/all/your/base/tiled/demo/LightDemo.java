@@ -51,22 +51,22 @@ public class LightDemo {
                                         "10000000000000000000000000000000000000000000000000000000000000000000001\n" +
                                         "10000000000000000000000000000000000000000000000000000000000000000000001\n" +
                                         "11111111111111111111111111111111111111111111111111111111111111111111111\n"));
-        all.your.base.math.Rectangle rect = new all.your.base.math.Rectangle(0, 0, board.width(), board.height());
+        all.your.base.geometry.Rectangle rect = new all.your.base.geometry.Rectangle(0, 0, board.width(), board.height());
         try {
-            all.your.base.math.Point eye = new all.your.base.math.Point(35, 9);
+            all.your.base.geometry.Point eye = new all.your.base.geometry.Point(35, 9);
             LightMap eyeMap = LightMap.newInstance(board, rect, new Light(Color.WHITE, 5), eye);
-            all.your.base.math.Point lightPos = new all.your.base.math.Point(1, 1);
-            all.your.base.math.Point lightAdd = new all.your.base.math.Point(1, 0);
+            all.your.base.geometry.Point lightPos = new all.your.base.geometry.Point(1, 1);
+            all.your.base.geometry.Point lightAdd = new all.your.base.geometry.Point(1, 0);
             for (int i = 0; i < 10000; ++i) {
                 lightPos = lightPos.add(lightAdd);
-                if (lightPos.equals(new all.your.base.math.Point(board.width() - 2, 1))) {
-                    lightAdd = new all.your.base.math.Point(0, 1);
-                } else if (lightPos.equals(new all.your.base.math.Point(board.width() - 2, board.height() - 2))) {
-                    lightAdd = new all.your.base.math.Point(-1, 0);
-                } else if (lightPos.equals(new all.your.base.math.Point(1, board.height() - 2))) {
-                    lightAdd = new all.your.base.math.Point(0, -1);
-                } else if (lightPos.equals(new all.your.base.math.Point(1, 1))) {
-                    lightAdd = new all.your.base.math.Point(1, 0);
+                if (lightPos.equals(new all.your.base.geometry.Point(board.width() - 2, 1))) {
+                    lightAdd = new all.your.base.geometry.Point(0, 1);
+                } else if (lightPos.equals(new all.your.base.geometry.Point(board.width() - 2, board.height() - 2))) {
+                    lightAdd = new all.your.base.geometry.Point(-1, 0);
+                } else if (lightPos.equals(new all.your.base.geometry.Point(1, board.height() - 2))) {
+                    lightAdd = new all.your.base.geometry.Point(0, -1);
+                } else if (lightPos.equals(new all.your.base.geometry.Point(1, 1))) {
+                    lightAdd = new all.your.base.geometry.Point(1, 0);
                 }
                 LightMap lightMap = LightMap.newInstance(board, rect, WHITE, lightPos);
 

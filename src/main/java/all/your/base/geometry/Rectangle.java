@@ -1,4 +1,4 @@
-package all.your.base.math;
+package all.your.base.geometry;
 
 import com.google.common.base.Preconditions;
 
@@ -60,7 +60,7 @@ public class Rectangle {
         return x >= this.x && x <= this.x + this.width &&
                y >= this.y && y <= this.y + this.height;
     }
-    
+
     public boolean contains(Rectangle rect) {
         return contains(rect.x(), rect.y(), rect.width(), rect.height());
     }
@@ -69,7 +69,7 @@ public class Rectangle {
         return x >= this.x && x + width <= this.x + this.width &&
                y >= this.y && y + height <= this.y + this.height;
     }
-    
+
     public boolean intersects(Rectangle rect) {
         return intersects(rect.x, rect.y, rect.width, rect.height);
     }

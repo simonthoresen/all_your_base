@@ -1,5 +1,7 @@
 package all.your.base.math;
 
+import all.your.base.geometry.Point;
+import all.your.base.geometry.Rectangle;
 import com.google.common.base.Preconditions;
 
 /**

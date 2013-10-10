@@ -1,5 +1,9 @@
 package all.your.base.math;
 
+import all.your.base.geometry.Line;
+import all.your.base.geometry.Point;
+import all.your.base.geometry.Rectangle;
+
 import java.util.LinkedList;
 import java.util.ListIterator;
 

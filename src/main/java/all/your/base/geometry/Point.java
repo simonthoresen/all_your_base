@@ -1,4 +1,4 @@
-package all.your.base.math;
+package all.your.base.geometry;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
