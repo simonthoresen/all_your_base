@@ -5,4 +5,5 @@ package all.your.base.graphics;
  */
 public interface Texture {
 
+    public void paint(Surface surface, int x, int y, int width, int height);
 }

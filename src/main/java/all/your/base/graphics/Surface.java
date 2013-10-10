@@ -17,7 +17,7 @@ public class Surface {
         graphics = image.createGraphics();
     }
 
-    public void renderTo(Graphics g, int x, int y, int width, int height) {
+    public void paint(Graphics g, int x, int y, int width, int height) {
         if (image.getWidth() != width || image.getHeight() != height) {
             BufferedImage old = image;
             graphics.dispose();
@@ -27,9 +27,5 @@ public class Surface {
             graphics.drawImage(old, 0, 0, width, height, null);
         }
         g.drawImage(image, x, y, null);
-    }
-
-    public Graphics2D getGraphics() {
-        return graphics;
     }
 }
