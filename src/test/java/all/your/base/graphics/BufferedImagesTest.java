@@ -1,4 +1,4 @@
-package all.your.base.tiled;
+package all.your.base.graphics;
 
 import org.junit.Test;
 

@@ -28,4 +28,20 @@ public class Surface {
         }
         g.drawImage(image, x, y, null);
     }
+
+    public int getWidth() {
+        return image.getWidth();
+    }
+
+    public int getHeight() {
+        return image.getHeight();
+    }
+
+    BufferedImage getImage() {
+        return image;
+    }
+
+    Graphics2D getGraphics() {
+        return graphics;
+    }
 }

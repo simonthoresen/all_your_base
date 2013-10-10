@@ -1,12 +1,17 @@
 package all.your.base.tiled;
 
+import all.your.base.graphics.BufferedImages;
 import com.google.common.base.Preconditions;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -116,5 +121,4 @@ public class TileSet {
             return new TileSet(tiles, image, tileWidth, tileHeight);
         }
     }
-
 }

@@ -1,4 +1,4 @@
-package all.your.base.tiled;
+package all.your.base.graphics;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -14,7 +14,7 @@ public class BufferedImages {
 
     public static BufferedImage fromFile(String fileName) throws IOException {
         Objects.requireNonNull(fileName, "fileName");
-        InputStream in = TileSet.class.getResourceAsStream(fileName);
+        InputStream in = all.your.base.tiled.TileSet.class.getResourceAsStream(fileName);
         if (in == null) {
             throw new FileNotFoundException(fileName);
         }
