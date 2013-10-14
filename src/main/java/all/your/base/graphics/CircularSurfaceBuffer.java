@@ -14,11 +14,13 @@ public class CircularSurfaceBuffer implements SurfaceBuffer {
 
     @Override
     public Surface peek() {
-        return surfaces[(surfaces.length + writePos - 1) % surfaces.length];
+        int readPos = (surfaces.length + writePos - 1) % surfaces.length;
+        return surfaces[readPos];
     }
 
     @Override
     public Surface commit() {
-        return surfaces[++writePos];
+        writePos = (byte)((writePos + 1) % surfaces.length);
+        return surfaces[writePos];
     }
 }

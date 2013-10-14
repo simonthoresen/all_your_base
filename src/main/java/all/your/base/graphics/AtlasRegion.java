@@ -5,4 +5,8 @@ package all.your.base.graphics;
  */
 public class AtlasRegion implements Texture {
 
+    @Override
+    public void paint(Surface surface, int x, int y, int width, int height) {
+
+    }
 }

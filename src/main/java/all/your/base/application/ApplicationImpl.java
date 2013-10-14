@@ -1,5 +1,9 @@
 package all.your.base.application;
 
+import all.your.base.graphics.Surface;
+import all.your.base.graphics.SurfaceBuffer;
+import all.your.base.graphics.SurfaceBuffers;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -9,7 +13,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -20,23 +23,21 @@ import java.util.concurrent.TimeUnit;
 class ApplicationImpl extends JPanel implements Application {
 
     private final ApplicationManagerImpl manager;
-    private final BufferedSurface surface;
-    private final Renderer renderer = new Renderer();
-    private final SimpleBlockingQueue<AWTEvent> eventQueue = new SimpleBlockingQueue<>();
     private final List<AWTEvent> eventList = new ArrayList<>();
+    private final SimpleBlockingQueue<AWTEvent> eventQueue = new SimpleBlockingQueue<>();
     private final String windowTitle;
+    private final SurfaceBuffer surfaceBuffer;
+    private final SwingPaintEvent paintEvent = new SwingPaintEvent();
     private final long nanosPerFrame;
-    private final int windowWidth;
-    private final int windowHeight;
+    private Surface writeSurface;
 
     public ApplicationImpl(ApplicationBuilder builder) {
         this.manager = new ApplicationManagerImpl(builder.getApplicationListeners());
         this.manager.setState(builder.getInitialState());
         this.windowTitle = builder.getWindowTitle();
-        this.windowWidth = builder.getWindowWidth();
-        this.windowHeight = builder.getWindowHeight();
         this.nanosPerFrame = TimeUnit.SECONDS.toNanos(1) / builder.getFramesPerSecond();
-        this.surface = BufferedSurface.newTripleBuffered(windowWidth, windowHeight, BufferedImage.TYPE_INT_RGB);
+        this.surfaceBuffer = SurfaceBuffers.newDoubleBuffer(builder.getWindowWidth(), builder.getWindowHeight());
+        this.writeSurface = surfaceBuffer.commit();
     }
 
     @Override
@@ -47,9 +48,9 @@ class ApplicationImpl extends JPanel implements Application {
 
     private void openWindow() {
         setFocusable(true);
-        setPreferredSize(new Dimension(windowWidth, windowHeight));
+        setPreferredSize(new Dimension(surfaceBuffer.peek().getImage().getWidth(),
+                                       surfaceBuffer.peek().getImage().getHeight()));
         addComponentListener(new QueueingComponentListener(eventQueue));
-        addComponentListener(new ResizingComponentListener(surface));
         addKeyListener(new QueueingKeyListener(eventQueue));
         addMouseListener(new QueueingMouseListener(eventQueue));
         requestFocus();
@@ -93,19 +94,18 @@ class ApplicationImpl extends JPanel implements Application {
     }
 
     private void render() {
-        BufferedSurface.Buffer buf = surface.retainBuffer();
-        try {
-            manager.render(buf.getGraphics());
-        } finally {
-            surface.releaseBuffer(buf);
+        // noinspection SynchronizeOnNonFinalField
+        synchronized (writeSurface) {
+            manager.render(writeSurface.getGraphics());
         }
-        SwingUtilities.invokeLater(renderer);
+        writeSurface = surfaceBuffer.commit();
+        SwingUtilities.invokeLater(paintEvent);
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        renderer.render(g);
+        paintEvent.paint(g);
     }
 
     private void waitForNextFrame(long timeoutNanos) throws InterruptedException {
@@ -129,19 +129,22 @@ class ApplicationImpl extends JPanel implements Application {
         eventList.clear();
     }
 
-    private class Renderer implements Runnable {
+    private class SwingPaintEvent implements Runnable {
 
         @Override
         public void run() {
             Graphics g = getGraphics();
             if (g != null) {
-                render(g);
+                paint(g);
             }
         }
 
-        void render(Graphics g) {
-            // called by EDT
-            surface.render(g);
+        void paint(Graphics g) {
+            Surface surface = surfaceBuffer.peek();
+            // noinspection SynchronizationOnLocalVariableOrMethodParameter
+            synchronized (surface) {
+                surface.paint(g, 0, 0, getWidth(), getHeight());
+            }
         }
     }
 }
