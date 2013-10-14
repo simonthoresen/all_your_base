@@ -6,6 +6,7 @@ import all.your.base.application.ApplicationManager;
 import all.your.base.application.ApplicationState;
 import all.your.base.application.Applications;
 import all.your.base.geometry.Rectangle;
+import all.your.base.graphics.Surface;
 import all.your.base.math.Board;
 import all.your.base.math.Light;
 import all.your.base.math.LightMap;
@@ -108,7 +109,8 @@ public class MazeDemo implements ApplicationListener, ApplicationState, Componen
     }
 
     @Override
-    public void render(Graphics2D g) {
+    public void render(Surface surface) {
+        Graphics2D g = surface.getGraphics();
         g.clearRect(0, 0, renderTileCols * TILE_WIDTH, renderTileRows * TILE_HEIGHT);
         sheetRenderer.setSheetRegion(playerPos.x - renderTileCols / 2, playerPos.y - renderTileRows / 2,
                                      renderTileCols, renderTileRows);

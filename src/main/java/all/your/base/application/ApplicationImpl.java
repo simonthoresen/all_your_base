@@ -96,7 +96,7 @@ class ApplicationImpl extends JPanel implements Application {
     private void render() {
         // noinspection SynchronizeOnNonFinalField
         synchronized (writeSurface) {
-            manager.render(writeSurface.getGraphics());
+            manager.render(writeSurface);
         }
         writeSurface = surfaceBuffer.commit();
         SwingUtilities.invokeLater(paintEvent);

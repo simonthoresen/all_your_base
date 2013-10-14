@@ -3,6 +3,7 @@ package all.your.base.tiled.demo;
 import all.your.base.application.ApplicationManager;
 import all.your.base.application.ApplicationState;
 import all.your.base.application.Applications;
+import all.your.base.graphics.Surface;
 import all.your.base.tiled.TileSet;
 
 import java.awt.Graphics2D;
@@ -27,7 +28,8 @@ public class TileSetDemo implements ApplicationState {
     }
 
     @Override
-    public void render(Graphics2D g) {
+    public void render(Surface surface) {
+        Graphics2D g = surface.getGraphics();
         g.clearRect(0, 0, 640, 480);
         for (int i = 0; i < (640 / 32) * (480 / 32); ++i) {
             tileSet.renderTile((int)(TimeUnit.NANOSECONDS.toSeconds(currentTimeNanos) % tileSet.numTiles() + i), g,

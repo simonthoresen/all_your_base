@@ -3,8 +3,7 @@ package all.your.base.tiled.demo;
 import all.your.base.application.ApplicationManager;
 import all.your.base.application.ApplicationState;
 import all.your.base.application.Applications;
-
-import java.awt.Graphics2D;
+import all.your.base.graphics.Surface;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -17,7 +16,7 @@ public class SpriteDemo implements ApplicationState {
     }
 
     @Override
-    public void render(Graphics2D g) {
+    public void render(Surface surface) {
 
     }
 

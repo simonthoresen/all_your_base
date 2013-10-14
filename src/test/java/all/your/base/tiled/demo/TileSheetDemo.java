@@ -3,7 +3,12 @@ package all.your.base.tiled.demo;
 import all.your.base.application.ApplicationManager;
 import all.your.base.application.ApplicationState;
 import all.your.base.application.Applications;
-import all.your.base.tiled.*;
+import all.your.base.graphics.Surface;
+import all.your.base.tiled.TileSet;
+import all.your.base.tiled.TileSets;
+import all.your.base.tiled.TileSheet;
+import all.your.base.tiled.TileSheetRenderer;
+import all.your.base.tiled.TileSheets;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -37,7 +42,9 @@ public class TileSheetDemo implements ApplicationState, KeyListener {
     }
 
     @Override
-    public void render(Graphics2D g) {
+    public void render(Surface surface) {
+        Graphics2D g = surface.getGraphics();
+
         g.clearRect(0, 0, 640, 480);
         renderer.setSheetRegion(sheetRegion.x, sheetRegion.y, sheetRegion.width, sheetRegion.height);
         renderer.setRenderRegion(0, 0, 640, 480);
