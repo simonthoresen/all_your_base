@@ -82,6 +82,11 @@ class ApplicationImpl extends JPanel implements Application {
             }
             render();
             waitForNextFrame(time + nanosPerFrame);
+
+            // TODO: render(); manager.update();
+            // TODO: RateLimitedApplicationState implements waiting
+            // TODO: appMgr.processEventQueue(duration, TimeUnit)
+
             prevTime = time;
         }
 
@@ -96,6 +101,11 @@ class ApplicationImpl extends JPanel implements Application {
     private void render() {
         // noinspection SynchronizeOnNonFinalField
         synchronized (writeSurface) {
+            // TODO: resize to fit this panel. this ensure that if application has seen a resize event, then the surface
+            // TODO: is guaranteed to be correctly sized. if no event has been seen, it MIGHT have resized. better logic
+            // TODO: is for application state to reflect on size of surface. abstract implementation of state can track
+            // TODO: it and call an onResize() callback.
+            writeSurface.resize(getWidth(), getHeight());
             manager.render(writeSurface);
         }
         writeSurface = surfaceBuffer.commit();
@@ -143,6 +153,7 @@ class ApplicationImpl extends JPanel implements Application {
             Surface surface = surfaceBuffer.peek();
             // noinspection SynchronizationOnLocalVariableOrMethodParameter
             synchronized (surface) {
+                // TODO: no resize here, just stretch to fit
                 surface.paint(g, 0, 0, getWidth(), getHeight());
             }
         }

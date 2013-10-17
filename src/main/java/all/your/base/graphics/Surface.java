@@ -17,16 +17,20 @@ public class Surface {
         graphics = image.createGraphics();
     }
 
-    public void paint(Graphics g, int x, int y, int width, int height) {
-        if (image.getWidth() != width || image.getHeight() != height) {
-            BufferedImage old = image;
-            graphics.dispose();
-
-            image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-            graphics = image.createGraphics();
-            graphics.drawImage(old, 0, 0, width, height, null);
+    public void resize(int width, int height) {
+        if (image.getWidth() == width && image.getHeight() == height) {
+            return;
         }
-        g.drawImage(image, x, y, null);
+        BufferedImage old = image;
+        graphics.dispose();
+
+        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        graphics = image.createGraphics();
+        graphics.drawImage(old, 0, 0, width, height, null);
+    }
+
+    public void paint(Graphics g, int x, int y, int width, int height) {
+        g.drawImage(image, x, y, width, height, null);
     }
 
     public BufferedImage getImage() {
