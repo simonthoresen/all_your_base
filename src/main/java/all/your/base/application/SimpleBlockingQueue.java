@@ -2,6 +2,7 @@ package all.your.base.application;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -10,24 +11,25 @@ import java.util.concurrent.TimeUnit;
  */
 class SimpleBlockingQueue<T> {
 
-    private final List<T> delegate = new ArrayList<>();
+    private final Object lock = new Object();
+    private List<T> delegate = new ArrayList<>();
 
     public void add(T t) {
-        synchronized (delegate) {
+        synchronized (lock) {
             delegate.add(t);
             delegate.notifyAll();
         }
     }
 
-    public boolean drainTo(Collection<T> out, long timeout, TimeUnit unit) throws InterruptedException {
-        synchronized (delegate) {
+    public Collection<T> drain(long timeout, TimeUnit unit) throws InterruptedException {
+        synchronized (lock) {
             if (delegate.isEmpty() && !awaitNonEmpty(timeout, unit)) {
-                return false;
+                return Collections.emptyList();
             }
-            out.addAll(delegate);
-            delegate.clear();
+            List<T> out = delegate;
+            delegate = new ArrayList<>();
+            return out;
         }
-        return true;
     }
 
     private boolean awaitNonEmpty(long timeout, TimeUnit unit) throws InterruptedException {
