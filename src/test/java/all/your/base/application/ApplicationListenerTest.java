@@ -10,7 +10,7 @@ import static org.junit.Assert.assertSame;
 public class ApplicationListenerTest {
 
     @Test
-    public void requireThatListenersAreCalledByMainThread() throws InterruptedException {
+    public void requireThatListenersAreCalledByMainThread() throws Exception {
         MyListener listener = new MyListener();
         SimpleApplicationState state = new SimpleApplicationState();
         state.shutdown();

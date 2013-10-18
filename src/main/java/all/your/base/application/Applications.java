@@ -18,15 +18,12 @@ public class Applications {
         return new ApplicationBuilder()
                 .setWindowWidth(image.getWidth() * scale)
                 .setWindowHeight(image.getHeight() * scale)
-                .setInitialState(new ApplicationState() {
-
-                    @Override
-                    public void update(ApplicationManager appManager, long currentTimeNanos, long deltaTimeNanos) {
-
-                    }
+                .setInitialState(new AbstractApplicationState() {
 
                     @Override
                     public void render(Surface surface) {
+                        super.render(surface);
+
                         Graphics2D g = surface.getGraphics();
                         g.drawImage(image, 0, 0, image.getWidth() * scale, image.getHeight() * scale, null);
                     }

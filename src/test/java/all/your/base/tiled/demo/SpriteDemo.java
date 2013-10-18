@@ -11,7 +11,7 @@ import all.your.base.graphics.Surface;
 public class SpriteDemo implements ApplicationState {
 
     @Override
-    public void update(ApplicationManager appManager, long currentTimeNanos, long deltaTimeNanos) {
+    public void update(ApplicationManager appManager) {
 
     }
 

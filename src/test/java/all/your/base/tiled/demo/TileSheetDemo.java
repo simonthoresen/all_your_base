@@ -37,7 +37,7 @@ public class TileSheetDemo implements ApplicationState, KeyListener {
     private final Rectangle sheetRegion = new Rectangle(0, 0, 4, 4);
 
     @Override
-    public void update(ApplicationManager appManager, long currentTimeNanos, long deltaTimeNanos) {
+    public void update(ApplicationManager appManager) {
 
     }
 

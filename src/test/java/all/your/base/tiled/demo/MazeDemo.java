@@ -98,7 +98,7 @@ public class MazeDemo implements ApplicationListener, ApplicationState, Componen
     }
 
     @Override
-    public void update(ApplicationManager appManager, long currentTimeNanos, long deltaTimeNanos) {
+    public void update(ApplicationManager appManager) {
         if (lightMap == null) {
             lightMap = LightMap.newInstance(board, new Rectangle(playerPos.x - renderTileCols / 2,
                                                                  playerPos.y - renderTileRows / 2,

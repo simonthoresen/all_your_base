@@ -17,32 +17,23 @@ class SimpleBlockingQueue<T> {
     public void add(T t) {
         synchronized (lock) {
             delegate.add(t);
-            delegate.notifyAll();
+            lock.notifyAll();
         }
     }
 
     public Collection<T> drain(long timeout, TimeUnit unit) throws InterruptedException {
         synchronized (lock) {
-            if (delegate.isEmpty() && !awaitNonEmpty(timeout, unit)) {
-                return Collections.emptyList();
+            TimeoutTracker tracker = new TimeoutTracker(SystemTimer.INSTANCE, timeout, unit);
+            while (delegate.isEmpty()) {
+                timeout = tracker.getTimeRemaining(TimeUnit.MILLISECONDS);
+                if (timeout <= 0) {
+                    return Collections.emptyList();
+                }
+                lock.wait(timeout);
             }
             List<T> out = delegate;
             delegate = new ArrayList<>();
             return out;
         }
-    }
-
-    private boolean awaitNonEmpty(long timeout, TimeUnit unit) throws InterruptedException {
-        long timeoutNanos = System.nanoTime() + unit.toNanos(timeout);
-        while (delegate.isEmpty()) {
-            long nanoTime = System.nanoTime();
-            if (nanoTime >= timeoutNanos) {
-                return false;
-            }
-            long remainingNanos = timeoutNanos - nanoTime;
-            long remainingMillis = TimeUnit.NANOSECONDS.toMillis(remainingNanos);
-            delegate.wait(remainingMillis, (int)(remainingNanos - TimeUnit.MILLISECONDS.toNanos(remainingMillis)));
-        }
-        return true;
     }
 }

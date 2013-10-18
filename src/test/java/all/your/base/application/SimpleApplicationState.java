@@ -10,7 +10,7 @@ public class SimpleApplicationState implements ApplicationState {
     private volatile boolean shutdown = false;
 
     @Override
-    public void update(ApplicationManager appManager, long currentTimeNanos, long deltaTimeNanos) {
+    public void update(ApplicationManager appManager) {
         if (shutdown) {
             appManager.shutdown();
         }

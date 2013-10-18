@@ -216,7 +216,7 @@ public class TileSheetRendererTest {
     private static void displayImage(BufferedImage image, int scale) {
         try {
             Applications.fromImage(image, scale).run();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

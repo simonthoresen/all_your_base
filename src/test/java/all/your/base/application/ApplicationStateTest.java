@@ -6,7 +6,12 @@ import org.mockito.Mockito;
 import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Point;
-import java.awt.event.*;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -26,7 +31,7 @@ public class ApplicationStateTest {
     }
 
     @Test
-    public void requireThatApplicationStateCanImplementApplicationListener() throws InterruptedException {
+    public void requireThatApplicationStateCanImplementApplicationListener() throws Exception {
         ApplicationListenerState state = new ApplicationListenerState();
         state.shutdown();
         new ApplicationBuilder().setInitialState(state).build().run();
@@ -35,7 +40,7 @@ public class ApplicationStateTest {
     }
 
     @Test
-    public void requireThatApplicationStateCanImplementComponentListener() throws InterruptedException {
+    public void requireThatApplicationStateCanImplementComponentListener() throws Exception {
         ComponentListenerState state = new ComponentListenerState();
         new ApplicationBuilder()
                 .addApplicationListener(new EventDispatcher(
@@ -53,7 +58,7 @@ public class ApplicationStateTest {
     }
 
     @Test
-    public void requireThatApplicationStateCanImplementKeyListener() throws InterruptedException {
+    public void requireThatApplicationStateCanImplementKeyListener() throws Exception {
         KeyListenerState state = new KeyListenerState();
         new ApplicationBuilder()
                 .addApplicationListener(new EventDispatcher(
@@ -69,7 +74,7 @@ public class ApplicationStateTest {
     }
 
     @Test
-    public void requireThatApplicationStateCanImplementMouseListener() throws InterruptedException {
+    public void requireThatApplicationStateCanImplementMouseListener() throws Exception {
         MouseListenerState state = new MouseListenerState();
         new ApplicationBuilder()
                 .addApplicationListener(new EventDispatcher(

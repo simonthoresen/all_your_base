@@ -57,7 +57,7 @@ public class AbstractApplicationState implements ApplicationListener, Applicatio
     }
 
     @Override
-    public final void render(Surface surface) {
+    public void render(Surface surface) {
         surface.resize(componentWidth, componentHeight);
     }
 

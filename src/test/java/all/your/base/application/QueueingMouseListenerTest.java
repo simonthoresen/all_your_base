@@ -6,13 +6,10 @@ import org.mockito.Mockito;
 import java.awt.AWTEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:simon@hult-thoresen.com">Simon Thoresen Hult</a>
@@ -34,9 +31,7 @@ public class QueueingMouseListenerTest {
         MouseEvent mouseExited = Mockito.mock(MouseEvent.class);
         listener.mouseExited(mouseExited);
 
-        List<AWTEvent> events = new ArrayList<>();
-        assertTrue(queue.drainTo(events, 100, TimeUnit.MILLISECONDS));
         assertEquals(Arrays.<AWTEvent>asList(mouseClicked, mousePressed, mouseReleased, mouseEntered, mouseExited),
-                     events);
+                     queue.drain(100, TimeUnit.MILLISECONDS));
     }
 }

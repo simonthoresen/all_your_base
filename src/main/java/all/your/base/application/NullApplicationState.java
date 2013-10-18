@@ -10,7 +10,7 @@ enum NullApplicationState implements ApplicationState {
     INSTANCE;
 
     @Override
-    public void update(ApplicationManager appManager, long currentTimeNanos, long deltaTimeNanos) {
+    public void update(ApplicationManager appManager) {
 
     }
 
