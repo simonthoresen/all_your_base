@@ -20,6 +20,6 @@ class TimeLimit {
     }
 
     public boolean isExpired() {
-        return timeoutAtMillis >= timer.currentTimeMillis();
+        return timeoutAtMillis <= timer.currentTimeMillis();
     }
 }
