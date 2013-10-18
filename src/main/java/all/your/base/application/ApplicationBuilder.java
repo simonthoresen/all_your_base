@@ -73,6 +73,6 @@ public class ApplicationBuilder {
     }
 
     public Application build() {
-        return new ApplicationImpl(this);
+        return new SwingApplication(this);
     }
 }

@@ -5,5 +5,5 @@ package all.your.base.application;
  */
 public interface Application {
 
-    public void run() throws InterruptedException;
+    public void run() throws Exception;
 }

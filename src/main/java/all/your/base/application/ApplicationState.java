@@ -7,7 +7,7 @@ import all.your.base.graphics.Surface;
  */
 public interface ApplicationState {
 
-    public void update(ApplicationManager appManager, long currentTimeNanos, long deltaTimeNanos);
+    public void update(ApplicationManager appManager) throws Exception;
 
     public void render(Surface surface);
 }

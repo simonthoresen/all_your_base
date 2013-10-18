@@ -3,6 +3,7 @@ package all.your.base.application;
 import all.your.base.graphics.Surface;
 
 import java.awt.AWTEvent;
+import java.awt.Component;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
@@ -10,14 +11,18 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */
-class ApplicationManagerImpl implements ApplicationManager {
+class SwingApplicationManager implements ApplicationManager {
 
     private final List<ApplicationListener> appListeners;
+    private final SimpleBlockingQueue<AWTEvent> eventQueue = new SimpleBlockingQueue<>();
     private ApplicationListener stateAppListener = NullApplicationListener.INSTANCE;
     private ApplicationState state = NullApplicationState.INSTANCE;
     private ComponentListener stateComponentListener = NullComponentListener.INSTANCE;
@@ -25,47 +30,36 @@ class ApplicationManagerImpl implements ApplicationManager {
     private MouseListener stateMouseListener = NullMouseListener.INSTANCE;
     private volatile boolean shutdown = false;
 
-    public ApplicationManagerImpl(List<ApplicationListener> appListeners) {
+    public SwingApplicationManager(Component c, List<ApplicationListener> appListeners) {
         this.appListeners = new ArrayList<>(appListeners);
+
+        c.addComponentListener(new QueueingComponentListener(eventQueue));
+        c.addKeyListener(new QueueingKeyListener(eventQueue));
+        c.addMouseListener(new QueueingMouseListener(eventQueue));
     }
 
     @Override
-    public void setState(ApplicationState state) {
-        this.state = state;
-        this.stateAppListener = castTo(state, ApplicationListener.class, NullApplicationListener.INSTANCE);
-        this.stateComponentListener = castTo(state, ComponentListener.class, NullComponentListener.INSTANCE);
-        this.stateKeyListener = castTo(state, KeyListener.class, NullKeyListener.INSTANCE);
-        this.stateMouseListener = castTo(state, MouseListener.class, NullMouseListener.INSTANCE);
-    }
-
-    @Override
-    public void shutdown() {
-        shutdown = true;
-    }
-
-    public void update(long currentTimeNanos, long deltaTimeNanos) {
-        state.update(this, currentTimeNanos, deltaTimeNanos);
-    }
-
-    public void render(Surface surface) {
-        state.render(surface);
-    }
-
-    public void applicationStarted(Application app) {
-        for (ApplicationListener listener : appListeners) {
-            listener.applicationStarted(app);
+    public boolean processEventQueue(long duration, TimeUnit unit) throws InterruptedException {
+        doProcessEventQueue(0, TimeUnit.NANOSECONDS);
+        long timeoutNanos = System.nanoTime() + unit.toNanos(duration);
+        while (true) {
+            long nanoTime = System.nanoTime();
+            if (nanoTime >= timeoutNanos) {
+                break;
+            }
+            doProcessEventQueue(timeoutNanos - nanoTime, TimeUnit.NANOSECONDS);
         }
-        stateAppListener.applicationStarted(app);
+        return !shutdown;
     }
 
-    public void applicationStopped(Application app) {
-        for (ApplicationListener listener : appListeners) {
-            listener.applicationStopped(app);
+    private void doProcessEventQueue(long timeout, TimeUnit unit) throws InterruptedException {
+        Collection<AWTEvent> events = eventQueue.drain(timeout, unit);
+        for (Iterator<AWTEvent> it = events.iterator(); it.hasNext() && !shutdown; ) {
+            dispatchEvent(it.next());
         }
-        stateAppListener.applicationStopped(app);
     }
 
-    public void dispatchEvent(AWTEvent e) {
+    private void dispatchEvent(AWTEvent e) {
         switch (e.getID()) {
         case ComponentEvent.COMPONENT_RESIZED:
             stateComponentListener.componentResized((ComponentEvent)e);
@@ -106,8 +100,41 @@ class ApplicationManagerImpl implements ApplicationManager {
         }
     }
 
-    public boolean isShutdown() {
-        return shutdown;
+    @Override
+    public void setState(ApplicationState state) {
+        this.state = state;
+        this.stateAppListener = castTo(state, ApplicationListener.class, NullApplicationListener.INSTANCE);
+        this.stateComponentListener = castTo(state, ComponentListener.class, NullComponentListener.INSTANCE);
+        this.stateKeyListener = castTo(state, KeyListener.class, NullKeyListener.INSTANCE);
+        this.stateMouseListener = castTo(state, MouseListener.class, NullMouseListener.INSTANCE);
+    }
+
+    @Override
+    public void shutdown() {
+        shutdown = true;
+    }
+
+    public boolean update() throws Exception {
+        state.update(this);
+        return !shutdown;
+    }
+
+    public void render(Surface surface) {
+        state.render(surface);
+    }
+
+    public void applicationStarted(Application app) {
+        for (ApplicationListener listener : appListeners) {
+            listener.applicationStarted(app);
+        }
+        stateAppListener.applicationStarted(app);
+    }
+
+    public void applicationStopped(Application app) {
+        for (ApplicationListener listener : appListeners) {
+            listener.applicationStopped(app);
+        }
+        stateAppListener.applicationStopped(app);
     }
 
     private static <T> T castTo(Object candidate, Class<T> targetClass, T defaultValue) {
