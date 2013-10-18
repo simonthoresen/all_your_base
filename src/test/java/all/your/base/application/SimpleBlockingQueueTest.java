@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -17,7 +16,7 @@ public class SimpleBlockingQueueTest {
     @Test
     public void requireThatQueueIsInitiallyEmpty() throws InterruptedException {
         SimpleBlockingQueue<Object> queue = new SimpleBlockingQueue<>();
-        assertTrue(queue.drain(100, TimeUnit.MILLISECONDS).isEmpty());
+        assertTrue(queue.drain(TimeLimits.EXPIRED).isEmpty());
     }
 
     @Test
@@ -28,7 +27,7 @@ public class SimpleBlockingQueueTest {
         Object bar = new Object();
         queue.add(bar);
 
-        Collection<Object> list = queue.drain(0, TimeUnit.MILLISECONDS);
+        Collection<Object> list = queue.drain(TimeLimits.EXPIRED);
         assertEquals(Arrays.asList(foo, bar), list);
     }
 
@@ -36,7 +35,7 @@ public class SimpleBlockingQueueTest {
     public void requireThatDrainEmptiesQueue() throws InterruptedException {
         SimpleBlockingQueue<Object> queue = new SimpleBlockingQueue<>();
         queue.add(new Object());
-        queue.drain(0, TimeUnit.MILLISECONDS);
-        assertTrue(queue.drain(100, TimeUnit.MILLISECONDS).isEmpty());
+        queue.drain(TimeLimits.EXPIRED);
+        assertTrue(queue.drain(TimeLimits.EXPIRED).isEmpty());
     }
 }

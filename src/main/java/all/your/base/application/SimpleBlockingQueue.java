@@ -21,11 +21,10 @@ class SimpleBlockingQueue<T> {
         }
     }
 
-    public Collection<T> drain(long timeout, TimeUnit unit) throws InterruptedException {
+    public Collection<T> drain(TimeLimit limit) throws InterruptedException {
         synchronized (lock) {
-            TimeoutTracker tracker = new TimeoutTracker(SystemTimer.INSTANCE, timeout, unit);
             while (delegate.isEmpty()) {
-                timeout = tracker.getTimeRemaining(TimeUnit.MILLISECONDS);
+                long timeout = limit.getTimeRemaining(TimeUnit.MILLISECONDS);
                 if (timeout <= 0) {
                     return Collections.emptyList();
                 }

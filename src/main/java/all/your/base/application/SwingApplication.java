@@ -26,8 +26,9 @@ class SwingApplication extends JPanel implements Application {
     private Surface writeSurface;
 
     public SwingApplication(ApplicationBuilder builder) {
-        this.manager = new SwingApplicationManager(this, builder.getApplicationListeners());
+        this.manager = new SwingApplicationManager(builder.getApplicationListeners(), builder.getTimer());
         this.manager.setState(builder.getInitialState());
+        this.manager.registerListeners(this);
         this.windowTitle = builder.getWindowTitle();
         this.surfaceBuffer = SurfaceBuffers.newDoubleBuffer(builder.getWindowWidth(), builder.getWindowHeight());
         this.writeSurface = surfaceBuffer.commit();

@@ -17,22 +17,24 @@ import java.util.concurrent.TimeUnit;
 public class AbstractApplicationState implements ApplicationListener, ApplicationState, ComponentListener, KeyListener,
                                                  MouseListener {
 
-    private final long nanosPerFrame;
-    private long lastUpdateNanoTime;
+    private final Timer timer;
+    private final long millisPerFrame;
+    private long lastUpdateMillis;
     private int componentWidth;
     private int componentHeight;
 
     public AbstractApplicationState() {
-        this(60);
+        this(SystemTimer.INSTANCE, 60);
     }
 
-    public AbstractApplicationState(int framesPerSecond) {
-        nanosPerFrame = TimeUnit.SECONDS.toNanos(1) / framesPerSecond;
+    public AbstractApplicationState(Timer timer, int framesPerSecond) {
+        this.timer = timer;
+        this.millisPerFrame = TimeUnit.SECONDS.toMillis(1) / framesPerSecond;
     }
 
     @Override
     public void applicationStarted(Application app) {
-        lastUpdateNanoTime = System.nanoTime();
+        lastUpdateMillis = timer.currentTimeMillis();
     }
 
     @Override
@@ -42,17 +44,17 @@ public class AbstractApplicationState implements ApplicationListener, Applicatio
 
     @Override
     public void update(ApplicationManager appManager) throws Exception {
-        long nanoTime = System.nanoTime();
-        long nextUpdateNanoTime = lastUpdateNanoTime + nanosPerFrame;
-        appManager.processEventQueue(nextUpdateNanoTime - nanoTime, TimeUnit.NANOSECONDS);
+        long now = timer.currentTimeMillis();
+        long nextUpdateMillis = lastUpdateMillis + millisPerFrame;
+        appManager.processEventQueue(nextUpdateMillis - now, TimeUnit.MILLISECONDS);
 
-        nanoTime = System.nanoTime();
-        update(appManager, nanoTime, nanoTime - lastUpdateNanoTime);
-        lastUpdateNanoTime = nanoTime;
+        now = timer.currentTimeMillis();
+        update(appManager, now, now - lastUpdateMillis);
+        lastUpdateMillis = now;
     }
 
     @SuppressWarnings("UnusedParameters")
-    public void update(ApplicationManager appManager, long currentTimeNanos, long deltaTimeNanos) throws Exception {
+    public void update(ApplicationManager appManager, long currentTimeMillis, long deltaTimeMillis) throws Exception {
 
     }
 

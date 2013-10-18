@@ -11,7 +11,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -23,6 +22,7 @@ class SwingApplicationManager implements ApplicationManager {
 
     private final List<ApplicationListener> appListeners;
     private final SimpleBlockingQueue<AWTEvent> eventQueue = new SimpleBlockingQueue<>();
+    private final Timer timer;
     private ApplicationListener stateAppListener = NullApplicationListener.INSTANCE;
     private ApplicationState state = NullApplicationState.INSTANCE;
     private ComponentListener stateComponentListener = NullComponentListener.INSTANCE;
@@ -30,33 +30,33 @@ class SwingApplicationManager implements ApplicationManager {
     private MouseListener stateMouseListener = NullMouseListener.INSTANCE;
     private volatile boolean shutdown = false;
 
-    public SwingApplicationManager(Component c, List<ApplicationListener> appListeners) {
+    public SwingApplicationManager(List<ApplicationListener> appListeners, Timer timer) {
         this.appListeners = new ArrayList<>(appListeners);
-
-        c.addComponentListener(new QueueingComponentListener(eventQueue));
-        c.addKeyListener(new QueueingKeyListener(eventQueue));
-        c.addMouseListener(new QueueingMouseListener(eventQueue));
+        this.timer = timer;
     }
 
     @Override
     public boolean processEventQueue(long duration, TimeUnit unit) throws InterruptedException {
-        doProcessEventQueue(0, TimeUnit.NANOSECONDS);
-        long timeoutNanos = System.nanoTime() + unit.toNanos(duration);
-        while (true) {
-            long nanoTime = System.nanoTime();
-            if (nanoTime >= timeoutNanos) {
-                break;
+        TimeLimit limit = new TimeLimit(timer, duration, unit);
+        do {
+            if (!processEventQueue(limit)) {
+                return false;
             }
-            doProcessEventQueue(timeoutNanos - nanoTime, TimeUnit.NANOSECONDS);
+        } while (!limit.isExpired());
+        return true;
+    }
+
+    private boolean processEventQueue(TimeLimit limit) throws InterruptedException {
+        for (Iterator<AWTEvent> it = eventQueue.drain(limit).iterator(); it.hasNext() && !shutdown; ) {
+            dispatchEvent(it.next());
         }
         return !shutdown;
     }
 
-    private void doProcessEventQueue(long timeout, TimeUnit unit) throws InterruptedException {
-        Collection<AWTEvent> events = eventQueue.drain(timeout, unit);
-        for (Iterator<AWTEvent> it = events.iterator(); it.hasNext() && !shutdown; ) {
-            dispatchEvent(it.next());
-        }
+    public void registerListeners(Component c) {
+        c.addComponentListener(new QueueingComponentListener(eventQueue));
+        c.addKeyListener(new QueueingKeyListener(eventQueue));
+        c.addMouseListener(new QueueingMouseListener(eventQueue));
     }
 
     private void dispatchEvent(AWTEvent e) {

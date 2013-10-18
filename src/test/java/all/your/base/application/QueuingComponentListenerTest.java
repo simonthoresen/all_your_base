@@ -7,7 +7,6 @@ import java.awt.AWTEvent;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 
@@ -30,6 +29,6 @@ public class QueuingComponentListenerTest {
         listener.componentShown(componentShown);
 
         assertEquals(Arrays.<AWTEvent>asList(componentHidden, componentMoved, componentResized, componentShown),
-                     queue.drain(100, TimeUnit.MILLISECONDS));
+                     queue.drain(TimeLimits.EXPIRED));
     }
 }

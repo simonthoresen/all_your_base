@@ -7,7 +7,6 @@ import java.awt.AWTEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 
@@ -32,6 +31,6 @@ public class QueueingMouseListenerTest {
         listener.mouseExited(mouseExited);
 
         assertEquals(Arrays.<AWTEvent>asList(mouseClicked, mousePressed, mouseReleased, mouseEntered, mouseExited),
-                     queue.drain(100, TimeUnit.MILLISECONDS));
+                     queue.drain(TimeLimits.EXPIRED));
     }
 }

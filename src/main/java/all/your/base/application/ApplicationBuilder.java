@@ -12,6 +12,7 @@ public class ApplicationBuilder {
     private final List<ApplicationListener> listeners = new ArrayList<>();
     private ApplicationState initialState = NullApplicationState.INSTANCE;
     private String windowTitle = "Application";
+    private Timer timer = SystemTimer.INSTANCE;
     private int windowWidth = 640;
     private int windowHeight = 480;
     private int framesPerSecond = 60;
@@ -70,6 +71,15 @@ public class ApplicationBuilder {
 
     public int getFramesPerSecond() {
         return framesPerSecond;
+    }
+
+    public ApplicationBuilder setTimer(Timer timer) {
+        this.timer = timer;
+        return this;
+    }
+
+    public Timer getTimer() {
+        return timer;
     }
 
     public Application build() {

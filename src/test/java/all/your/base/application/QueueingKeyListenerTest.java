@@ -7,7 +7,6 @@ import java.awt.AWTEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,6 +27,6 @@ public class QueueingKeyListenerTest {
         listener.keyReleased(keyReleased);
 
         assertEquals(Arrays.<AWTEvent>asList(keyTyped, keyPressed, keyReleased),
-                     queue.drain(100, TimeUnit.MILLISECONDS));
+                     queue.drain(TimeLimits.EXPIRED));
     }
 }
