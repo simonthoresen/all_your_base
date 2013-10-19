@@ -3,7 +3,9 @@ package all.your.base.application;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -19,12 +21,15 @@ public class ApplicationBuilderTest {
         builder.setWindowWidth(1);
         builder.setWindowHeight(2);
         builder.setFramesPerSecond(3);
+        Timer timer = Mockito.mock(Timer.class);
+        builder.setTimer(timer);
 
         assertSame(state, builder.getInitialState());
         assertEquals("windowTitle", builder.getWindowTitle());
         assertEquals(1, builder.getWindowWidth());
         assertEquals(2, builder.getWindowHeight());
         assertEquals(3, builder.getFramesPerSecond());
+        assertSame(timer, builder.getTimer());
     }
 
     @Test
