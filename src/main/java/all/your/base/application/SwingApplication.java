@@ -96,7 +96,7 @@ class SwingApplication extends JPanel implements Application {
             Surface surface = surfaceBuffer.peek();
             // noinspection SynchronizationOnLocalVariableOrMethodParameter
             synchronized (surface) {
-                surface.paint(g, 0, 0, getWidth(), getHeight());
+                g.drawImage(surface.getImage(), 0, 0, getWidth(), getHeight(), null);
             }
             idle.set(true);
         }

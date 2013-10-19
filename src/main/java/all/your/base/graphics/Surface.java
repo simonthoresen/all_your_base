@@ -1,6 +1,5 @@
 package all.your.base.graphics;
 
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -27,10 +26,6 @@ public class Surface {
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         graphics = image.createGraphics();
         graphics.drawImage(old, 0, 0, width, height, null);
-    }
-
-    public void paint(Graphics g, int x, int y, int width, int height) {
-        g.drawImage(image, x, y, width, height, null);
     }
 
     public BufferedImage getImage() {
