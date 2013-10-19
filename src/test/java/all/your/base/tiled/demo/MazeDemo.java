@@ -27,6 +27,7 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -98,7 +99,8 @@ public class MazeDemo implements ApplicationListener, ApplicationState, Componen
     }
 
     @Override
-    public void update(ApplicationManager appManager) {
+    public void update(ApplicationManager appManager) throws InterruptedException {
+        appManager.processEventQueue(1000 / 60, TimeUnit.MILLISECONDS);
         if (lightMap == null) {
             lightMap = LightMap.newInstance(board, new Rectangle(playerPos.x - renderTileCols / 2,
                                                                  playerPos.y - renderTileRows / 2,
