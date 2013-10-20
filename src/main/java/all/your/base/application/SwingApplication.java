@@ -1,9 +1,5 @@
 package all.your.base.application;
 
-import all.your.base.graphics.Surface;
-import all.your.base.graphics.SurfaceBuffer;
-import all.your.base.graphics.SurfaceBuffers;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -54,8 +50,8 @@ class SwingApplication extends JPanel implements Application {
 
     private void openWindow() {
         setFocusable(true);
-        setPreferredSize(new Dimension(surfaceBuffer.peek().getImage().getWidth(),
-                                       surfaceBuffer.peek().getImage().getHeight()));
+        setPreferredSize(new Dimension(surfaceBuffer.peek().getWidth(),
+                                       surfaceBuffer.peek().getHeight()));
 
         JFrame frame = new JFrame(windowTitle);
         frame.addWindowListener(new WindowAdapter() {

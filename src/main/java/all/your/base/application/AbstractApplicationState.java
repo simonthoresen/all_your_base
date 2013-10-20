@@ -1,8 +1,5 @@
 package all.your.base.application;
 
-import all.your.base.graphics.Surface;
-
-import java.awt.Component;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
@@ -20,8 +17,6 @@ public class AbstractApplicationState implements ApplicationListener, Applicatio
     private final Timer timer;
     private final long millisPerFrame;
     private long lastUpdateMillis;
-    private int componentWidth;
-    private int componentHeight;
 
     public AbstractApplicationState() {
         this(SystemTimer.INSTANCE, 60);
@@ -30,11 +25,12 @@ public class AbstractApplicationState implements ApplicationListener, Applicatio
     public AbstractApplicationState(Timer timer, int framesPerSecond) {
         this.timer = timer;
         this.millisPerFrame = TimeUnit.SECONDS.toMillis(1) / framesPerSecond;
+        this.lastUpdateMillis = timer.currentTimeMillis();
     }
 
     @Override
     public void applicationStarted(Application app) {
-        lastUpdateMillis = timer.currentTimeMillis();
+
     }
 
     @Override
@@ -43,7 +39,7 @@ public class AbstractApplicationState implements ApplicationListener, Applicatio
     }
 
     @Override
-    public void update(ApplicationManager appManager) throws Exception {
+    public final void update(ApplicationManager appManager) throws Exception {
         long now = timer.currentTimeMillis();
         long nextUpdateMillis = lastUpdateMillis + millisPerFrame;
         appManager.processEventQueue(nextUpdateMillis - now, TimeUnit.MILLISECONDS);
@@ -60,14 +56,12 @@ public class AbstractApplicationState implements ApplicationListener, Applicatio
 
     @Override
     public void render(Surface surface) {
-        surface.resize(componentWidth, componentHeight);
+
     }
 
     @Override
     public void componentResized(ComponentEvent e) {
-        Component c = e.getComponent();
-        componentWidth = c.getWidth();
-        componentHeight = c.getHeight();
+
     }
 
     @Override

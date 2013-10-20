@@ -1,4 +1,4 @@
-package all.your.base.graphics;
+package all.your.base.application;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -28,11 +28,19 @@ public class Surface {
         graphics.drawImage(old, 0, 0, width, height, null);
     }
 
-    public BufferedImage getImage() {
-        return image;
+    public int getWidth() {
+        return image.getWidth();
+    }
+
+    public int getHeight() {
+        return image.getHeight();
     }
 
     public Graphics2D getGraphics() {
         return graphics;
+    }
+
+    BufferedImage getImage() {
+        return image;
     }
 }

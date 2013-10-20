@@ -1,5 +1,6 @@
 package all.your.base.graphics;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -15,8 +16,8 @@ public class SimpleTexture implements Texture {
     }
 
     @Override
-    public void paint(Surface surface, int x, int y, int width, int height) {
-        surface.getGraphics().drawImage(image, x, y, width, height, null);
+    public void paint(Graphics2D g, int x, int y, int width, int height) {
+        g.drawImage(image, x, y, width, height, null);
     }
 
     public static SimpleTexture fromFile(String fileName) throws IOException {

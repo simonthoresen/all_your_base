@@ -1,9 +1,9 @@
-package all.your.base.graphics;
+package all.your.base.application;
 
 /**
  * @author <a href="mailto:simon@hult-thoresen.com">Simon Thoresen Hult</a>
  */
-public interface SurfaceBuffer {
+interface SurfaceBuffer {
 
     public Surface peek();
 

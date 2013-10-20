@@ -1,7 +1,5 @@
 package all.your.base.application;
 
-import all.your.base.graphics.Surface;
-
 import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.event.ComponentEvent;

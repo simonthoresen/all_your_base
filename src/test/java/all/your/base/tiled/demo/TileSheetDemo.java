@@ -3,7 +3,7 @@ package all.your.base.tiled.demo;
 import all.your.base.application.ApplicationManager;
 import all.your.base.application.ApplicationState;
 import all.your.base.application.Applications;
-import all.your.base.graphics.Surface;
+import all.your.base.application.Surface;
 import all.your.base.tiled.TileSet;
 import all.your.base.tiled.TileSets;
 import all.your.base.tiled.TileSheet;

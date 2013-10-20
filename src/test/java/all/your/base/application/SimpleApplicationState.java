@@ -1,7 +1,5 @@
 package all.your.base.application;
 
-import all.your.base.graphics.Surface;
-
 import java.util.concurrent.TimeUnit;
 
 /**

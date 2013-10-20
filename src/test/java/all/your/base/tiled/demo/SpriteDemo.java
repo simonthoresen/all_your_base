@@ -3,7 +3,7 @@ package all.your.base.tiled.demo;
 import all.your.base.application.ApplicationManager;
 import all.your.base.application.ApplicationState;
 import all.your.base.application.Applications;
-import all.your.base.graphics.Surface;
+import all.your.base.application.Surface;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>

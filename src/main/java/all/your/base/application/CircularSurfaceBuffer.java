@@ -1,9 +1,9 @@
-package all.your.base.graphics;
+package all.your.base.application;
 
 /**
  * @author <a href="mailto:simon@hult-thoresen.com">Simon Thoresen Hult</a>
  */
-public class CircularSurfaceBuffer implements SurfaceBuffer {
+class CircularSurfaceBuffer implements SurfaceBuffer {
 
     private final Surface[] surfaces;
     private volatile byte writePos;

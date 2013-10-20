@@ -1,7 +1,5 @@
 package all.your.base.application;
 
-import all.your.base.graphics.Surface;
-
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -22,8 +20,6 @@ public class Applications {
 
                     @Override
                     public void render(Surface surface) {
-                        super.render(surface);
-
                         Graphics2D g = surface.getGraphics();
                         g.drawImage(image, 0, 0, image.getWidth() * scale, image.getHeight() * scale, null);
                     }

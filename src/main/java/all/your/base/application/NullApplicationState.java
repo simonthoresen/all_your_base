@@ -1,7 +1,5 @@
 package all.your.base.application;
 
-import all.your.base.graphics.Surface;
-
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */
