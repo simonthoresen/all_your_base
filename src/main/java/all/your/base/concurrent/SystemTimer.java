@@ -1,9 +1,9 @@
-package all.your.base.application;
+package all.your.base.concurrent;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */
-enum SystemTimer implements Timer {
+public enum SystemTimer implements Timer {
 
     INSTANCE;
 

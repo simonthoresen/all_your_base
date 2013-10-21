@@ -1,5 +1,7 @@
 package all.your.base.application;
 
+import all.your.base.concurrent.Timeout;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,14 +23,14 @@ class SimpleBlockingQueue<T> {
         }
     }
 
-    public Collection<T> drain(TimeLimit limit) throws InterruptedException {
+    public Collection<T> drain(Timeout timeout) throws InterruptedException {
         synchronized (lock) {
             while (delegate.isEmpty()) {
-                long timeout = limit.getTimeRemaining(TimeUnit.MILLISECONDS);
-                if (timeout <= 0) {
+                long millis = timeout.getTimeRemaining(TimeUnit.MILLISECONDS);
+                if (millis <= 0) {
                     return Collections.emptyList();
                 }
-                lock.wait(timeout);
+                lock.wait(millis);
             }
             List<T> out = delegate;
             delegate = new ArrayList<>();

@@ -31,6 +31,6 @@ public class QueueingMouseListenerTest {
         listener.mouseExited(mouseExited);
 
         assertEquals(Arrays.<AWTEvent>asList(mouseClicked, mousePressed, mouseReleased, mouseEntered, mouseExited),
-                     queue.drain(TimeLimits.EXPIRED));
+                     queue.drain(Timeouts.EXPIRED));
     }
 }

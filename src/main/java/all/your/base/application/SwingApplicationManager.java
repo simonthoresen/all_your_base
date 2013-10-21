@@ -1,5 +1,8 @@
 package all.your.base.application;
 
+import all.your.base.concurrent.Timeout;
+import all.your.base.concurrent.Timer;
+
 import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.event.ComponentEvent;
@@ -35,17 +38,17 @@ class SwingApplicationManager implements ApplicationManager {
 
     @Override
     public boolean processEventQueue(long duration, TimeUnit unit) throws InterruptedException {
-        TimeLimit limit = new TimeLimit(timer, duration, unit);
+        Timeout timeout = new Timeout(timer, duration, unit);
         do {
-            if (!processEventQueue(limit)) {
+            if (!processEventQueue(timeout)) {
                 return false;
             }
-        } while (!limit.isExpired());
+        } while (!timeout.isExpired());
         return true;
     }
 
-    private boolean processEventQueue(TimeLimit limit) throws InterruptedException {
-        for (Iterator<AWTEvent> it = eventQueue.drain(limit).iterator(); it.hasNext() && !shutdown; ) {
+    private boolean processEventQueue(Timeout timeout) throws InterruptedException {
+        for (Iterator<AWTEvent> it = eventQueue.drain(timeout).iterator(); it.hasNext() && !shutdown; ) {
             dispatchEvent(it.next());
         }
         return !shutdown;

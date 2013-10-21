@@ -16,7 +16,7 @@ public class SimpleBlockingQueueTest {
     @Test
     public void requireThatQueueIsInitiallyEmpty() throws InterruptedException {
         SimpleBlockingQueue<Object> queue = new SimpleBlockingQueue<>();
-        assertTrue(queue.drain(TimeLimits.EXPIRED).isEmpty());
+        assertTrue(queue.drain(Timeouts.EXPIRED).isEmpty());
     }
 
     @Test
@@ -27,7 +27,7 @@ public class SimpleBlockingQueueTest {
         Object bar = new Object();
         queue.add(bar);
 
-        Collection<Object> list = queue.drain(TimeLimits.EXPIRED);
+        Collection<Object> list = queue.drain(Timeouts.EXPIRED);
         assertEquals(Arrays.asList(foo, bar), list);
     }
 
@@ -35,7 +35,7 @@ public class SimpleBlockingQueueTest {
     public void requireThatDrainEmptiesQueue() throws InterruptedException {
         SimpleBlockingQueue<Object> queue = new SimpleBlockingQueue<>();
         queue.add(new Object());
-        queue.drain(TimeLimits.EXPIRED);
-        assertTrue(queue.drain(TimeLimits.EXPIRED).isEmpty());
+        queue.drain(Timeouts.EXPIRED);
+        assertTrue(queue.drain(Timeouts.EXPIRED).isEmpty());
     }
 }

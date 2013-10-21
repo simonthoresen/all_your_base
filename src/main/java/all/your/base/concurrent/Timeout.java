@@ -1,16 +1,16 @@
-package all.your.base.application;
+package all.your.base.concurrent;
 
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */
-class TimeLimit {
+public class Timeout {
 
     private final Timer timer;
     private final long timeoutAtMillis;
 
-    public TimeLimit(Timer timer, long timeout, TimeUnit unit) {
+    public Timeout(Timer timer, long timeout, TimeUnit unit) {
         this.timer = timer;
         this.timeoutAtMillis = timer.currentTimeMillis() + unit.toMillis(timeout);
     }

@@ -27,6 +27,6 @@ public class QueueingKeyListenerTest {
         listener.keyReleased(keyReleased);
 
         assertEquals(Arrays.<AWTEvent>asList(keyTyped, keyPressed, keyReleased),
-                     queue.drain(TimeLimits.EXPIRED));
+                     queue.drain(Timeouts.EXPIRED));
     }
 }

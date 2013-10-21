@@ -29,6 +29,6 @@ public class QueuingComponentListenerTest {
         listener.componentShown(componentShown);
 
         assertEquals(Arrays.<AWTEvent>asList(componentHidden, componentMoved, componentResized, componentShown),
-                     queue.drain(TimeLimits.EXPIRED));
+                     queue.drain(Timeouts.EXPIRED));
     }
 }

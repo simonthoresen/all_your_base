@@ -1,4 +1,4 @@
-package all.your.base.application;
+package all.your.base.concurrent;
 
 import org.junit.Test;
 
