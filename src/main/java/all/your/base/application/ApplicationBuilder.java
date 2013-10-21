@@ -18,7 +18,6 @@ public class ApplicationBuilder {
     private Timer timer = SystemTimer.INSTANCE;
     private int windowWidth = 640;
     private int windowHeight = 480;
-    private int framesPerSecond = 60;
 
     public ApplicationBuilder setInitialState(ApplicationState initialState) {
         Objects.requireNonNull(initialState, "initialState");
@@ -65,15 +64,6 @@ public class ApplicationBuilder {
 
     public int getWindowWidth() {
         return windowWidth;
-    }
-
-    public ApplicationBuilder setFramesPerSecond(int framesPerSecond) {
-        this.framesPerSecond = framesPerSecond;
-        return this;
-    }
-
-    public int getFramesPerSecond() {
-        return framesPerSecond;
     }
 
     public ApplicationBuilder setTimer(Timer timer) {

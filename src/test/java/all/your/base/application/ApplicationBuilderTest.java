@@ -21,7 +21,6 @@ public class ApplicationBuilderTest {
         builder.setWindowTitle("windowTitle");
         builder.setWindowWidth(1);
         builder.setWindowHeight(2);
-        builder.setFramesPerSecond(3);
         Timer timer = Mockito.mock(Timer.class);
         builder.setTimer(timer);
 
@@ -29,7 +28,6 @@ public class ApplicationBuilderTest {
         assertEquals("windowTitle", builder.getWindowTitle());
         assertEquals(1, builder.getWindowWidth());
         assertEquals(2, builder.getWindowHeight());
-        assertEquals(3, builder.getFramesPerSecond());
         assertSame(timer, builder.getTimer());
     }
 
