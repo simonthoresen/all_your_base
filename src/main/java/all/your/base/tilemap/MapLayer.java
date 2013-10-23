@@ -1,8 +1,8 @@
-package all.your.base.graphics;
+package all.your.base.tilemap;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */
-public interface Tile {
+public class MapLayer {
 
 }
