@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * @author <a href="mailto:simon@hult-thoresen.com">Simon Thoresen Hult</a>
  */
-public abstract class FastMap<K, V> implements Map<K, V> {
+public abstract class LazyMap<K, V> implements Map<K, V> {
 
     private Map<K, V> delegate;
 

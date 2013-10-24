@@ -1,7 +1,7 @@
 package all.your.base.scene;
 
-import all.your.base.util.FastHashMap;
-import all.your.base.util.FastHashSet;
+import all.your.base.util.LazyHashMap;
+import all.your.base.util.LazyHashSet;
 
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +11,6 @@ import java.util.Set;
  */
 public class Actor {
 
-    private final Map<String, Action> actions = new FastHashMap<>();
-    private final Set<Actor> children = new FastHashSet<>();
+    private final Map<String, Action> actions = new LazyHashMap<>();
+    private final Set<Actor> children = new LazyHashSet<>();
 }

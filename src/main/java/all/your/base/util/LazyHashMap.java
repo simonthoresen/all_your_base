@@ -6,20 +6,20 @@ import java.util.Map;
 /**
  * @author <a href="mailto:simon@hult-thoresen.com">Simon Thoresen Hult</a>
  */
-public class FastHashMap<K, V> extends FastMap<K, V> {
+public class LazyHashMap<K, V> extends LazyMap<K, V> {
 
     private final int initialCapacity;
     private final float loadFactor;
 
-    public FastHashMap() {
+    public LazyHashMap() {
         this(16);
     }
 
-    public FastHashMap(int initialCapacity) {
+    public LazyHashMap(int initialCapacity) {
         this(initialCapacity, 0.75f);
     }
 
-    public FastHashMap(int initialCapacity, float loadFactor) {
+    public LazyHashMap(int initialCapacity, float loadFactor) {
         this.initialCapacity = initialCapacity;
         this.loadFactor = loadFactor;
     }

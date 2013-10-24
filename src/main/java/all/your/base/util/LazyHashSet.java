@@ -6,20 +6,20 @@ import java.util.Set;
 /**
  * @author <a href="mailto:simon@hult-thoresen.com">Simon Thoresen Hult</a>
  */
-public class FastHashSet<E> extends FastSet<E> {
+public class LazyHashSet<E> extends LazySet<E> {
 
     private final int initialCapacity;
     private final float loadFactor;
 
-    public FastHashSet() {
+    public LazyHashSet() {
         this(16);
     }
 
-    public FastHashSet(int initialCapacity) {
+    public LazyHashSet(int initialCapacity) {
         this(initialCapacity, 0.75f);
     }
 
-    public FastHashSet(int initialCapacity, float loadFactor) {
+    public LazyHashSet(int initialCapacity, float loadFactor) {
         this.initialCapacity = initialCapacity;
         this.loadFactor = loadFactor;
     }

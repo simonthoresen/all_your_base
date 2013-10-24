@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * @author <a href="mailto:simon@hult-thoresen.com">Simon Thoresen Hult</a>
  */
-public abstract class FastSet<E> implements Set<E> {
+public abstract class LazySet<E> implements Set<E> {
 
     private Set<E> delegate;
 
