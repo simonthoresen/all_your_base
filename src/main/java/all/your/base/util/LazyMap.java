@@ -102,4 +102,8 @@ public abstract class LazyMap<K, V> implements Map<K, V> {
     }
 
     protected abstract Map<K, V> newDelegate();
+
+    boolean hasDelegate() {
+        return delegate != null;
+    }
 }

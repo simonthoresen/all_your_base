@@ -91,4 +91,8 @@ public abstract class LazySet<E> implements Set<E> {
     }
 
     protected abstract Set<E> newDelegate();
+
+    boolean hasDelegate() {
+        return delegate != null;
+    }
 }
