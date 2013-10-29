@@ -19,7 +19,7 @@ public class TextureAtlas {
     public AtlasTexture getTexture(int id) {
         AtlasTexture texture = textures.get(id);
         if (texture == null) {
-            texture = new AtlasTexture(this, 0, 0, 0, 0);
+            texture = new AtlasTexture(image, 0, 0, 0, 0);
             textures.put(id, texture);
         }
         return texture;
