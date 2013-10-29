@@ -10,36 +10,37 @@ import java.util.Set;
  */
 public abstract class LazyMap<K, V> implements Map<K, V> {
 
-    private Map<K, V> delegate;
+    @SuppressWarnings("unchecked")
+    private Map<K, V> delegate = Collections.EMPTY_MAP;
 
     @Override
     public final int size() {
-        return delegate == null ? 0 : delegate.size();
+        return delegate.size();
     }
 
     @Override
     public final boolean isEmpty() {
-        return delegate == null || delegate.isEmpty();
+        return delegate.isEmpty();
     }
 
     @Override
     public final boolean containsKey(Object key) {
-        return delegate != null && delegate.containsKey(key);
+        return delegate.containsKey(key);
     }
 
     @Override
     public final boolean containsValue(Object value) {
-        return delegate != null && delegate.containsValue(value);
+        return delegate.containsValue(value);
     }
 
     @Override
     public final V get(Object key) {
-        return delegate == null ? null : delegate.get(key);
+        return delegate.get(key);
     }
 
     @Override
     public final V put(K key, V value) {
-        if (delegate == null) {
+        if (delegate == Collections.EMPTY_MAP) {
             delegate = newDelegate();
         }
         return delegate.put(key, value);
@@ -47,7 +48,7 @@ public abstract class LazyMap<K, V> implements Map<K, V> {
 
     @Override
     public final V remove(Object key) {
-        return delegate == null ? null : delegate.remove(key);
+        return delegate.remove(key);
     }
 
     @Override
@@ -55,7 +56,7 @@ public abstract class LazyMap<K, V> implements Map<K, V> {
         if (m.isEmpty()) {
             return;
         }
-        if (delegate == null) {
+        if (delegate == Collections.EMPTY_MAP) {
             delegate = newDelegate();
         }
         delegate.putAll(m);
@@ -63,42 +64,32 @@ public abstract class LazyMap<K, V> implements Map<K, V> {
 
     @Override
     public final void clear() {
-        if (delegate == null) {
-            return;
-        }
         delegate.clear();
     }
 
     @Override
     public final Set<K> keySet() {
-        return delegate == null ? Collections.<K>emptySet() : delegate.keySet();
+        return delegate.keySet();
     }
 
     @Override
     public final Collection<V> values() {
-        return delegate == null ? Collections.<V>emptyList() : delegate.values();
+        return delegate.values();
     }
 
     @Override
     public final Set<Entry<K, V>> entrySet() {
-        return delegate == null ? Collections.<Entry<K, V>>emptySet() : delegate.entrySet();
+        return delegate.entrySet();
     }
 
     @Override
     public final int hashCode() {
-        return delegate == null ? Collections.emptyMap().hashCode() : delegate.hashCode();
+        return delegate.hashCode();
     }
 
-    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
     public final boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (delegate == null) {
-            return Collections.emptyMap().equals(obj);
-        }
-        return delegate.equals(obj);
+        return obj == this || (obj instanceof Map && delegate.equals(obj));
     }
 
     protected abstract Map<K, V> newDelegate();

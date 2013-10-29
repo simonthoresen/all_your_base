@@ -3,9 +3,7 @@ package all.your.util;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -14,17 +12,12 @@ import static org.junit.Assert.*;
  */
 public class LazySetTest {
 
+    @SuppressWarnings("unchecked")
     @Test
     public void requireThatSetDelegates() {
-        @SuppressWarnings("unchecked") final Set<String> delegate = Mockito.mock(Set.class);
-        Set<String> set = new LazySet<String>() {
-
-            @Override
-            protected Set<String> newDelegate() {
-                return delegate;
-            }
-        };
-        set.add("foo");
+        Set<String> delegate = Mockito.mock(Set.class);
+        Set<String> set = new SimpleLazySet<>(delegate);
+        set.add("foo"); // trigger the assignment of the delegate
         Mockito.verify(delegate).add("foo");
 
         Set<String> addAllArg = Collections.singleton("bar");
@@ -71,51 +64,59 @@ public class LazySetTest {
 
     @Test
     public void requireThatSetIsLazy() {
-        LazySet<String> set = new LazyHashSet<>();
+        CountingLazySet<String> set = new CountingLazySet<>();
+
         assertEquals(0, set.size());
-        assertNull(set.getDelegate());
+        assertEquals(0, set.newDelegateCallCnt);
 
         assertTrue(set.isEmpty());
-        assertNull(set.getDelegate());
+        assertEquals(0, set.newDelegateCallCnt);
 
         assertFalse(set.contains("foo"));
-        assertNull(set.getDelegate());
+        assertEquals(0, set.newDelegateCallCnt);
 
         assertFalse(set.iterator().hasNext());
-        assertNull(set.getDelegate());
+        assertEquals(0, set.newDelegateCallCnt);
 
         assertEquals(0, set.toArray().length);
-        assertNull(set.getDelegate());
+        assertEquals(0, set.newDelegateCallCnt);
 
         String[] arg = new String[69];
         assertSame(arg, set.toArray(arg));
-        assertNull(set.getDelegate());
+        assertEquals(0, set.newDelegateCallCnt);
 
         assertFalse(set.remove("foo"));
-        assertNull(set.getDelegate());
+        assertEquals(0, set.newDelegateCallCnt);
 
         assertFalse(set.containsAll(Collections.singletonList("foo")));
-        assertNull(set.getDelegate());
+        assertEquals(0, set.newDelegateCallCnt);
 
         assertFalse(set.retainAll(Collections.singletonList("foo")));
-        assertNull(set.getDelegate());
+        assertEquals(0, set.newDelegateCallCnt);
 
         assertFalse(set.removeAll(Collections.singletonList("foo")));
-        assertNull(set.getDelegate());
+        assertEquals(0, set.newDelegateCallCnt);
 
         set.clear();
-        assertNull(set.getDelegate());
+        assertEquals(0, set.newDelegateCallCnt);
+
+        assertTrue(set.add("foo"));
+        assertEquals(1, set.newDelegateCallCnt);
+
+        assertTrue(set.addAll(Arrays.asList("bar", "baz")));
+        assertEquals(1, set.newDelegateCallCnt);
     }
 
     @Test
     public void requireThatHashCodeIsImplemented() {
-        assertEquals(new LazyHashSet<>(), new LazyHashSet<>());
+        assertEquals(new SimpleLazySet<>(null).hashCode(),
+                     new SimpleLazySet<>(null).hashCode());
     }
 
     @Test
     public void requireThatEqualsIsImplemented() {
-        Set<Object> lhs = new LazyHashSet<>();
-        Set<Object> rhs = new LazyHashSet<>();
+        Set<Object> lhs = new SimpleLazySet<>(new HashSet<>());
+        Set<Object> rhs = new SimpleLazySet<>(new HashSet<>());
         assertEquals(lhs, lhs);
         assertEquals(lhs, rhs);
 
@@ -125,5 +126,30 @@ public class LazySetTest {
         assertFalse(lhs.equals(rhs));
         rhs.add(obj);
         assertEquals(lhs, rhs);
+    }
+
+    private static class SimpleLazySet<E> extends LazySet<E> {
+
+        final Set<E> delegate;
+
+        SimpleLazySet(Set<E> delegate) {
+            this.delegate = delegate;
+        }
+
+        @Override
+        protected Set<E> newDelegate() {
+            return delegate;
+        }
+    }
+
+    private static class CountingLazySet<E> extends LazySet<E> {
+
+        int newDelegateCallCnt = 0;
+
+        @Override
+        protected Set<E> newDelegate() {
+            ++newDelegateCallCnt;
+            return new HashSet<>();
+        }
     }
 }
