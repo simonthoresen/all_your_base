@@ -13,32 +13,32 @@ public abstract class LazyMap<K, V> implements Map<K, V> {
     private Map<K, V> delegate;
 
     @Override
-    public int size() {
+    public final int size() {
         return delegate == null ? 0 : delegate.size();
     }
 
     @Override
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return delegate == null || delegate.isEmpty();
     }
 
     @Override
-    public boolean containsKey(Object key) {
+    public final boolean containsKey(Object key) {
         return delegate != null && delegate.containsKey(key);
     }
 
     @Override
-    public boolean containsValue(Object value) {
+    public final boolean containsValue(Object value) {
         return delegate != null && delegate.containsValue(value);
     }
 
     @Override
-    public V get(Object key) {
+    public final V get(Object key) {
         return delegate == null ? null : delegate.get(key);
     }
 
     @Override
-    public V put(K key, V value) {
+    public final V put(K key, V value) {
         if (delegate == null) {
             delegate = newDelegate();
         }
@@ -46,12 +46,12 @@ public abstract class LazyMap<K, V> implements Map<K, V> {
     }
 
     @Override
-    public V remove(Object key) {
+    public final V remove(Object key) {
         return delegate == null ? null : delegate.remove(key);
     }
 
     @Override
-    public void putAll(Map<? extends K, ? extends V> m) {
+    public final void putAll(Map<? extends K, ? extends V> m) {
         if (m.isEmpty()) {
             return;
         }
@@ -62,7 +62,7 @@ public abstract class LazyMap<K, V> implements Map<K, V> {
     }
 
     @Override
-    public void clear() {
+    public final void clear() {
         if (delegate == null) {
             return;
         }
@@ -70,28 +70,28 @@ public abstract class LazyMap<K, V> implements Map<K, V> {
     }
 
     @Override
-    public Set<K> keySet() {
+    public final Set<K> keySet() {
         return delegate == null ? Collections.<K>emptySet() : delegate.keySet();
     }
 
     @Override
-    public Collection<V> values() {
+    public final Collection<V> values() {
         return delegate == null ? Collections.<V>emptyList() : delegate.values();
     }
 
     @Override
-    public Set<Entry<K, V>> entrySet() {
+    public final Set<Entry<K, V>> entrySet() {
         return delegate == null ? Collections.<Entry<K, V>>emptySet() : delegate.entrySet();
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return delegate == null ? Collections.emptyMap().hashCode() : delegate.hashCode();
     }
 
     @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
     @Override
-    public boolean equals(Object obj) {
+    public final boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -103,7 +103,7 @@ public abstract class LazyMap<K, V> implements Map<K, V> {
 
     protected abstract Map<K, V> newDelegate();
 
-    boolean hasDelegate() {
-        return delegate != null;
+    final Map<K, V> getDelegate() {
+        return delegate;
     }
 }

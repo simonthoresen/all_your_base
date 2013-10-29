@@ -13,38 +13,38 @@ public abstract class LazySet<E> implements Set<E> {
     private Set<E> delegate;
 
     @Override
-    public int size() {
+    public final int size() {
         return delegate == null ? 0 : delegate.size();
     }
 
     @Override
-    public boolean isEmpty() {
+    public final boolean isEmpty() {
         return delegate == null || delegate.isEmpty();
     }
 
     @Override
-    public boolean contains(Object o) {
+    public final boolean contains(Object o) {
         return delegate != null && delegate.contains(o);
     }
 
     @Override
-    public Iterator<E> iterator() {
+    public final Iterator<E> iterator() {
         return delegate == null ? Collections.<E>emptyIterator() : delegate.iterator();
     }
 
     @Override
-    public Object[] toArray() {
+    public final Object[] toArray() {
         return delegate == null ? new Object[0] : delegate.toArray();
     }
 
     @SuppressWarnings("SuspiciousToArrayCall")
     @Override
-    public <T> T[] toArray(T[] a) {
+    public final <T> T[] toArray(T[] a) {
         return delegate == null ? a : delegate.toArray(a);
     }
 
     @Override
-    public boolean add(E e) {
+    public final boolean add(E e) {
         if (delegate == null) {
             delegate = newDelegate();
         }
@@ -52,17 +52,17 @@ public abstract class LazySet<E> implements Set<E> {
     }
 
     @Override
-    public boolean remove(Object o) {
+    public final boolean remove(Object o) {
         return delegate != null && delegate.remove(o);
     }
 
     @Override
-    public boolean containsAll(Collection<?> c) {
+    public final boolean containsAll(Collection<?> c) {
         return delegate != null && delegate.containsAll(c);
     }
 
     @Override
-    public boolean addAll(Collection<? extends E> c) {
+    public final boolean addAll(Collection<? extends E> c) {
         if (c.isEmpty()) {
             return false;
         }
@@ -73,26 +73,43 @@ public abstract class LazySet<E> implements Set<E> {
     }
 
     @Override
-    public boolean retainAll(Collection<?> c) {
+    public final boolean retainAll(Collection<?> c) {
         return delegate != null && delegate.retainAll(c);
     }
 
     @Override
-    public boolean removeAll(Collection<?> c) {
+    public final boolean removeAll(Collection<?> c) {
         return delegate != null && delegate.removeAll(c);
     }
 
     @Override
-    public void clear() {
+    public final void clear() {
         if (delegate == null) {
             return;
         }
         delegate.clear();
     }
 
+    @Override
+    public final int hashCode() {
+        return delegate == null ? Collections.emptySet().hashCode() : delegate.hashCode();
+    }
+
+    @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+    @Override
+    public final boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (delegate == null) {
+            return Collections.emptySet().equals(obj);
+        }
+        return delegate.equals(obj);
+    }
+
     protected abstract Set<E> newDelegate();
 
-    boolean hasDelegate() {
-        return delegate != null;
+    final Set<E> getDelegate() {
+        return delegate;
     }
 }

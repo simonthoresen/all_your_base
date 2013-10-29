@@ -2,8 +2,9 @@ package all.your.base.util;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.util.HashSet;
+
+import static org.junit.Assert.assertSame;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -11,12 +12,9 @@ import static org.junit.Assert.assertTrue;
 public class LazyHashSetTest {
 
     @Test
-    public void requireThatSetIsLazy() {
+    public void requireThatDelegateIsAHashSet() {
         LazyHashSet<Integer> set = new LazyHashSet<>();
-        assertFalse(set.hasDelegate());
-
         set.add(69);
-        assertTrue(set.hasDelegate());
-        assertTrue(set.contains(69));
+        assertSame(HashSet.class, set.getDelegate().getClass());
     }
 }

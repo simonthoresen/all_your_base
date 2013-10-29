@@ -2,9 +2,9 @@ package all.your.base.util;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.util.HashMap;
+
+import static org.junit.Assert.assertSame;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -12,12 +12,9 @@ import static org.junit.Assert.assertTrue;
 public class LazyHashMapTest {
 
     @Test
-    public void requireThatMapCanBeInstantiated() {
+    public void requireThatDelegateIsAHashMap() {
         LazyHashMap<String, Integer> map = new LazyHashMap<>();
-        assertFalse(map.hasDelegate());
-
         map.put("6", 9);
-        assertTrue(map.hasDelegate());
-        assertEquals(Integer.valueOf(9), map.get("6"));
+        assertSame(HashMap.class, map.getDelegate().getClass());
     }
 }
