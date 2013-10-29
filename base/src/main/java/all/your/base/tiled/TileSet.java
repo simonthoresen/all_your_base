@@ -1,17 +1,13 @@
 package all.your.base.tiled;
 
-import all.your.base.core.graphics.BufferedImages;
+import all.your.awt.BufferedImages;
 import com.google.common.base.Preconditions;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>

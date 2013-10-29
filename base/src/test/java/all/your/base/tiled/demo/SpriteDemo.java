@@ -1,8 +1,8 @@
 package all.your.base.tiled.demo;
 
-import all.your.base.core.application.ApplicationManager;
-import all.your.base.core.application.ApplicationState;
-import all.your.base.core.application.Surface;
+import all.your.swing.ApplicationManager;
+import all.your.swing.ApplicationState;
+import all.your.swing.Surface;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>

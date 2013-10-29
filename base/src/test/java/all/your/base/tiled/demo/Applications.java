@@ -1,10 +1,6 @@
 package all.your.base.tiled.demo;
 
-import all.your.base.core.application.AbstractApplicationState;
-import all.your.base.core.application.Application;
-import all.your.base.core.application.ApplicationBuilder;
-import all.your.base.core.application.ApplicationState;
-import all.your.base.core.application.Surface;
+import all.your.swing.*;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;

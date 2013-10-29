@@ -1,19 +1,11 @@
 package all.your.base.tiled.demo;
 
-import all.your.base.core.application.Application;
-import all.your.base.core.application.ApplicationListener;
-import all.your.base.core.application.ApplicationManager;
-import all.your.base.core.application.ApplicationState;
-import all.your.base.core.application.Surface;
 import all.your.base.geometry.Rectangle;
 import all.your.base.math.Board;
 import all.your.base.math.Light;
 import all.your.base.math.LightMap;
-import all.your.base.tiled.MazeBuilder;
-import all.your.base.tiled.Tile;
-import all.your.base.tiled.TileSet;
-import all.your.base.tiled.TileSheet;
-import all.your.base.tiled.TileSheetRenderer;
+import all.your.base.tiled.*;
+import all.your.swing.*;
 
 import java.awt.Color;
 import java.awt.Component;

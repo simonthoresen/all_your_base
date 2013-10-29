@@ -1,9 +1,9 @@
 package all.your.base.tiled.demo;
 
-import all.your.base.core.application.ApplicationManager;
-import all.your.base.core.application.ApplicationState;
-import all.your.base.core.application.Surface;
 import all.your.base.tiled.TileSet;
+import all.your.swing.ApplicationManager;
+import all.your.swing.ApplicationState;
+import all.your.swing.Surface;
 
 import java.awt.Graphics2D;
 import java.io.IOException;

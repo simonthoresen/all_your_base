@@ -1,13 +1,9 @@
 package all.your.base.tiled.demo;
 
-import all.your.base.core.application.ApplicationManager;
-import all.your.base.core.application.ApplicationState;
-import all.your.base.core.application.Surface;
-import all.your.base.tiled.TileSet;
-import all.your.base.tiled.TileSets;
-import all.your.base.tiled.TileSheet;
-import all.your.base.tiled.TileSheetRenderer;
-import all.your.base.tiled.TileSheets;
+import all.your.base.tiled.*;
+import all.your.swing.ApplicationManager;
+import all.your.swing.ApplicationState;
+import all.your.swing.Surface;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
