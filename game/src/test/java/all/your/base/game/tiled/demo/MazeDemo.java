@@ -4,7 +4,6 @@ import all.your.base.core.application.Application;
 import all.your.base.core.application.ApplicationListener;
 import all.your.base.core.application.ApplicationManager;
 import all.your.base.core.application.ApplicationState;
-import all.your.base.core.application.Applications;
 import all.your.base.core.application.Surface;
 import all.your.base.game.geometry.Rectangle;
 import all.your.base.game.math.Board;

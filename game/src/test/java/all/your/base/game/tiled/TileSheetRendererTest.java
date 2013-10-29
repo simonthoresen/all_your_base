@@ -1,6 +1,5 @@
 package all.your.base.game.tiled;
 
-import all.your.base.core.application.Applications;
 import org.junit.Test;
 
 import java.awt.Color;
@@ -210,14 +209,6 @@ public class TileSheetRendererTest {
                              expectedTiles[y / tileHeight][x / tileWidth],
                              new Color(image.getRGB(x, y)));
             }
-        }
-    }
-
-    private static void displayImage(BufferedImage image, int scale) {
-        try {
-            Applications.fromImage(image, scale).run();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

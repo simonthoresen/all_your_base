@@ -12,6 +12,11 @@
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
+            <groupId>all.your.base</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>

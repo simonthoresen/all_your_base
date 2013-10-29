@@ -2,7 +2,6 @@ package all.your.base.game.tiled.demo;
 
 import all.your.base.core.application.ApplicationManager;
 import all.your.base.core.application.ApplicationState;
-import all.your.base.core.application.Applications;
 import all.your.base.core.application.Surface;
 
 /**
