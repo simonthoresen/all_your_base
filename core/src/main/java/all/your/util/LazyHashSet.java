@@ -6,7 +6,7 @@ import java.util.Set;
 /**
  * @author <a href="mailto:simon@hult-thoresen.com">Simon Thoresen Hult</a>
  */
-public class LazyHashSet<E> extends LazySet<E> {
+public final class LazyHashSet<E> extends LazySet<E> {
 
     private final int initialCapacity;
     private final float loadFactor;

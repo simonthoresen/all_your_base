@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * @author <a href="mailto:simon@hult-thoresen.com">Simon Thoresen Hult</a>
  */
-public class LazyHashMap<K, V> extends LazyMap<K, V> {
+public final class LazyHashMap<K, V> extends LazyMap<K, V> {
 
     private final int initialCapacity;
     private final float loadFactor;
