@@ -12,7 +12,7 @@
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>all.your.base</groupId>
+            <groupId>all.your</groupId>
             <artifactId>core</artifactId>
             <version>${project.version}</version>
         </dependency>
@@ -55,7 +55,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>all.your.base.game.main.Main</mainClass>
+                            <mainClass>all.your.base.main.Main</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
