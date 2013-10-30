@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */
+@SuppressWarnings("UnusedDeclaration")
 public class ImageViewer {
 
     public static void show(final BufferedImage image, final int scale) {
