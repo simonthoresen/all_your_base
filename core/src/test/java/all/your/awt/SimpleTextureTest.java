@@ -7,11 +7,22 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */
 public class SimpleTextureTest {
+
+    @Test
+    public void requireThatNullImageThrows() {
+        try {
+            new SimpleTexture(null);
+            fail();
+        } catch (NullPointerException e) {
+            assertEquals("image", e.getMessage());
+        }
+    }
 
     @Test
     public void requireThatTextureIsDrawnToGivenRectangle() {
