@@ -102,7 +102,7 @@ public abstract class LazyMap<K, V> implements Map<K, V> {
         return delegate;
     }
 
-    private class EmptyMap extends AbstractMap<K, V> {
+    class EmptyMap extends AbstractMap<K, V> {
 
         @Override
         public V put(K key, V value) {
@@ -132,7 +132,7 @@ public abstract class LazyMap<K, V> implements Map<K, V> {
         }
     }
 
-    private class SingletonMap extends AbstractMap<K, V> {
+    class SingletonMap extends AbstractMap<K, V> {
 
         final K key;
         V value;

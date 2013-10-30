@@ -114,7 +114,7 @@ public abstract class LazySet<E> implements Set<E> {
         return delegate;
     }
 
-    private class EmptySet extends AbstractSet<E> {
+    class EmptySet extends AbstractSet<E> {
 
         @Override
         public Iterator<E> iterator() {
@@ -148,7 +148,7 @@ public abstract class LazySet<E> implements Set<E> {
         }
     }
 
-    private class SingletonSet extends AbstractSet<E> {
+    class SingletonSet extends AbstractSet<E> {
 
         final E element;
 

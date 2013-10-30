@@ -18,13 +18,57 @@ import static org.junit.Assert.assertTrue;
  */
 public class LazyMapTest {
 
+    @Test
+    public void requireThatInitialDelegateIsEmpty() {
+        LazyMap<String, String> map = newLazyMap(new HashMap<String, String>());
+        assertEquals(LazyMap.EmptyMap.class, map.getDelegate().getClass());
+    }
+
+    @Test
+    public void requireThatSingleEntryDelegateIsSingleton() {
+        LazyMap<String, String> map = newLazyMap(new HashMap<String, String>());
+        map.put("foo", "bar");
+        assertEquals(LazyMap.SingletonMap.class, map.getDelegate().getClass());
+
+        map = LazyMap.newHashMap();
+        map.putAll(Collections.singletonMap("foo", "bar"));
+        assertEquals(LazyMap.SingletonMap.class, map.getDelegate().getClass());
+    }
+
+    @Test
+    public void requireThatRemovingEntryFromSingletonRevertsToEmpty() {
+        LazyMap<String, String> map = newLazyMap(new HashMap<String, String>());
+        map.put("foo", "bar");
+        assertEquals(LazyMap.SingletonMap.class, map.getDelegate().getClass());
+        map.remove("foo");
+        assertEquals(LazyMap.EmptyMap.class, map.getDelegate().getClass());
+    }
+
+    @Test
+    public void requireThatNewDelegateIsInvokedWhenNumEntriesExceedOne() {
+        Map<String, String> delegate = new HashMap<>();
+        LazyMap<String, String> map = newLazyMap(delegate);
+        map.put("foo", "bar");
+        map.put("baz", "cox");
+        assertSame(delegate, map.getDelegate());
+
+        map = newLazyMap(delegate);
+        map.putAll(new HashMap<String, String>() {{
+            put("foo", "bar");
+            put("baz", "cox");
+        }});
+        assertSame(delegate, map.getDelegate());
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     public void requireThatMapDelegates() {
         Map<String, String> delegate = Mockito.mock(Map.class);
-        Map<String, String> map = new SimpleLazyMap<>(delegate);
-        map.put("foo", "bar"); // trigger the assignment of the delegate
+        Map<String, String> map = newLazyMap(delegate);
+        map.put("foo", "bar");
+        map.put("baz", "cox"); // trigger the assignment of the delegate
         Mockito.verify(delegate).put("foo", "bar");
+        Mockito.verify(delegate).put("baz", "cox");
 
         Map<String, String> arg = Collections.singletonMap("baz", "cox");
         map.putAll(arg);
@@ -62,56 +106,15 @@ public class LazyMapTest {
     }
 
     @Test
-    public void requireThatMapIsLazy() {
-        CountingLazyMap<String, String> map = new CountingLazyMap<>();
-
-        assertEquals(0, map.size());
-        assertEquals(0, map.newDelegateCallCnt);
-
-        assertTrue(map.isEmpty());
-        assertEquals(0, map.newDelegateCallCnt);
-
-        assertFalse(map.containsKey("foo"));
-        assertEquals(0, map.newDelegateCallCnt);
-
-        assertFalse(map.containsValue("bar"));
-        assertEquals(0, map.newDelegateCallCnt);
-
-        assertNull(map.get("foo"));
-        assertEquals(0, map.newDelegateCallCnt);
-
-        assertNull(map.remove("foo"));
-        assertEquals(0, map.newDelegateCallCnt);
-
-        map.clear();
-        assertEquals(0, map.newDelegateCallCnt);
-
-        assertTrue(map.keySet().isEmpty());
-        assertEquals(0, map.newDelegateCallCnt);
-
-        assertTrue(map.values().isEmpty());
-        assertEquals(0, map.newDelegateCallCnt);
-
-        assertTrue(map.entrySet().isEmpty());
-        assertEquals(0, map.newDelegateCallCnt);
-
-        assertNull(map.put("foo", "bar"));
-        assertEquals(1, map.newDelegateCallCnt);
-
-        map.putAll(Collections.singletonMap("baz", "cox"));
-        assertEquals(1, map.newDelegateCallCnt);
-    }
-
-    @Test
     public void requireThatHashCodeIsImplemented() {
-        assertEquals(new SimpleLazyMap<>(null).hashCode(),
-                     new SimpleLazyMap<>(null).hashCode());
+        assertEquals(newLazyMap(null).hashCode(),
+                     newLazyMap(null).hashCode());
     }
 
     @Test
     public void requireThatEqualsIsImplemented() {
-        Map<Object, Object> lhs = new SimpleLazyMap<>(new HashMap<>());
-        Map<Object, Object> rhs = new SimpleLazyMap<>(new HashMap<>());
+        Map<Object, Object> lhs = newLazyMap(new HashMap<>());
+        Map<Object, Object> rhs = newLazyMap(new HashMap<>());
         assertEquals(lhs, lhs);
         assertEquals(lhs, rhs);
 
@@ -126,34 +129,19 @@ public class LazyMapTest {
 
     @Test
     public void requireThatHashMapFactoryDelegatesToAHashMap() {
-        LazyMap<String, Integer> map = LazyMap.newHashMap();
-        map.put("6", 9);
-        assertSame(HashMap.class, map.getDelegate().getClass());
+        LazyMap<String, String> map = LazyMap.newHashMap();
+        map.put("foo", "bar");
+        map.put("baz", "cox");
+        assertEquals(HashMap.class, map.getDelegate().getClass());
     }
 
+    private static <K, V> LazyMap<K, V> newLazyMap(final Map<K, V> delegate) {
+        return new LazyMap<K, V>() {
 
-    private static class SimpleLazyMap<K, V> extends LazyMap<K, V> {
-
-        final Map<K, V> delegate;
-
-        SimpleLazyMap(Map<K, V> delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        protected Map<K, V> newDelegate() {
-            return delegate;
-        }
-    }
-
-    private static class CountingLazyMap<K, V> extends LazyMap<K, V> {
-
-        int newDelegateCallCnt = 0;
-
-        @Override
-        protected Map<K, V> newDelegate() {
-            ++newDelegateCallCnt;
-            return new HashMap<>();
-        }
+            @Override
+            protected Map<K, V> newDelegate() {
+                return delegate;
+            }
+        };
     }
 }
