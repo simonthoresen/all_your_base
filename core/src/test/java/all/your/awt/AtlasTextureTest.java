@@ -7,11 +7,33 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 /**
  * @author <a href="mailto:simon@hult-thoresen.com">Simon Thoresen Hult</a>
  */
 public class AtlasTextureTest {
+
+    @Test
+    public void requireThatNullImageThrows() {
+        try {
+            new AtlasTexture(null, 0, 0, 1, 1);
+            fail();
+        } catch (NullPointerException e) {
+            assertEquals("image", e.getMessage());
+        }
+    }
+
+    @Test
+    public void requireThatRegionIsInImage() {
+        BufferedImage image = new BufferedImage(320, 240, BufferedImage.TYPE_INT_ARGB);
+        assertIllegalArgument(image, -100, 0, 320, 240, "region must be in image; [-100, 0, 320, 240]");
+        assertIllegalArgument(image, 0, -100, 320, 240, "region must be in image; [0, -100, 320, 240]");
+        assertNotNull(new AtlasTexture(image, 0, 0, 320, 240));
+        assertIllegalArgument(image, 100, 0, 320, 240, "region must be in image; [100, 0, 320, 240]");
+        assertIllegalArgument(image, 0, 100, 320, 240, "region must be in image; [0, 100, 320, 240]");
+    }
 
     @Test
     public void requireThatOnlySpecifiedRegionOfAtlasIsPainted() {
@@ -46,6 +68,17 @@ public class AtlasTextureTest {
                 }
                 assertEquals("(" + x + "," + y + ")", expected, actual);
             }
+        }
+    }
+
+    private static void assertIllegalArgument(BufferedImage image, int x, int y, int width, int height,
+                                              String expectedException)
+    {
+        try {
+            new AtlasTexture(image, x, y, width, height);
+            fail();
+        } catch (IllegalArgumentException e) {
+            assertEquals(expectedException, e.getMessage());
         }
     }
 }
