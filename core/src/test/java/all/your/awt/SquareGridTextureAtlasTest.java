@@ -7,6 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
 
 /**
@@ -32,37 +34,63 @@ public class SquareGridTextureAtlasTest {
     }
 
     @Test
+    public void requireThatTextureIdIsEncodedRowCol() {
+        BufferedImage atlasImage = BufferedImages.newSquareGrid(2, 2, new Color[][] {
+                { Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY },
+                { Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA },
+                { Color.ORANGE, Color.PINK, Color.RED, Color.WHITE },
+                { Color.YELLOW, Color.BLACK, Color.CYAN, Color.DARK_GRAY },
+        });
+        SquareGridTextureAtlas atlas = new SquareGridTextureAtlas(atlasImage, 4, 4);
+        for (int lhsRow = 0; lhsRow < 2; ++lhsRow) {
+            for (int lhsCol = 0; lhsCol < 2; ++lhsCol) {
+                Texture lhs = atlas.getTexture(lhsRow, lhsCol);
+                for (int rhsRow = 0; rhsRow < 2; ++rhsRow) {
+                    for (int rhsCol = 0; rhsCol < 2; ++rhsCol) {
+                        Texture rhs = atlas.getTexture((rhsRow << 16) | (rhsCol & 0xFFFF));
+                        if (lhsRow == rhsRow && lhsCol == rhsCol) {
+                            assertSame(lhs, rhs);
+                        } else {
+                            assertNotSame(lhs, rhs);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
     public void requireThatAtlasTexturesCanBeRendered() {
         BufferedImage atlasImage = BufferedImages.newSquareGrid(2, 2, new Color[][] {
-                { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN },
-                { Color.ORANGE, Color.YELLOW, Color.GREEN, Color.RED },
-                { Color.YELLOW, Color.GREEN, Color.RED, Color.ORANGE },
-                { Color.GREEN, Color.RED, Color.ORANGE, Color.YELLOW },
+                { Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY },
+                { Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA },
+                { Color.ORANGE, Color.PINK, Color.RED, Color.WHITE },
+                { Color.YELLOW, Color.BLACK, Color.CYAN, Color.DARK_GRAY },
         });
         SquareGridTextureAtlas atlas = new SquareGridTextureAtlas(atlasImage, 4, 4);
         assertPaint(atlas.getTexture(0, 0), new Color[][] {
-                { Color.RED, Color.RED, Color.ORANGE, Color.ORANGE, },
-                { Color.RED, Color.RED, Color.ORANGE, Color.ORANGE, },
-                { Color.ORANGE, Color.ORANGE, Color.YELLOW, Color.YELLOW, },
-                { Color.ORANGE, Color.ORANGE, Color.YELLOW, Color.YELLOW, },
-        });
-        assertPaint(atlas.getTexture(1, 0), new Color[][] {
-                { Color.YELLOW, Color.YELLOW, Color.GREEN, Color.GREEN, },
-                { Color.YELLOW, Color.YELLOW, Color.GREEN, Color.GREEN, },
-                { Color.GREEN, Color.GREEN, Color.RED, Color.RED, },
-                { Color.GREEN, Color.GREEN, Color.RED, Color.RED, },
+                { Color.BLACK, Color.BLACK, Color.BLUE, Color.BLUE, },
+                { Color.BLACK, Color.BLACK, Color.BLUE, Color.BLUE, },
+                { Color.GRAY, Color.GRAY, Color.GREEN, Color.GREEN, },
+                { Color.GRAY, Color.GRAY, Color.GREEN, Color.GREEN, },
         });
         assertPaint(atlas.getTexture(0, 1), new Color[][] {
-                { Color.YELLOW, Color.YELLOW, Color.GREEN, Color.GREEN, },
-                { Color.YELLOW, Color.YELLOW, Color.GREEN, Color.GREEN, },
-                { Color.GREEN, Color.GREEN, Color.RED, Color.RED, },
-                { Color.GREEN, Color.GREEN, Color.RED, Color.RED, },
+                { Color.CYAN, Color.CYAN, Color.DARK_GRAY, Color.DARK_GRAY, },
+                { Color.CYAN, Color.CYAN, Color.DARK_GRAY, Color.DARK_GRAY, },
+                { Color.LIGHT_GRAY, Color.LIGHT_GRAY, Color.MAGENTA, Color.MAGENTA, },
+                { Color.LIGHT_GRAY, Color.LIGHT_GRAY, Color.MAGENTA, Color.MAGENTA, },
+        });
+        assertPaint(atlas.getTexture(1, 0), new Color[][] {
+                { Color.ORANGE, Color.ORANGE, Color.PINK, Color.PINK, },
+                { Color.ORANGE, Color.ORANGE, Color.PINK, Color.PINK, },
+                { Color.YELLOW, Color.YELLOW, Color.BLACK, Color.BLACK, },
+                { Color.YELLOW, Color.YELLOW, Color.BLACK, Color.BLACK, },
         });
         assertPaint(atlas.getTexture(1, 1), new Color[][] {
-                { Color.RED, Color.RED, Color.ORANGE, Color.ORANGE, },
-                { Color.RED, Color.RED, Color.ORANGE, Color.ORANGE, },
-                { Color.ORANGE, Color.ORANGE, Color.YELLOW, Color.YELLOW, },
-                { Color.ORANGE, Color.ORANGE, Color.YELLOW, Color.YELLOW, },
+                { Color.RED, Color.RED, Color.WHITE, Color.WHITE, },
+                { Color.RED, Color.RED, Color.WHITE, Color.WHITE, },
+                { Color.CYAN, Color.CYAN, Color.DARK_GRAY, Color.DARK_GRAY, },
+                { Color.CYAN, Color.CYAN, Color.DARK_GRAY, Color.DARK_GRAY, },
         });
     }
 
@@ -75,7 +103,6 @@ public class SquareGridTextureAtlasTest {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, image.getWidth(), image.getHeight());
         texture.paint(g, width, height, width, height);
-        ImageViewer.show(image, 10);
         for (int x = 0; x < image.getWidth(); ++x) {
             for (int y = 0; y < image.getHeight(); ++y) {
                 Color actual = new Color(image.getRGB(x, y));
