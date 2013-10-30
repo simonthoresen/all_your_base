@@ -17,8 +17,8 @@ import java.util.Objects;
 public class BufferedImages {
 
     public static BufferedImage newSquareGrid(int squareWidth, int squareHeight, Color[][] squares) {
-        Preconditions.checkArgument(squareWidth > 0, "squareWidth <= 0");
-        Preconditions.checkArgument(squareHeight > 0, "squareHeight <= 0");
+        Preconditions.checkArgument(squareWidth > 0, "squareWidth must be positive; %s", squareWidth);
+        Preconditions.checkArgument(squareHeight > 0, "squareHeight must be positive; %s", squareHeight);
         Objects.requireNonNull(squares, "squares");
         BufferedImage image = new BufferedImage(squareWidth * squares[0].length, squareHeight * squares.length,
                                                 BufferedImage.TYPE_INT_ARGB);

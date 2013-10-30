@@ -11,16 +11,15 @@ import java.util.Objects;
  */
 public class AtlasTexture implements Texture {
 
-    private final BufferedImage atlas;
+    private final BufferedImage image;
     private final int x, y, width, height;
 
-    AtlasTexture(BufferedImage atlas, int x, int y, int width, int height) {
-        Objects.requireNonNull(atlas, "atlas");
-        Preconditions.checkArgument(x > 0, "x <= 0");
-        Preconditions.checkArgument(y > 0, "y <= 0");
-        Preconditions.checkArgument(width > 0, "width <= 0");
-        Preconditions.checkArgument(height > 0, "height <= 0");
-        this.atlas = atlas;
+    AtlasTexture(BufferedImage image, int x, int y, int width, int height) {
+        Objects.requireNonNull(image, "image");
+        Preconditions.checkArgument(x >= 0 && x + width <= image.getWidth() &&
+                                    y >= 0 && y + height <= image.getHeight(),
+                                    "region must be in image; [%s, %s, %s, %s]", x, y, width, height);
+        this.image = image;
         this.x = x;
         this.y = y;
         this.width = width;
@@ -29,7 +28,7 @@ public class AtlasTexture implements Texture {
 
     @Override
     public void paint(Graphics2D g, int x, int y, int width, int height) {
-        g.drawImage(atlas, x, y, x + width, y + height,
+        g.drawImage(image, x, y, x + width, y + height,
                     this.x, this.y, this.x + this.width, this.y + this.height, null);
     }
 }
