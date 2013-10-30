@@ -72,8 +72,7 @@ public class AtlasTextureTest {
     }
 
     private static void assertIllegalArgument(BufferedImage image, int x, int y, int width, int height,
-                                              String expectedException)
-    {
+                                              String expectedException) {
         try {
             new AtlasTexture(image, x, y, width, height);
             fail();
