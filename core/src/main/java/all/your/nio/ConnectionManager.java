@@ -38,7 +38,7 @@ public class ConnectionManager {
 
             // handle this connection
             ByteBuffer buf = ByteBuffer.allocate(1024);
-            channel.read(buf, buf, ReadCompletionHandler.INSTANCE);
+            channel.read(buf, buf, new ReadCompletionHandler(channel));
             channel.write(ByteBuffer.wrap(("HTTP/1.0 200 OK\r\n" +
                                            "Content-Length: 3\r\n" +
                                            "\r\n" +
@@ -52,9 +52,13 @@ public class ConnectionManager {
         }
     }
 
-    private static enum ReadCompletionHandler implements CompletionHandler<Integer, ByteBuffer> {
+    private static class ReadCompletionHandler implements CompletionHandler<Integer, ByteBuffer> {
 
-        INSTANCE;
+        final AsynchronousSocketChannel channel;
+
+        ReadCompletionHandler(AsynchronousSocketChannel channel) {
+            this.channel = channel;
+        }
 
         @Override
         public void completed(Integer result, ByteBuffer buf) {
@@ -67,6 +71,9 @@ public class ConnectionManager {
             byte[] arr = new byte[buf.remaining()];
             buf.get(arr);
             System.out.println(new String(arr, StandardCharsets.UTF_8));
+
+            buf = ByteBuffer.allocate(1024);
+            channel.read(buf, buf, this);
         }
 
         @Override
