@@ -10,8 +10,7 @@ import java.util.Set;
  */
 public abstract class LazySet<E> implements Set<E> {
 
-    @SuppressWarnings("unchecked")
-    private Set<E> delegate = Collections.EMPTY_SET;
+    private Set<E> delegate = Collections.emptySet();
 
     @Override
     public final int size() {
@@ -38,9 +37,9 @@ public abstract class LazySet<E> implements Set<E> {
         return delegate.toArray();
     }
 
-    @SuppressWarnings("SuspiciousToArrayCall")
     @Override
     public final <T> T[] toArray(T[] a) {
+        // noinspection SuspiciousToArrayCall
         return delegate.toArray(a);
     }
 

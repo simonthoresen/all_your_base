@@ -10,8 +10,7 @@ import java.util.Set;
  */
 public abstract class LazyMap<K, V> implements Map<K, V> {
 
-    @SuppressWarnings("unchecked")
-    private Map<K, V> delegate = Collections.EMPTY_MAP;
+    private Map<K, V> delegate = Collections.emptyMap();
 
     @Override
     public final int size() {
