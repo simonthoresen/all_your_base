@@ -1,8 +1,14 @@
 package all.your.util;
 
+import java.util.AbstractMap;
+import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -10,7 +16,7 @@ import java.util.Set;
  */
 public abstract class LazyMap<K, V> implements Map<K, V> {
 
-    private Map<K, V> delegate = Collections.emptyMap();
+    private Map<K, V> delegate = newEmpty();
 
     @Override
     public final int size() {
@@ -39,9 +45,6 @@ public abstract class LazyMap<K, V> implements Map<K, V> {
 
     @Override
     public final V put(K key, V value) {
-        if (delegate == Collections.EMPTY_MAP) {
-            delegate = newDelegate();
-        }
         return delegate.put(key, value);
     }
 
@@ -52,12 +55,6 @@ public abstract class LazyMap<K, V> implements Map<K, V> {
 
     @Override
     public final void putAll(Map<? extends K, ? extends V> m) {
-        if (m.isEmpty()) {
-            return;
-        }
-        if (delegate == Collections.EMPTY_MAP) {
-            delegate = newDelegate();
-        }
         delegate.putAll(m);
     }
 
@@ -91,9 +88,182 @@ public abstract class LazyMap<K, V> implements Map<K, V> {
         return obj == this || (obj instanceof Map && delegate.equals(obj));
     }
 
+    private Map<K, V> newEmpty() {
+        return new EmptyMap();
+    }
+
+    private Map<K, V> newSingleton(K key, V value) {
+        return new SingletonMap(key, value);
+    }
+
     protected abstract Map<K, V> newDelegate();
 
     final Map<K, V> getDelegate() {
         return delegate;
+    }
+
+    private class EmptyMap extends AbstractMap<K, V> {
+
+        @Override
+        public V put(K key, V value) {
+            delegate = newSingleton(key, value);
+            return null;
+        }
+
+        @Override
+        public void putAll(Map<? extends K, ? extends V> m) {
+            switch (m.size()) {
+            case 0:
+                break;
+            case 1:
+                Entry<? extends K, ? extends V> entry = m.entrySet().iterator().next();
+                put(entry.getKey(), entry.getValue());
+                break;
+            default:
+                delegate = newDelegate();
+                delegate.putAll(m);
+                break;
+            }
+        }
+
+        @Override
+        public Set<Entry<K, V>> entrySet() {
+            return Collections.emptySet();
+        }
+    }
+
+    private class SingletonMap extends AbstractMap<K, V> {
+
+        final K key;
+        V value;
+
+        SingletonMap(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        @Override
+        public V put(K key, V value) {
+            if (containsKey(key)) {
+                V oldValue = this.value;
+                this.value = value;
+                return oldValue;
+            } else {
+                delegate = newDelegate();
+                delegate.put(this.key, this.value);
+                return delegate.put(key, value);
+            }
+        }
+
+        @Override
+        public void putAll(Map<? extends K, ? extends V> m) {
+            switch (m.size()) {
+            case 0:
+                break;
+            case 1:
+                Entry<? extends K, ? extends V> entry = m.entrySet().iterator().next();
+                put(entry.getKey(), entry.getValue());
+                break;
+            default:
+                delegate = newDelegate();
+                delegate.put(this.key, this.value);
+                delegate.putAll(m);
+                break;
+            }
+        }
+
+        @Override
+        public Set<Entry<K, V>> entrySet() {
+            return new AbstractSet<Entry<K, V>>() {
+
+                @Override
+                public Iterator<Entry<K, V>> iterator() {
+                    return new Iterator<Entry<K, V>>() {
+
+                        boolean hasNext = true;
+
+                        @Override
+                        public boolean hasNext() {
+                            return hasNext;
+                        }
+
+                        @Override
+                        public Entry<K, V> next() {
+                            if (hasNext) {
+                                hasNext = false;
+                                return new Entry<K, V>() {
+
+                                    @Override
+                                    public K getKey() {
+                                        return key;
+                                    }
+
+                                    @Override
+                                    public V getValue() {
+                                        return value;
+                                    }
+
+                                    @Override
+                                    public V setValue(V value) {
+                                        V oldValue = SingletonMap.this.value;
+                                        SingletonMap.this.value = value;
+                                        return oldValue;
+                                    }
+
+                                    @Override
+                                    public int hashCode() {
+                                        return Objects.hashCode(key) + Objects.hashCode(value) * 31;
+                                    }
+
+                                    @Override
+                                    public boolean equals(Object obj) {
+                                        if (obj == this) {
+                                            return true;
+                                        }
+                                        if (!(obj instanceof Entry)) {
+                                            return false;
+                                        }
+                                        Entry rhs = (Entry)obj;
+                                        if (!Objects.equals(key, rhs.getKey())) {
+                                            return false;
+                                        }
+                                        if (!Objects.equals(value, rhs.getValue())) {
+                                            return false;
+                                        }
+                                        return true;
+                                    }
+                                };
+                            } else {
+                                throw new NoSuchElementException();
+                            }
+                        }
+
+                        @Override
+                        public void remove() {
+                            if (hasNext) {
+                                throw new IllegalStateException();
+                            } else {
+                                delegate = newEmpty();
+                            }
+                        }
+                    };
+                }
+
+                @Override
+                public int size() {
+                    return 1;
+                }
+            };
+        }
+    }
+
+    public static <K, V> LazyMap<K, V> newHashMap() {
+        return new LazyMap<K, V>() {
+
+            @Override
+            protected Map<K, V> newDelegate() {
+                return new HashMap<>();
+            }
+        };
     }
 }

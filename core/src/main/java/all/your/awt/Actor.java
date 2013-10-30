@@ -1,7 +1,7 @@
 package all.your.awt;
 
-import all.your.util.LazyHashMap;
-import all.your.util.LazyHashSet;
+import all.your.util.LazyMap;
+import all.your.util.LazySet;
 
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +11,6 @@ import java.util.Set;
  */
 public class Actor {
 
-    private final Map<String, Action> actions = new LazyHashMap<>();
-    private final Set<Actor> children = new LazyHashSet<>();
+    private final Map<String, Action> actions = LazyMap.newHashMap();
+    private final Set<Actor> children = LazySet.newHashSet();
 }

@@ -1,8 +1,11 @@
 package all.your.util;
 
+import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
@@ -10,7 +13,7 @@ import java.util.Set;
  */
 public abstract class LazySet<E> implements Set<E> {
 
-    private Set<E> delegate = Collections.emptySet();
+    private Set<E> delegate = newEmpty();
 
     @Override
     public final int size() {
@@ -97,9 +100,134 @@ public abstract class LazySet<E> implements Set<E> {
         return obj == this || (obj instanceof Set && delegate.equals(obj));
     }
 
+    private Set<E> newEmpty() {
+        return new EmptySet();
+    }
+
+    private Set<E> newSingleton(E e) {
+        return new SingletonSet(e);
+    }
+
     protected abstract Set<E> newDelegate();
 
     final Set<E> getDelegate() {
         return delegate;
+    }
+
+    private class EmptySet extends AbstractSet<E> {
+
+        @Override
+        public Iterator<E> iterator() {
+            return Collections.emptyIterator();
+        }
+
+        @Override
+        public int size() {
+            return 0;
+        }
+
+        @Override
+        public boolean add(E e) {
+            delegate = newSingleton(e);
+            return true;
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends E> c) {
+            switch (c.size()) {
+            case 0:
+                return false;
+            case 1:
+                add(c.iterator().next());
+                return true;
+            default:
+                delegate = newDelegate();
+                delegate.addAll(c);
+                return true;
+            }
+        }
+    }
+
+    private class SingletonSet extends AbstractSet<E> {
+
+        final E element;
+
+        SingletonSet(E e) {
+            this.element = e;
+        }
+
+        @Override
+        public Iterator<E> iterator() {
+            return new Iterator<E>() {
+
+                boolean hasNext = true;
+
+                @Override
+                public boolean hasNext() {
+                    return hasNext;
+                }
+
+                @Override
+                public E next() {
+                    if (hasNext) {
+                        hasNext = false;
+                        return element;
+                    } else {
+                        throw new NoSuchElementException();
+                    }
+                }
+
+                @Override
+                public void remove() {
+                    if (hasNext) {
+                        throw new IllegalStateException();
+                    } else {
+                        delegate = newEmpty();
+                    }
+                }
+            };
+        }
+
+        @Override
+        public int size() {
+            return 1;
+        }
+
+        @Override
+        public boolean add(E e) {
+            if (contains(e)) {
+                return false;
+            } else {
+                delegate = newDelegate();
+                delegate.add(element);
+                delegate.add(e);
+                return true;
+            }
+        }
+
+        @Override
+        public boolean addAll(Collection<? extends E> c) {
+            switch (c.size()) {
+            case 0:
+                return false;
+            case 1:
+                return add(c.iterator().next());
+            default:
+                delegate = newDelegate();
+                delegate.add(element);
+                delegate.addAll(c);
+                return true;
+            }
+        }
+    }
+
+    public static <E> LazySet<E> newHashSet() {
+        return new LazySet<E>() {
+
+            @Override
+            protected Set<E> newDelegate() {
+                return new HashSet<>();
+            }
+        };
     }
 }

@@ -3,9 +3,17 @@ package all.your.util;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -126,6 +134,13 @@ public class LazySetTest {
         assertFalse(lhs.equals(rhs));
         rhs.add(obj);
         assertEquals(lhs, rhs);
+    }
+
+    @Test
+    public void requireThatHashSetFactoryDelegatesToAHashSet() {
+        LazySet<Integer> set = LazySet.newHashSet();
+        set.add(69);
+        assertSame(HashSet.class, set.getDelegate().getClass());
     }
 
     private static class SimpleLazySet<E> extends LazySet<E> {

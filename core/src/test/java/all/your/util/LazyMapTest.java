@@ -7,7 +7,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -119,6 +123,14 @@ public class LazyMapTest {
         rhs.put(key, val);
         assertEquals(lhs, rhs);
     }
+
+    @Test
+    public void requireThatHashMapFactoryDelegatesToAHashMap() {
+        LazyMap<String, Integer> map = LazyMap.newHashMap();
+        map.put("6", 9);
+        assertSame(HashMap.class, map.getDelegate().getClass());
+    }
+
 
     private static class SimpleLazyMap<K, V> extends LazyMap<K, V> {
 
