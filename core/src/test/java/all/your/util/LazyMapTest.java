@@ -5,13 +5,17 @@ import org.mockito.Mockito;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -25,9 +29,9 @@ public class LazyMapTest {
     }
 
     @Test
-    public void requireThatSingleEntryDelegateIsSingleton() {
+    public void requireThatEmptyMapPutUpgradesToSingletonMap() {
         LazyMap<String, String> map = newLazyMap(new HashMap<String, String>());
-        map.put("foo", "bar");
+        assertEquals(null, map.put("foo", "bar"));
         assertEquals(LazyMap.SingletonMap.class, map.getDelegate().getClass());
 
         map = LazyMap.newHashMap();
@@ -36,12 +40,128 @@ public class LazyMapTest {
     }
 
     @Test
-    public void requireThatRemovingEntryFromSingletonRevertsToEmpty() {
+    public void requireThatEmptyMapPutAllEmptyMapDoesNotUpgradeToSingletonMap() {
         LazyMap<String, String> map = newLazyMap(new HashMap<String, String>());
-        map.put("foo", "bar");
-        assertEquals(LazyMap.SingletonMap.class, map.getDelegate().getClass());
-        map.remove("foo");
+        map.putAll(Collections.<String, String>emptyMap());
         assertEquals(LazyMap.EmptyMap.class, map.getDelegate().getClass());
+    }
+
+    @Test
+    public void requireThatEmptyMapPutAllUpgradesToFinalMap() {
+        Map<String, String> delegate = new HashMap<>();
+        LazyMap<String, String> map = newLazyMap(delegate);
+        map.putAll(new HashMap<String, String>() {{
+            put("foo", "bar");
+            put("baz", "cox");
+        }});
+        assertSame(delegate, map.getDelegate());
+        assertEquals(2, delegate.size());
+        assertEquals("bar", delegate.get("foo"));
+        assertEquals("cox", delegate.get("baz"));
+    }
+
+    @Test
+    public void requireThatSingletonMapRemoveEntryDowngradesToEmptyMap() {
+        LazyMap<String, String> map = newSingletonMap("foo", "bar");
+        assertEquals("bar", map.remove("foo"));
+        assertEquals(LazyMap.EmptyMap.class, map.getDelegate().getClass());
+    }
+
+    @Test
+    public void requireThatSingletonMapRemoveUnknownDoesNotDowngradesToEmptyMap() {
+        LazyMap<String, String> map = newSingletonMap("foo", "bar");
+        assertEquals(null, map.remove("baz"));
+        assertEquals(LazyMap.SingletonMap.class, map.getDelegate().getClass());
+    }
+
+    @Test
+    public void requireThatSingletonMapValueMayBeChangedInPlace() {
+        LazyMap<String, String> map = newSingletonMap("foo", "bar");
+        Map<String, String> delegate = map.getDelegate();
+        assertEquals("bar", map.put("foo", "baz"));
+        assertEquals("baz", map.get("foo"));
+        assertSame(delegate, map.getDelegate());
+        map.putAll(Collections.singletonMap("foo", "cox"));
+        assertSame(delegate, map.getDelegate());
+        assertEquals("cox", map.get("foo"));
+    }
+
+    @Test
+    public void requireThatSingletonMapPutAllEmptyMapDoesNotUpgradeToFinalMap() {
+        LazyMap<String, String> map = newSingletonMap("foo", "bar");
+        map.putAll(Collections.<String, String>emptyMap());
+        assertEquals(LazyMap.SingletonMap.class, map.getDelegate().getClass());
+    }
+
+    @Test
+    public void requireThatSingletonMapPutAllUpgradeToFinalMap() {
+        Map<String, String> delegate = new HashMap<>();
+        LazyMap<String, String> map = newSingletonMap(delegate, "fooKey", "fooVal");
+        map.putAll(new HashMap<String, String>() {{
+            put("barKey", "barVal");
+            put("bazKey", "bazVal");
+        }});
+        assertSame(delegate, map.getDelegate());
+        assertEquals(3, delegate.size());
+        assertEquals("fooVal", delegate.get("fooKey"));
+        assertEquals("barVal", delegate.get("barKey"));
+        assertEquals("bazVal", delegate.get("bazKey"));
+    }
+
+    @Test
+    public void requireThatSingletonEntryIsMutable() {
+        LazyMap<String, String> map = newSingletonMap("foo", "bar");
+        Map.Entry<String, String> entry = map.entrySet().iterator().next();
+        entry.setValue("baz");
+        assertEquals("baz", map.get("foo"));
+    }
+
+    @Test
+    public void requireThatSingletonEntryImplementsHashCode() {
+        assertEquals(newSingletonMap("foo", "bar").entrySet().iterator().next().hashCode(),
+                     newSingletonMap("foo", "bar").entrySet().iterator().next().hashCode());
+    }
+
+    @Test
+    public void requireThatSingletonEntryImplementsEquals() {
+        Map.Entry<String, String> map = newSingletonMap("foo", "bar").entrySet().iterator().next();
+        assertNotEquals(map, null);
+        assertNotEquals(map, new Object());
+        assertEquals(map, map);
+        assertNotEquals(map, newSingletonMap("baz", "cox").entrySet().iterator().next());
+        assertNotEquals(map, newSingletonMap("foo", "cox").entrySet().iterator().next());
+        assertEquals(map, newSingletonMap("foo", "bar").entrySet().iterator().next());
+    }
+
+    @Test
+    public void requireThatSingletonEntrySetIteratorNextThrowsIfInvokedMoreThanOnce() {
+        LazyMap<String, String> map = newSingletonMap("foo", "bar");
+        Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
+        it.next();
+        try {
+            it.next();
+            fail();
+        } catch (NoSuchElementException e){
+
+        }
+        try {
+            it.next();
+            fail();
+        } catch (NoSuchElementException e){
+
+        }
+    }
+
+    @Test
+    public void requireThatSingletonEntrySetIteratorRemoveThrowsIfInvokedBeforeNext() {
+        LazyMap<String, String> map = newSingletonMap("foo", "bar");
+        Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
+        try {
+            it.remove();
+            fail();
+        } catch (IllegalStateException e){
+
+        }
     }
 
     @Test
@@ -133,6 +253,16 @@ public class LazyMapTest {
         map.put("foo", "bar");
         map.put("baz", "cox");
         assertEquals(HashMap.class, map.getDelegate().getClass());
+    }
+
+    private static <K, V> LazyMap<K, V> newSingletonMap(K key, V value) {
+        return newSingletonMap(new HashMap<K, V>(), key, value);
+    }
+    
+    private static <K, V> LazyMap<K, V> newSingletonMap(Map<K, V> delegate, K key, V value) {
+        LazyMap<K, V> map = newLazyMap(delegate);
+        map.put(key, value);
+        return map;
     }
 
     private static <K, V> LazyMap<K, V> newLazyMap(final Map<K, V> delegate) {
