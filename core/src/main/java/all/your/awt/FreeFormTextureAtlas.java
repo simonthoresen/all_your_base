@@ -33,15 +33,16 @@ public class FreeFormTextureAtlas implements TextureAtlas {
             this.image = image;
         }
 
-        public void addTexture(int id, int x, int y, int width, int height) {
+        public Builder addTexture(int id, int x, int y, int width, int height) {
             Preconditions.checkState(!textures.containsKey(id), "id " + id + " already in use");
             Preconditions.checkArgument(x >= 0 && x + width <= image.getWidth() &&
                                         y >= 0 && y + height <= image.getHeight(),
                                         "region must be in image; [%s, %s, %s, %s]", x, y, width, height);
             textures.put(id, new AtlasTexture(image, x, y, width, height));
+            return this;
         }
 
-        public TextureAtlas build() {
+        public FreeFormTextureAtlas build() {
             return new FreeFormTextureAtlas(this);
         }
     }

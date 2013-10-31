@@ -3,9 +3,9 @@ package all.your.awt;
 import org.junit.Test;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import static all.your.awt.AssertTexture.assertPaint;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertSame;
@@ -92,28 +92,6 @@ public class SquareGridTextureAtlasTest {
                 { Color.CYAN, Color.CYAN, Color.DARK_GRAY, Color.DARK_GRAY, },
                 { Color.CYAN, Color.CYAN, Color.DARK_GRAY, Color.DARK_GRAY, },
         });
-    }
-
-    private static void assertPaint(Texture texture, Color[][] expectedPixels) {
-        int width = expectedPixels[0].length;
-        int height = expectedPixels.length;
-
-        BufferedImage image = new BufferedImage(width * 2, height * 2, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = image.createGraphics();
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, image.getWidth(), image.getHeight());
-        texture.paint(g, width, height, width, height);
-        for (int x = 0; x < image.getWidth(); ++x) {
-            for (int y = 0; y < image.getHeight(); ++y) {
-                Color actual = new Color(image.getRGB(x, y));
-                if (x < width || y < height) {
-                    assertEquals(Color.BLACK, actual);
-                } else {
-                    assertEquals(expectedPixels[y - height][x - width], actual);
-                }
-            }
-        }
-        g.dispose();
     }
 
     private static void assertIllegalArgument(BufferedImage image, int squareWidth, int squareHeight,

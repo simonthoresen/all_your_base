@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import static all.your.awt.AssertImage.assertPixels;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -36,25 +37,25 @@ public class SimpleTextureTest {
         })).paint(g, 25, 25, 50, 50);
         g.dispose();
 
+        Color[][] expected = new Color[100][100];
         for (int y = 0; y < 100; ++y) {
             for (int x = 0; x < 100; ++x) {
-                Color actual = new Color(image.getRGB(x, y));
-                Color expected = Color.BLACK;
+                expected[y][x] = Color.BLACK;
                 if (y >= 25 && y < 50) {
                     if (x >= 25 && x < 50) {
-                        expected = Color.RED;
+                        expected[y][x]  = Color.RED;
                     } else if (x >= 50 && x < 75) {
-                        expected = Color.ORANGE;
+                        expected[y][x]  = Color.ORANGE;
                     }
                 } else if (y >= 50 && y < 75) {
                     if (x >= 25 && x < 50) {
-                        expected = Color.YELLOW;
+                        expected[y][x]  = Color.YELLOW;
                     } else if (x >= 50 && x < 75) {
-                        expected = Color.GREEN;
+                        expected[y][x]  = Color.GREEN;
                     }
                 }
-                assertEquals("(" + x + "," + y + ")", expected, actual);
             }
         }
+        assertPixels(image, expected);
     }
 }

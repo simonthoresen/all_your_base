@@ -26,7 +26,7 @@ public class AtlasTextureTest {
     }
 
     @Test
-    public void requireThatRegionIsInImage() {
+    public void requireThatRegionMustBeIsInImage() {
         BufferedImage image = new BufferedImage(320, 240, BufferedImage.TYPE_INT_ARGB);
         assertIllegalArgument(image, -100, 0, 320, 240, "region must be in image; [-100, 0, 320, 240]");
         assertIllegalArgument(image, 0, -100, 320, 240, "region must be in image; [0, -100, 320, 240]");

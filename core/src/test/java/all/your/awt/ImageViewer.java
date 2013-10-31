@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
 @SuppressWarnings("UnusedDeclaration")
 public class ImageViewer {
 
-    public static void show(final BufferedImage image, final int scale) {
+    public static void view(final BufferedImage image, final int scale) {
         try {
             new ApplicationBuilder()
                     .setWindowWidth(image.getWidth() * scale)
