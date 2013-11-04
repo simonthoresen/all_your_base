@@ -1,5 +1,7 @@
 package all.your.awt;
 
+import all.your.util.Preconditions;
+
 import java.awt.Graphics2D;
 
 /**
@@ -10,51 +12,43 @@ public class MapLayer {
     private final Tile[][] tiles;
 
     public MapLayer(int width, int height) {
-        tiles = new Tile[height][width];
+        Preconditions.checkArgument(width > 0, "width must be positive; %s", width);
+        Preconditions.checkArgument(height > 0, "height must be positive; %s", height);
+        tiles = new Tile[width][height];
     }
 
     public Tile getTile(int x, int y) {
-        return tiles[y][x];
+        if (x < 0 || x > tiles.length ||
+            y < 0 || y > tiles[0].length) {
+            return null;
+        }
+        return tiles[x][y];
     }
 
-    public void setTile(int x, int y, Tile tile) {
-        tiles[y][x] = tile;
+    public Tile putTile(int x, int y, Tile tile) {
+        Preconditions.checkArgument(x >= 0 && x < tiles.length &&
+                                    y >= 0 && y < tiles[0].length,
+                                    "position (" + x + ", " + y + ") not in " +
+                                    "map (" + tiles.length + ", " + tiles[0].length + ")");
+        Tile oldTile = tiles[x][y];
+        tiles[x][y] = tile;
+        return oldTile;
     }
 
     public void paint(Graphics2D viewport, int viewportX, int viewportY, int viewportWidth, int viewportHeight,
                       int mapRegionX, int mapRegionY, int mapRegionWidth, int mapRegionHeight) {
         int tileWidth = viewportWidth / mapRegionWidth;
         int tileHeight = viewportHeight / mapRegionHeight;
-        double tileFractionX = (double)(viewportWidth - (tileWidth * mapRegionWidth)) / mapRegionWidth;
-        double tileFractionY = (double)(viewportHeight - (tileHeight * mapRegionHeight)) / mapRegionHeight;
 
-        // TODO: dont do this stretch, add a clipped row or column instead
-
-        int renderY = viewportY;
-        double renderFractionY = 0;
-        for (int tileY = 0; tileY < mapRegionHeight; ++tileY) {
-            int fullTileHeight = tileHeight;
-            renderFractionY += tileFractionY;
-            if (renderFractionY > 0.5) {
-                ++fullTileHeight;
-                renderFractionY -= 1;
-            }
-            int renderX = viewportX;
-            double renderFractionX = 0;
-            for (int tileX = 0; tileX < mapRegionWidth; ++tileX) {
-                int fullTileWidth = tileWidth;
-                renderFractionX += tileFractionX;
-                if (renderFractionX > 0.5) {
-                    ++fullTileWidth;
-                    renderFractionX -= 1;
-                }
-                Tile tile = getTile(mapRegionX + tileX, mapRegionY + tileY);
+        int maxTileX = mapRegionX + viewportWidth / tileWidth + (viewportWidth % tileWidth != 0 ? 1 : 0);
+        int maxTileY = mapRegionY + viewportHeight / tileHeight + (viewportHeight % tileHeight != 0 ? 1 : 0);
+        for (int tileX = mapRegionX; tileX < maxTileX; ++tileX) {
+            for (int tileY = mapRegionY; tileY < maxTileY; ++tileY) {
+                Tile tile = getTile(tileX, tileY);
                 if (tile != null) {
-                    tile.getTexture().paint(viewport, renderX, renderY, renderX + fullTileWidth, renderY + fullTileHeight);
+                    tile.getTexture().paint(viewport, viewportX, viewportY, tileWidth, tileHeight);
                 }
-                renderX += fullTileWidth;
             }
-            renderY += fullTileHeight;
         }
-    }
+   }
 }

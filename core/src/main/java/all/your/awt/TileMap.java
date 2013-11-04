@@ -29,10 +29,11 @@ public class TileMap {
         return layers.remove(id);
     }
 
-    public void paint(Graphics2D g, int x, int y, int width, int height,
-                      int mapX, int mapY, int mapWidth, int mapHeight) {
+    public void paint(Graphics2D viewport, int viewportX, int viewportY, int viewportWidth, int viewportHeight,
+                      int mapRegionX, int mapRegionY, int mapRegionWidth, int mapRegionHeight) {
         for (MapLayer layer : layers.values()) {
-            layer.paint(g, x, y, width, height, mapX, mapY, mapWidth, mapHeight);
+            layer.paint(viewport, viewportX, viewportY, viewportWidth, viewportHeight,
+                        mapRegionX, mapRegionY, mapRegionWidth, mapRegionHeight);
         }
     }
 }
