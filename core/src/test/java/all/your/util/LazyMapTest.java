@@ -50,10 +50,9 @@ public class LazyMapTest {
     public void requireThatEmptyMapPutAllUpgradesToFinalMap() {
         Map<String, String> delegate = new HashMap<>();
         LazyMap<String, String> map = newLazyMap(delegate);
-        map.putAll(new HashMap<String, String>() {{
-            put("foo", "bar");
-            put("baz", "cox");
-        }});
+        map.putAll(new HashMapBuilder<String, String>()
+                           .put("foo", "bar")
+                           .put("baz", "cox").map);
         assertSame(delegate, map.getDelegate());
         assertEquals(2, delegate.size());
         assertEquals("bar", delegate.get("foo"));
@@ -101,16 +100,16 @@ public class LazyMapTest {
         assertSame(delegate, map.getDelegate());
         assertEquals(2, delegate.size());
         assertEquals("fooVal", delegate.get("fooKey"));
-        assertEquals("barVal", delegate.get("barKey"));    }
+        assertEquals("barVal", delegate.get("barKey"));
+    }
 
     @Test
     public void requireThatSingletonMapPutAllUpgradesToFinalMap() {
         Map<String, String> delegate = new HashMap<>();
         LazyMap<String, String> map = newSingletonMap(delegate, "fooKey", "fooVal");
-        map.putAll(new HashMap<String, String>() {{
-            put("barKey", "barVal");
-            put("bazKey", "bazVal");
-        }});
+        map.putAll(new HashMapBuilder<String, String>()
+                           .put("barKey", "barVal")
+                           .put("bazKey", "bazVal").map);
         assertSame(delegate, map.getDelegate());
         assertEquals(3, delegate.size());
         assertEquals("fooVal", delegate.get("fooKey"));
@@ -151,13 +150,13 @@ public class LazyMapTest {
         try {
             it.next();
             fail();
-        } catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
 
         }
         try {
             it.next();
             fail();
-        } catch (NoSuchElementException e){
+        } catch (NoSuchElementException e) {
 
         }
     }
@@ -169,7 +168,7 @@ public class LazyMapTest {
         try {
             it.remove();
             fail();
-        } catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
 
         }
     }
@@ -252,7 +251,7 @@ public class LazyMapTest {
     private static <K, V> LazyMap<K, V> newSingletonMap(K key, V value) {
         return newSingletonMap(new HashMap<K, V>(), key, value);
     }
-    
+
     private static <K, V> LazyMap<K, V> newSingletonMap(Map<K, V> delegate, K key, V value) {
         LazyMap<K, V> map = newLazyMap(delegate);
         map.put(key, value);
@@ -267,5 +266,15 @@ public class LazyMapTest {
                 return delegate;
             }
         };
+    }
+
+    private static class HashMapBuilder<K, V> {
+
+        final Map<K, V> map = new HashMap<>();
+
+        public HashMapBuilder<K, V> put(K key, V value) {
+            map.put(key, value);
+            return this;
+        }
     }
 }
