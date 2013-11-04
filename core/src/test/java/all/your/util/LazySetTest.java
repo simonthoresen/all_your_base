@@ -7,12 +7,16 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -26,36 +30,131 @@ public class LazySetTest {
     }
 
     @Test
-    public void requireThatSingleEntryDelegateIsSingleton() {
+    public void requireThatEmptySetAddUpgradesToSingletonSet() {
         LazySet<String> set = newLazySet(new HashSet<String>());
-        set.add("foo");
+        assertTrue(set.add("foo"));
         assertEquals(LazySet.SingletonSet.class, set.getDelegate().getClass());
 
-        set = LazySet.newHashSet();
-        set.addAll(Collections.singleton("foo"));
+        set = newLazySet(new HashSet<String>());
+        assertTrue(set.addAll(Arrays.asList("foo")));
         assertEquals(LazySet.SingletonSet.class, set.getDelegate().getClass());
     }
 
     @Test
-    public void requireThatRemovingEntryFromSingletonRevertsToEmpty() {
+    public void requireThatEmptySetAddAllEmptySetDoesNotUpgradeToSingletonSet() {
         LazySet<String> set = newLazySet(new HashSet<String>());
-        set.add("foo");
-        assertEquals(LazySet.SingletonSet.class, set.getDelegate().getClass());
-        set.remove("foo");
+        assertFalse(set.addAll(Collections.<String>emptySet()));
         assertEquals(LazySet.EmptySet.class, set.getDelegate().getClass());
     }
 
     @Test
-    public void requireThatNewDelegateIsInvokedWhenNumEntriesExceedOne() {
+    public void requireThatEmptySetAddAllUpgradesToFinalSet() {
         Set<String> delegate = new HashSet<>();
         LazySet<String> set = newLazySet(delegate);
-        set.add("foo");
-        set.add("bar");
+        assertTrue(set.addAll(Arrays.asList("foo", "bar")));
         assertSame(delegate, set.getDelegate());
+        assertEquals(2, delegate.size());
+        assertTrue(delegate.contains("foo"));
+        assertTrue(delegate.contains("bar"));
+    }
 
-        set = newLazySet(delegate);
-        set.addAll(Arrays.asList("foo", "bar"));
+    @Test
+    public void requireThatSingletonSetRemoveEntryDowngradesToEmptySet() {
+        LazySet<String> set = newSingletonSet("foo");
+        assertTrue(set.remove("foo"));
+        assertEquals(LazySet.EmptySet.class, set.getDelegate().getClass());
+    }
+
+    @Test
+    public void requireThatSingletonSetRemoveUnknownDoesNotDowngradesToEmptySet() {
+        LazySet<String> set = newSingletonSet("foo");
+        assertFalse(set.remove("bar"));
+        assertEquals(LazySet.SingletonSet.class, set.getDelegate().getClass());
+    }
+
+    @Test
+    public void requireThatSingletonSetAddAllEmptySetDoesNotUpgradeToFinalSet() {
+        LazySet<String> set = newSingletonSet("foo");
+        assertFalse(set.addAll(Collections.<String>emptySet()));
+        assertEquals(LazySet.SingletonSet.class, set.getDelegate().getClass());
+    }
+
+    @Test
+    public void requireThatSingletonSetAddKnownDoesNotUpgradeToFinalSet() {
+        LazySet<String> set = newSingletonSet("foo");
+        assertFalse(set.add("foo"));
+        assertEquals(LazySet.SingletonSet.class, set.getDelegate().getClass());
+    }
+
+    @Test
+    public void requireThatSingletonSetAddUpgradesToFinalSet() {
+        Set<String> delegate = new HashSet<>();
+        LazySet<String> set = newSingletonSet(delegate, "foo");
+        assertTrue(set.add("bar"));
         assertSame(delegate, set.getDelegate());
+        assertEquals(2, delegate.size());
+        assertTrue(delegate.contains("foo"));
+        assertTrue(delegate.contains("bar"));
+    }
+
+    @Test
+    public void requireThatSingletonSetAddAllUpgradesToFinalSet() {
+        Set<String> delegate = new HashSet<>();
+        LazySet<String> set = newSingletonSet(delegate, "foo");
+        assertTrue(set.addAll(Arrays.asList("bar")));
+        assertSame(delegate, set.getDelegate());
+        assertEquals(2, delegate.size());
+        assertTrue(delegate.contains("foo"));
+        assertTrue(delegate.contains("bar"));
+
+        delegate = new HashSet<>();
+        set = newSingletonSet(delegate, "foo");
+        assertTrue(set.addAll(Arrays.asList("bar", "baz")));
+        assertSame(delegate, set.getDelegate());
+        assertEquals(3, delegate.size());
+        assertTrue(delegate.contains("foo"));
+        assertTrue(delegate.contains("bar"));
+        assertTrue(delegate.contains("baz"));
+    }
+
+    @Test
+    public void requireThatSingletonIteratorNextThrowsIfInvokedMoreThanOnce() {
+        LazySet<String> set = newSingletonSet("foo");
+        Iterator<String> it = set.iterator();
+        it.next();
+        try {
+            it.next();
+            fail();
+        } catch (NoSuchElementException e) {
+
+        }
+        try {
+            it.next();
+            fail();
+        } catch (NoSuchElementException e) {
+
+        }
+    }
+
+    @Test
+    public void requireThatSingletonIteratorRemoveDowngradesToEmptySet() {
+        LazySet<String> set = newSingletonSet("foo");
+        Iterator<String> it = set.iterator();
+        it.next();
+        it.remove();
+        assertEquals(LazySet.EmptySet.class, set.getDelegate().getClass());
+    }
+
+    @Test
+    public void requireThatSingletonIteratorRemoveThrowsIfInvokedBeforeNext() {
+        LazySet<String> set = newSingletonSet("foo");
+        Iterator<String> it = set.iterator();
+        try {
+            it.remove();
+            fail();
+        } catch (IllegalStateException e) {
+
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -137,6 +236,16 @@ public class LazySetTest {
         set.add(6);
         set.add(9);
         assertEquals(HashSet.class, set.getDelegate().getClass());
+    }
+
+    private static <E> LazySet<E> newSingletonSet(E element) {
+        return newSingletonSet(new HashSet<E>(), element);
+    }
+
+    private static <E> LazySet<E> newSingletonSet(Set<E> delegate, E element) {
+        LazySet<E> set = newLazySet(delegate);
+        set.add(element);
+        return set;
     }
 
     private static <E> LazySet<E> newLazySet(final Set<E> delegate) {

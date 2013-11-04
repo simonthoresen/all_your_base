@@ -48,9 +48,6 @@ public abstract class LazySet<E> implements Set<E> {
 
     @Override
     public final boolean add(E e) {
-        if (delegate == Collections.EMPTY_SET) {
-            delegate = newDelegate();
-        }
         return delegate.add(e);
     }
 
@@ -66,12 +63,6 @@ public abstract class LazySet<E> implements Set<E> {
 
     @Override
     public final boolean addAll(Collection<? extends E> c) {
-        if (c.isEmpty()) {
-            return false;
-        }
-        if (delegate == Collections.EMPTY_SET) {
-            delegate = newDelegate();
-        }
         return delegate.addAll(c);
     }
 

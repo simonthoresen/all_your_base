@@ -34,7 +34,7 @@ public class LazyMapTest {
         assertEquals(null, map.put("foo", "bar"));
         assertEquals(LazyMap.SingletonMap.class, map.getDelegate().getClass());
 
-        map = LazyMap.newHashMap();
+        map = newLazyMap(new HashMap<String, String>());
         map.putAll(Collections.singletonMap("foo", "bar"));
         assertEquals(LazyMap.SingletonMap.class, map.getDelegate().getClass());
     }
@@ -94,7 +94,17 @@ public class LazyMapTest {
     }
 
     @Test
-    public void requireThatSingletonMapPutAllUpgradeToFinalMap() {
+    public void requireThatSingletonMapPutUpgradesToFinalMap() {
+        Map<String, String> delegate = new HashMap<>();
+        LazyMap<String, String> map = newSingletonMap(delegate, "fooKey", "fooVal");
+        map.put("barKey", "barVal");
+        assertSame(delegate, map.getDelegate());
+        assertEquals(2, delegate.size());
+        assertEquals("fooVal", delegate.get("fooKey"));
+        assertEquals("barVal", delegate.get("barKey"));    }
+
+    @Test
+    public void requireThatSingletonMapPutAllUpgradesToFinalMap() {
         Map<String, String> delegate = new HashMap<>();
         LazyMap<String, String> map = newSingletonMap(delegate, "fooKey", "fooVal");
         map.putAll(new HashMap<String, String>() {{
@@ -162,22 +172,6 @@ public class LazyMapTest {
         } catch (IllegalStateException e){
 
         }
-    }
-
-    @Test
-    public void requireThatNewDelegateIsInvokedWhenNumEntriesExceedOne() {
-        Map<String, String> delegate = new HashMap<>();
-        LazyMap<String, String> map = newLazyMap(delegate);
-        map.put("foo", "bar");
-        map.put("baz", "cox");
-        assertSame(delegate, map.getDelegate());
-
-        map = newLazyMap(delegate);
-        map.putAll(new HashMap<String, String>() {{
-            put("foo", "bar");
-            put("baz", "cox");
-        }});
-        assertSame(delegate, map.getDelegate());
     }
 
     @SuppressWarnings("unchecked")
