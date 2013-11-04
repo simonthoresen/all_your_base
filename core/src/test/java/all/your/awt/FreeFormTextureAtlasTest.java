@@ -36,7 +36,7 @@ public class FreeFormTextureAtlasTest {
             builder.addTexture(6, 0, 0, 32, 24);
             fail();
         } catch (IllegalStateException e) {
-            assertEquals("id 6 already in use", e.getMessage());
+            assertEquals("id '6' already in use", e.getMessage());
         }
     }
 
