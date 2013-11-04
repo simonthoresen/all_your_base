@@ -1,6 +1,6 @@
 package all.your.awt;
 
-import com.google.common.base.Preconditions;
+import all.your.util.Preconditions;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -18,7 +18,9 @@ public class AtlasTexture implements Texture {
         Objects.requireNonNull(image, "image");
         Preconditions.checkArgument(x >= 0 && x + width <= image.getWidth() &&
                                     y >= 0 && y + height <= image.getHeight(),
-                                    "region must be in image; [%s, %s, %s, %s]", x, y, width, height);
+                                    "region [%s, %s, %s, %s] not in image [%s, %s, %s, %s]",
+                                    x, y, width, height,
+                                    0, 0, image.getWidth(), image.getHeight());
         this.image = image;
         this.x = x;
         this.y = y;

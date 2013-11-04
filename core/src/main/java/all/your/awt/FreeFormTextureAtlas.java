@@ -1,6 +1,6 @@
 package all.your.awt;
 
-import com.google.common.base.Preconditions;
+import all.your.util.Preconditions;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -37,7 +37,9 @@ public class FreeFormTextureAtlas implements TextureAtlas {
             Preconditions.checkState(!textures.containsKey(id), "id " + id + " already in use");
             Preconditions.checkArgument(x >= 0 && x + width <= image.getWidth() &&
                                         y >= 0 && y + height <= image.getHeight(),
-                                        "region must be in image; [%s, %s, %s, %s]", x, y, width, height);
+                                        "region [%s, %s, %s, %s] not in image [%s, %s, %s, %s]",
+                                        x, y, width, height,
+                                        0, 0, image.getWidth(), image.getHeight());
             textures.put(id, new AtlasTexture(image, x, y, width, height));
             return this;
         }

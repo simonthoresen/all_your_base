@@ -1,6 +1,6 @@
 package all.your.awt;
 
-import com.google.common.base.Preconditions;
+import all.your.util.Preconditions;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
