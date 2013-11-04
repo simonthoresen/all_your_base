@@ -5,4 +5,5 @@ package all.your.awt;
  */
 public interface Tile {
 
+    public Texture getTexture();
 }
