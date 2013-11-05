@@ -1,6 +1,7 @@
 package all.your.swing;
 
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertTrue;
 
@@ -12,5 +13,16 @@ public class NullApplicationListenerTest {
     @Test
     public void requireThatInstanceIsAnApplicationListener() {
         assertTrue(NullApplicationListener.INSTANCE instanceof ApplicationListener);
+    }
+
+    @Test
+    public void requireThatInstanceHasZeroInteractions() {
+        Application app = Mockito.mock(Application.class);
+        NullApplicationListener.INSTANCE.applicationStarted(app);
+        Mockito.verifyZeroInteractions(app);
+
+        app = Mockito.mock(Application.class);
+        NullApplicationListener.INSTANCE.applicationStopped(app);
+        Mockito.verifyZeroInteractions(app);
     }
 }
