@@ -3,6 +3,11 @@ package all.your.awt;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
+import static all.your.awt.AssertImage.assertPixels;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -88,7 +93,7 @@ public class MapLayerTest {
         map.putTile(0, 0, Mockito.mock(Tile.class));
         assertNull(map.getTile(-1, -1));
         assertNull(map.getTile(-1, 0));
-        assertNull(map.getTile( 0, -1));
+        assertNull(map.getTile(0, -1));
         assertNull(map.getTile(1, 1));
         assertNull(map.getTile(1, 0));
         assertNull(map.getTile(0, 1));
@@ -96,6 +101,29 @@ public class MapLayerTest {
 
     @Test
     public void requireThatLayerCanBePainted() {
+        MapLayer map = newMapLayer(new Color[][] {
+                { Color.RED, Color.ORANGE, Color.YELLOW },
+                { Color.ORANGE, Color.YELLOW, Color.RED },
+                { Color.YELLOW, Color.RED, Color.ORANGE },
+        });
+        BufferedImage image = new BufferedImage(9, 9, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = image.createGraphics();
+        map.paint(g, 1, 1, 6, 6, 1, 0, 2, 2);
+        g.dispose();
+        ImageViewer.view(image, 10);
+        assertPixels(image, new Color[][] {
+                { },
+        });
+    }
 
+    private static MapLayer newMapLayer(Color[][] tiles) {
+        MapLayer map = new MapLayer(tiles[0].length, tiles.length);
+        for (int row = 0; row < tiles.length; ++row) {
+            for (int col = 0; col < tiles[row].length; ++col) {
+                BufferedImage image = BufferedImages.newSquareGrid(1, 1, new Color[][] { { tiles[row][col] } });
+                map.putTile(col, row, new SimpleTile(new SimpleTexture(image)));
+            }
+        }
+        return map;
     }
 }
