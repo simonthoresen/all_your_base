@@ -12,14 +12,14 @@ public class MapLayer {
     private final Tile[][] tiles;
 
     public MapLayer(int width, int height) {
-        Preconditions.checkArgument(width > 0, "width must be positive; %s", width);
-        Preconditions.checkArgument(height > 0, "height must be positive; %s", height);
+        Preconditions.checkArgument(width > 0, "width");
+        Preconditions.checkArgument(height > 0, "height");
         tiles = new Tile[width][height];
     }
 
     public Tile getTile(int x, int y) {
-        if (x < 0 || x > tiles.length ||
-            y < 0 || y > tiles[0].length) {
+        if (x < 0 || x >= tiles.length ||
+            y < 0 || y >= tiles[0].length) {
             return null;
         }
         return tiles[x][y];
