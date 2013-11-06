@@ -1,5 +1,7 @@
 package all.your.awt;
 
+import all.your.util.Preconditions;
+
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.LinkedHashMap;
@@ -14,6 +16,8 @@ public class TileMap {
     private final int height;
 
     public TileMap(int width, int height) {
+        Preconditions.checkArgument(width > 0, "width");
+        Preconditions.checkArgument(height > 0, "height");
         this.width = width;
         this.height = height;
     }
@@ -23,7 +27,10 @@ public class TileMap {
     }
 
     public MapLayer newLayer(String id) {
-        return layers.put(id, new MapLayer(width, height));
+        Preconditions.checkState(!layers.containsKey(id), "id '" + id + "' already in use");
+        MapLayer layer = new MapLayer(width, height);
+        layers.put(id, layer);
+        return layer;
     }
 
     public MapLayer removeLayer(String id) {
