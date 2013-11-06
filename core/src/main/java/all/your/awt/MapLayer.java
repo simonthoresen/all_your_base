@@ -26,10 +26,8 @@ public class MapLayer {
     }
 
     public Tile putTile(int x, int y, Tile tile) {
-        Preconditions.checkArgument(x >= 0 && x < tiles.length &&
-                                    y >= 0 && y < tiles[0].length,
-                                    "position (" + x + ", " + y + ") not in " +
-                                    "map (" + tiles.length + ", " + tiles[0].length + ")");
+        Preconditions.checkIndex(x, tiles.length);
+        Preconditions.checkIndex(y, tiles[0].length);
         Tile oldTile = tiles[x][y];
         tiles[x][y] = tile;
         return oldTile;
