@@ -8,11 +8,11 @@ import java.awt.Rectangle;
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */
-public class MapLayer {
+public class TileMapLayer {
 
     private final Tile[][] tiles;
 
-    public MapLayer(int width, int height) {
+    public TileMapLayer(int width, int height) {
         Preconditions.checkArgument(width > 0, "width");
         Preconditions.checkArgument(height > 0, "height");
         tiles = new Tile[height][width];

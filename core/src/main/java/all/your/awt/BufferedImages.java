@@ -23,10 +23,10 @@ public class BufferedImages {
         BufferedImage image = new BufferedImage(squareWidth * squares[0].length, squareHeight * squares.length,
                                                 BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
-        for (int row = 0; row < squares.length; ++row) {
-            for (int col = 0; col < squares[row].length; ++col) {
-                g.setColor(squares[row][col]);
-                g.fillRect(squareWidth * col, squareHeight * row, squareWidth, squareHeight);
+        for (int y = 0; y < squares.length; ++y) {
+            for (int x = 0; x < squares[y].length; ++x) {
+                g.setColor(squares[y][x]);
+                g.fillRect(squareWidth * x, squareHeight * y, squareWidth, squareHeight);
             }
         }
         g.dispose();

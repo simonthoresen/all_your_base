@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
  */
 public class TileMap {
 
-    private LinkedHashMap<String, MapLayer> layers = new LinkedHashMap<>();
+    private LinkedHashMap<String, TileMapLayer> layers = new LinkedHashMap<>();
     private final int width;
     private final int height;
 
@@ -22,23 +22,23 @@ public class TileMap {
         this.height = height;
     }
 
-    public MapLayer getLayer(String id) {
+    public TileMapLayer getLayer(String id) {
         return layers.get(id);
     }
 
-    public MapLayer newLayer(String id) {
+    public TileMapLayer newLayer(String id) {
         Preconditions.checkState(!layers.containsKey(id), "id '" + id + "' already in use");
-        MapLayer layer = new MapLayer(width, height);
+        TileMapLayer layer = new TileMapLayer(width, height);
         layers.put(id, layer);
         return layer;
     }
 
-    public MapLayer removeLayer(String id) {
+    public TileMapLayer removeLayer(String id) {
         return layers.remove(id);
     }
 
     public void paint(Graphics2D g, Rectangle viewport, Rectangle mapRegion) {
-        for (MapLayer layer : layers.values()) {
+        for (TileMapLayer layer : layers.values()) {
             layer.paint(g, viewport, mapRegion);
         }
     }
