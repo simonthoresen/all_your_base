@@ -1,6 +1,7 @@
 package all.your.awt;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.util.LinkedHashMap;
 
 /**
@@ -29,11 +30,9 @@ public class TileMap {
         return layers.remove(id);
     }
 
-    public void paint(Graphics2D viewport, int viewportX, int viewportY, int viewportWidth, int viewportHeight,
-                      int mapRegionX, int mapRegionY, int mapRegionWidth, int mapRegionHeight) {
+    public void paint(Graphics2D g, Rectangle viewport, Rectangle mapRegion) {
         for (MapLayer layer : layers.values()) {
-            layer.paint(viewport, viewportX, viewportY, viewportWidth, viewportHeight,
-                        mapRegionX, mapRegionY, mapRegionWidth, mapRegionHeight);
+            layer.paint(g, viewport, mapRegion);
         }
     }
 }

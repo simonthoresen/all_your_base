@@ -5,9 +5,14 @@ import org.mockito.Mockito;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import static all.your.awt.AssertImage.assertPixels;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.ORANGE;
+import static java.awt.Color.RED;
+import static java.awt.Color.YELLOW;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -102,17 +107,26 @@ public class MapLayerTest {
     @Test
     public void requireThatLayerCanBePainted() {
         MapLayer map = newMapLayer(new Color[][] {
-                { Color.RED, Color.ORANGE, Color.YELLOW },
-                { Color.ORANGE, Color.YELLOW, Color.RED },
-                { Color.YELLOW, Color.RED, Color.ORANGE },
+                { RED, ORANGE, YELLOW },
+                { ORANGE, YELLOW, RED },
+                { YELLOW, RED, ORANGE },
         });
         BufferedImage image = new BufferedImage(9, 9, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
-        map.paint(g, 1, 1, 6, 6, 1, 0, 2, 2);
+        g.setColor(BLACK);
+        g.fillRect(0, 0, 9, 9);
+        map.paint(g, new Rectangle(3, 3, 6, 6), new Rectangle(0, 0, 3, 3));
         g.dispose();
-        ImageViewer.view(image, 10);
         assertPixels(image, new Color[][] {
-                { },
+                { BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK },
+                { BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK },
+                { BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK },
+                { BLACK, BLACK, BLACK, RED, RED, ORANGE, ORANGE, YELLOW, YELLOW },
+                { BLACK, BLACK, BLACK, RED, RED, ORANGE, ORANGE, YELLOW, YELLOW },
+                { BLACK, BLACK, BLACK, ORANGE, ORANGE, YELLOW, YELLOW, RED, RED },
+                { BLACK, BLACK, BLACK, ORANGE, ORANGE, YELLOW, YELLOW, RED, RED },
+                { BLACK, BLACK, BLACK, YELLOW, YELLOW, RED, RED, ORANGE, ORANGE },
+                { BLACK, BLACK, BLACK, YELLOW, YELLOW, RED, RED, ORANGE, ORANGE },
         });
     }
 
