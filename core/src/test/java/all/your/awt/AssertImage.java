@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -16,37 +14,53 @@ import static org.junit.Assert.assertTrue;
 public class AssertImage {
 
     public static void assertPixels(BufferedImage actualImage, Color[][] expectedPixels) {
-        Map<Color, Integer> palette = newPalette(expectedPixels);
+        Palette palette = newPalette(actualImage, expectedPixels);
         StringBuilder expected = new StringBuilder();
         for (Point p = new Point(0, 0); p.y < expectedPixels.length; ++p.y) {
             for (p.x = 0; p.x < expectedPixels[p.y].length; ++p.x) {
-                expected.append(Integer.toHexString(palette.get(expectedPixels[p.y][p.x])));
+                expected.append(palette.get(expectedPixels[p.y][p.x]));
             }
             expected.append('\n');
         }
         StringBuilder actual = new StringBuilder();
         for (Point p = new Point(0, 0); p.y < actualImage.getHeight(); ++p.y) {
             for (p.x = 0; p.x < actualImage.getWidth(); ++p.x) {
-                Color color = new Color(actualImage.getRGB(p.x, p.y));
-                Integer idx = palette.get(color);
-                assertNotNull("unknown " + color.toString() + " at " + p, idx);
-                actual.append(Integer.toHexString(idx));
+                actual.append(palette.get(new Color(actualImage.getRGB(p.x, p.y))));
             }
             actual.append('\n');
         }
         assertEquals(expected.toString(), actual.toString());
     }
 
-    public static Map<Color, Integer> newPalette(Color[][] pixels) {
-        Map<Color, Integer> palette = new HashMap<>();
-        for (Color[] colors : pixels) {
-            for (Color color : colors) {
-                if (!palette.containsKey(color)) {
-                    palette.put(color, palette.size());
-                }
+    public static Palette newPalette(BufferedImage image, Color[][] pixels) {
+        Palette palette = new Palette();
+        for (int y = 0; y < image.getHeight(); ++y) {
+            for (int x = 0; x < image.getWidth(); ++x) {
+                palette.add(new Color(image.getRGB(x, y)));
             }
         }
-        assertTrue(palette.size() < 16);
+        for (Color[] colors : pixels) {
+            for (Color color : colors) {
+                palette.add(color);
+            }
+        }
         return palette;
+    }
+
+    public static class Palette {
+
+        private final static String SYMBOLS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        private final Map<Color, Character> colors = new HashMap<>();
+
+        public void add(Color color) {
+            if (colors.containsKey(color)) {
+                return;
+            }
+            colors.put(color, SYMBOLS.charAt(colors.size()));
+        }
+
+        public Character get(Color color) {
+            return colors.get(color);
+        }
     }
 }

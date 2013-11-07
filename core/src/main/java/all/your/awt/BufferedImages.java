@@ -18,10 +18,15 @@ import java.util.Objects;
  */
 public class BufferedImages {
 
+    public static BufferedImage newFilled(Dimension imageSize, Color fillColor) {
+        return newSquareGrid(imageSize, new Color[][] { { fillColor } });
+    }
+
     public static BufferedImage newSquareGrid(Dimension squareSize, Color[][] squares) {
         Preconditions.checkArgument(squareSize.width > 0 && squareSize.height > 0, "squareSize; %s", squareSize);
         Objects.requireNonNull(squares, "squares");
-        BufferedImage image = new BufferedImage(squareSize.width * squares[0].length, squareSize.height * squares.length,
+        BufferedImage image = new BufferedImage(squareSize.width * squares[0].length,
+                                                squareSize.height * squares.length,
                                                 BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
         for (int y = 0; y < squares.length; ++y) {

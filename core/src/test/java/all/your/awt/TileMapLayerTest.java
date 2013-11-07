@@ -113,10 +113,8 @@ public class TileMapLayerTest {
                 { ORANGE, YELLOW, RED },
                 { YELLOW, RED, ORANGE },
         });
-        BufferedImage image = new BufferedImage(9, 9, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image = BufferedImages.newFilled(new Dimension(9, 9), GREEN);
         Graphics2D g = image.createGraphics();
-        g.setColor(GREEN);
-        g.fillRect(0, 0, 9, 9);
         map.paint(g, new Rectangle(3, 3, 6, 6), new Rectangle(0, 0, 3, 3));
         g.dispose();
         assertPixels(image, new Color[][] {
@@ -130,5 +128,29 @@ public class TileMapLayerTest {
                 { GREEN, GREEN, GREEN, YELLOW, YELLOW, RED, RED, ORANGE, ORANGE },
                 { GREEN, GREEN, GREEN, YELLOW, YELLOW, RED, RED, ORANGE, ORANGE },
         });
+    }
+
+    @Test
+    public void requireThatPaintClipsToViewport() {
+        TileMapLayer map = TileMapLayers.newColorGrid(new Color[][] {
+                { RED, ORANGE, YELLOW },
+                { ORANGE, YELLOW, RED },
+                { YELLOW, RED, ORANGE },
+        });
+        BufferedImage image = BufferedImages.newFilled(new Dimension(6, 6), GREEN);
+        Graphics2D g = image.createGraphics();
+        map.paint(g, new Rectangle(1, 1, 3, 5), new Rectangle(0, 0, 2, 2));
+        g.dispose();
+
+        // TODO: this expectation might be wrong, and clipping is also not implemented
+        assertPixels(image, new Color[][] {
+                { GREEN, GREEN, GREEN, GREEN, GREEN, GREEN },
+                { GREEN, RED, RED, ORANGE, GREEN, GREEN },
+                { GREEN, RED, RED, ORANGE, GREEN, GREEN },
+                { GREEN, RED, RED, ORANGE, GREEN, GREEN },
+                { GREEN, ORANGE, ORANGE, RED, GREEN, GREEN },
+                { GREEN, ORANGE, ORANGE, RED, GREEN, GREEN },
+        });
+
     }
 }

@@ -86,10 +86,8 @@ public class TileMapTest {
                 { null, null, RED },
                 { YELLOW, RED, ORANGE },
         });
-        BufferedImage image = new BufferedImage(9, 9, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image = BufferedImages.newFilled(new Dimension(9, 9), GREEN);
         Graphics2D g = image.createGraphics();
-        g.setColor(GREEN);
-        g.fillRect(0, 0, 9, 9);
         map.paint(g, new Rectangle(3, 3, 6, 6), new Rectangle(0, 0, 3, 3));
         g.dispose();
         assertPixels(image, new Color[][] {

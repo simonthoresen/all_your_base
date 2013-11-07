@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import static all.your.awt.AssertImage.assertPixels;
 import static java.awt.Color.BLUE;
+import static java.awt.Color.GREEN;
 import static java.awt.Color.RED;
 import static java.awt.Color.YELLOW;
 import static org.junit.Assert.assertNotNull;
@@ -21,16 +22,27 @@ import static org.junit.Assert.fail;
 public class BufferedImagesTest {
 
     @Test
+    public void requireThatFilledImagesCanBeCreated() {
+        BufferedImage image = BufferedImages.newFilled(new Dimension(2, 5), GREEN);
+        assertNotNull(image);
+        assertPixels(image, new Color[][] {
+                { GREEN, GREEN },
+                { GREEN, GREEN },
+                { GREEN, GREEN },
+                { GREEN, GREEN },
+                { GREEN, GREEN },
+        });
+    }
+
+    @Test
     public void requireThatSquareGridsCanBeCreated() {
-        int squareWidth = 2;
-        int squareHeight = 5;
         Color[][] squares = new Color[][] {
                 { RED, YELLOW, RED, YELLOW },
                 { YELLOW, BLUE, YELLOW, BLUE },
                 { RED, YELLOW, RED, YELLOW },
                 { YELLOW, BLUE, YELLOW, BLUE },
         };
-        BufferedImage image = BufferedImages.newSquareGrid(new Dimension(squareWidth, squareHeight), squares);
+        BufferedImage image = BufferedImages.newSquareGrid(new Dimension(2, 5), squares);
         assertNotNull(image);
         assertPixels(image, new Color[][] {
                 { RED, RED, YELLOW, YELLOW, RED, RED, YELLOW, YELLOW },
