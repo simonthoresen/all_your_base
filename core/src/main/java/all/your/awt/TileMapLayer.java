@@ -50,6 +50,7 @@ public class TileMapLayer {
                 Tile tile = getTile(mapPos);
                 if (tile != null) {
                     tile.getTexture().paint(g, viewportRegion);
+                    // TODO: clipping
                 }
                 viewportRegion.x += tileSize.width;
             }
