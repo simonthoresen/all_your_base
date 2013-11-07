@@ -43,12 +43,13 @@ public class TileMapLayer {
         Point mapPos = new Point();
         Point mapPosMax = new Point(mapRegion.x + (viewport.width + tileSize.width - 1) / tileSize.width,
                                     mapRegion.y + (viewport.height + tileSize.height - 1) / tileSize.height);
+        viewportRegion.y = viewport.y;
         for (mapPos.y = mapRegion.y; mapPos.y < mapPosMax.y; ++mapPos.y) {
             viewportRegion.x = viewport.x;
             for (mapPos.x = mapRegion.x; mapPos.x < mapPosMax.x; ++mapPos.x) {
                 Tile tile = getTile(mapPos);
                 if (tile != null) {
-                    tile.getTexture().paint(g, viewport);
+                    tile.getTexture().paint(g, viewportRegion);
                 }
                 viewportRegion.x += tileSize.width;
             }
