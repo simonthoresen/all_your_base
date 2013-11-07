@@ -3,6 +3,7 @@ package all.your.awt;
 import org.junit.Test;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,7 +12,7 @@ import static all.your.awt.AssertImage.assertPixels;
 import static java.awt.Color.BLUE;
 import static java.awt.Color.RED;
 import static java.awt.Color.YELLOW;
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 /**
@@ -29,7 +30,7 @@ public class BufferedImagesTest {
                 { RED, YELLOW, RED, YELLOW },
                 { YELLOW, BLUE, YELLOW, BLUE },
         };
-        BufferedImage image = BufferedImages.newSquareGrid(squareWidth, squareHeight, squares);
+        BufferedImage image = BufferedImages.newSquareGrid(new Dimension(squareWidth, squareHeight), squares);
         assertNotNull(image);
         assertPixels(image, new Color[][] {
                 { RED, RED, YELLOW, YELLOW, RED, RED, YELLOW, YELLOW },

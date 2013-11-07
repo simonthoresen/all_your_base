@@ -4,7 +4,9 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
@@ -26,42 +28,42 @@ public class TileMapLayerTest {
     @Test
     public void requireThatConstructorChecksDimensions() {
         try {
-            new TileMapLayer(0, 1);
+            new TileMapLayer(new Dimension(0, 1));
             fail();
         } catch (IllegalArgumentException e) {
-            assertEquals("width", e.getMessage());
+            assertEquals("size; java.awt.Dimension[width=0,height=1]", e.getMessage());
         }
         try {
-            new TileMapLayer(1, 0);
+            new TileMapLayer(new Dimension(1, 0));
             fail();
         } catch (IllegalArgumentException e) {
-            assertEquals("height", e.getMessage());
+            assertEquals("size; java.awt.Dimension[width=1,height=0]", e.getMessage());
         }
     }
 
     @Test
     public void requireThatPutChecksPosition() {
-        TileMapLayer map = new TileMapLayer(6, 9);
+        TileMapLayer map = new TileMapLayer(new Dimension(6, 9));
         try {
-            map.putTile(-1, 0, Mockito.mock(Tile.class));
+            map.putTile(new Point(-1, 0), Mockito.mock(Tile.class));
             fail();
         } catch (IndexOutOfBoundsException e) {
             assertEquals("-1", e.getMessage());
         }
         try {
-            map.putTile(6, 0, Mockito.mock(Tile.class));
+            map.putTile(new Point(6, 0), Mockito.mock(Tile.class));
             fail();
         } catch (IndexOutOfBoundsException e) {
             assertEquals("6", e.getMessage());
         }
         try {
-            map.putTile(0, -1, Mockito.mock(Tile.class));
+            map.putTile(new Point(0, -1), Mockito.mock(Tile.class));
             fail();
         } catch (IndexOutOfBoundsException e) {
             assertEquals("-1", e.getMessage());
         }
         try {
-            map.putTile(0, 9, Mockito.mock(Tile.class));
+            map.putTile(new Point(0, 9), Mockito.mock(Tile.class));
             fail();
         } catch (IndexOutOfBoundsException e) {
             assertEquals("9", e.getMessage());
@@ -70,38 +72,38 @@ public class TileMapLayerTest {
 
     @Test
     public void requireThatTileCanBePut() {
-        TileMapLayer map = new TileMapLayer(6, 9);
+        TileMapLayer map = new TileMapLayer(new Dimension(6, 9));
         Tile tile = Mockito.mock(Tile.class);
-        assertNull(map.putTile(0, 0, tile));
-        assertSame(tile, map.getTile(0, 0));
+        assertNull(map.putTile(new Point(0, 0), tile));
+        assertSame(tile, map.getTile(new Point(0, 0)));
     }
 
     @Test
     public void requireThatPutTileReturnsPreviousTile() {
-        TileMapLayer map = new TileMapLayer(6, 9);
+        TileMapLayer map = new TileMapLayer(new Dimension(6, 9));
         Tile tile = Mockito.mock(Tile.class);
-        assertNull(map.putTile(0, 0, tile));
-        assertSame(tile, map.putTile(0, 0, Mockito.mock(Tile.class)));
+        assertNull(map.putTile(new Point(0, 0), tile));
+        assertSame(tile, map.putTile(new Point(0, 0), Mockito.mock(Tile.class)));
     }
 
     @Test
     public void requireThatNullCanBePut() {
-        TileMapLayer map = new TileMapLayer(6, 9);
-        map.putTile(0, 0, Mockito.mock(Tile.class));
-        map.putTile(0, 0, null);
-        assertNull(map.getTile(0, 0));
+        TileMapLayer map = new TileMapLayer(new Dimension(6, 9));
+        map.putTile(new Point(0, 0), Mockito.mock(Tile.class));
+        map.putTile(new Point(0, 0), null);
+        assertNull(map.getTile(new Point(0, 0)));
     }
 
     @Test
     public void requireThatGetTileReturnsNullOutsideBoundaries() {
-        TileMapLayer map = new TileMapLayer(1, 1);
-        map.putTile(0, 0, Mockito.mock(Tile.class));
-        assertNull(map.getTile(-1, -1));
-        assertNull(map.getTile(-1, 0));
-        assertNull(map.getTile(0, -1));
-        assertNull(map.getTile(1, 1));
-        assertNull(map.getTile(1, 0));
-        assertNull(map.getTile(0, 1));
+        TileMapLayer map = new TileMapLayer(new Dimension(1, 1));
+        map.putTile(new Point(0, 0), Mockito.mock(Tile.class));
+        assertNull(map.getTile(new Point(-1, -1)));
+        assertNull(map.getTile(new Point(-1, 0)));
+        assertNull(map.getTile(new Point(0, -1)));
+        assertNull(map.getTile(new Point(1, 1)));
+        assertNull(map.getTile(new Point(1, 0)));
+        assertNull(map.getTile(new Point(0, 1)));
     }
 
     @Test

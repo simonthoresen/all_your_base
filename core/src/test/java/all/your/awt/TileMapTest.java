@@ -3,6 +3,7 @@ package all.your.awt;
 import org.junit.Test;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -27,22 +28,22 @@ public class TileMapTest {
     @Test
     public void requireThatConstructorChecksDimensions() {
         try {
-            new TileMap(0, 1);
+            new TileMap(new Dimension(0, 1));
             fail();
         } catch (IllegalArgumentException e) {
-            assertEquals("width", e.getMessage());
+            assertEquals("size; java.awt.Dimension[width=0,height=1]", e.getMessage());
         }
         try {
-            new TileMap(1, 0);
+            new TileMap(new Dimension(1, 0));
             fail();
         } catch (IllegalArgumentException e) {
-            assertEquals("height", e.getMessage());
+            assertEquals("size; java.awt.Dimension[width=1,height=0]", e.getMessage());
         }
     }
 
     @Test
     public void requireThatLayerIdMustBeUnique() {
-        TileMap map = new TileMap(1, 1);
+        TileMap map = new TileMap(new Dimension(1, 1));
         map.newLayer("foo");
         try {
             map.newLayer("foo");
@@ -54,7 +55,7 @@ public class TileMapTest {
 
     @Test
     public void requireThatLayerCanBeRetrieved() {
-        TileMap map = new TileMap(1, 1);
+        TileMap map = new TileMap(new Dimension(1, 1));
         TileMapLayer foo = map.newLayer("foo");
         assertNotNull(foo);
         TileMapLayer bar = map.newLayer("bar");
@@ -65,7 +66,7 @@ public class TileMapTest {
 
     @Test
     public void requireThatLayerCanBeRemoved() {
-        TileMap map = new TileMap(1, 1);
+        TileMap map = new TileMap(new Dimension(1, 1));
         TileMapLayer foo = map.newLayer("foo");
         assertSame(foo, map.removeLayer("foo"));
         assertNull(map.getLayer("foo"));
@@ -74,7 +75,7 @@ public class TileMapTest {
 
     @Test
     public void requireThatMapCanBePainted() {
-        TileMap map = new TileMap(3, 3);
+        TileMap map = new TileMap(new Dimension(3, 3));
         TileMapLayers.fillColorGrid(map.newLayer("foo"), new Color[][] {
                 { RED, ORANGE, YELLOW },
                 { ORANGE, null, null },

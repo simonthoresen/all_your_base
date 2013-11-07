@@ -2,6 +2,7 @@ package all.your.awt;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import static all.your.awt.AssertImage.assertPixels;
@@ -19,7 +20,7 @@ public class AssertTexture {
         Graphics2D g = image.createGraphics();
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, image.getWidth(), image.getHeight());
-        texture.paint(g, width, height, width, height);
+        texture.paint(g, new Rectangle(width, height, width, height));
         g.dispose();
 
         Color[][] expectedImage = new Color[image.getHeight()][image.getWidth()];

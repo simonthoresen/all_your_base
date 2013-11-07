@@ -2,6 +2,8 @@ package all.your.awt;
 
 import all.your.util.Preconditions;
 
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,15 +16,13 @@ public class SquareGridTextureAtlas implements TextureAtlas {
 
     private final Map<Integer, AtlasTexture> textures = new HashMap<>();
     private final BufferedImage image;
-    private final int squareWidth, squareHeight;
+    private final Dimension squareSize;
 
-    public SquareGridTextureAtlas(BufferedImage image, int squareWidth, int squareHeight) {
+    public SquareGridTextureAtlas(BufferedImage image, Dimension squareSize) {
         Objects.requireNonNull(image, "image");
-        Preconditions.checkArgument(squareWidth > 0, "squareWidth must be positive; %s", squareWidth);
-        Preconditions.checkArgument(squareHeight > 0, "squareHeight must be positive; %s", squareHeight);
+        Preconditions.checkArgument(squareSize.width > 0 && squareSize.height > 0, "squareSize; %s", squareSize);
         this.image = image;
-        this.squareWidth = squareWidth;
-        this.squareHeight = squareHeight;
+        this.squareSize = new Dimension(squareSize);
     }
 
     @Override
@@ -37,7 +37,8 @@ public class SquareGridTextureAtlas implements TextureAtlas {
     private AtlasTexture getOrCreateTexture(int id, int row, int col) {
         AtlasTexture texture = textures.get(id);
         if (texture == null) {
-            texture = new AtlasTexture(image, col * squareWidth, row * squareHeight, squareWidth, squareHeight);
+            texture = new AtlasTexture(image, new Rectangle(squareSize.width * col, squareSize.height * row,
+                                                            squareSize.width, squareSize.height));
             textures.put(id, texture);
         }
         return texture;

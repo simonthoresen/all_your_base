@@ -3,7 +3,9 @@ package all.your.awt;
 import org.junit.Test;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import static all.your.awt.AssertImage.assertPixels;
@@ -31,10 +33,10 @@ public class SimpleTextureTest {
         Graphics2D g = image.createGraphics();
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, 100, 100);
-        new SimpleTexture(BufferedImages.newSquareGrid(2, 2, new Color[][] {
+        new SimpleTexture(BufferedImages.newSquareGrid(new Dimension(2, 2), new Color[][] {
                 { Color.RED, Color.ORANGE },
                 { Color.YELLOW, Color.GREEN }
-        })).paint(g, 25, 25, 50, 50);
+        })).paint(g, new Rectangle(25, 25, 50, 50));
         g.dispose();
 
         Color[][] expected = new Color[100][100];

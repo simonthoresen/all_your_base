@@ -2,7 +2,9 @@ package all.your.awt;
 
 import all.your.util.Preconditions;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
@@ -12,25 +14,32 @@ import java.util.Objects;
 public class AtlasTexture implements Texture {
 
     private final BufferedImage image;
-    private final int x, y, width, height;
+    private final Rectangle atlasRegion;
 
-    AtlasTexture(BufferedImage image, int x, int y, int width, int height) {
+    AtlasTexture(BufferedImage image, Rectangle region) {
         Objects.requireNonNull(image, "image");
-        Preconditions.checkArgument(x >= 0 && x + width <= image.getWidth() &&
-                                    y >= 0 && y + height <= image.getHeight(),
-                                    "region [%s, %s, %s, %s] not in image [%s, %s, %s, %s]",
-                                    x, y, width, height,
-                                    0, 0, image.getWidth(), image.getHeight());
+        Preconditions.checkArgument(BufferedImages.getBounds(image, new Rectangle()).contains(region),
+                                    "region; %s", region);
         this.image = image;
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+        this.atlasRegion = new Rectangle(region);
     }
 
     @Override
-    public void paint(Graphics2D g, int x, int y, int width, int height) {
-        g.drawImage(image, x, y, x + width, y + height,
-                    this.x, this.y, this.x + this.width, this.y + this.height, null);
+    public void paint(Graphics2D g, Rectangle viewport) {
+        paint(g, viewport, atlasRegion);
+    }
+
+    @Override
+    public void paint(Graphics2D g, Rectangle viewport, Rectangle textureRegion) {
+        g.drawImage(image, viewport.x, viewport.y, viewport.x + viewport.width, viewport.y + viewport.height,
+                    atlasRegion.x, atlasRegion.y, atlasRegion.x + atlasRegion.width, atlasRegion.y + atlasRegion.height,
+                    null);
+    }
+
+    @Override
+    public Dimension getSize(Dimension out) {
+        out.width = atlasRegion.width;
+        out.height = atlasRegion.height;
+        return out;
     }
 }

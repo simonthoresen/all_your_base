@@ -2,7 +2,9 @@ package all.your.awt;
 
 import all.your.util.Preconditions;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 
 /**
@@ -12,46 +14,45 @@ public class TileMapLayer {
 
     private final Tile[][] tiles;
 
-    public TileMapLayer(int width, int height) {
-        Preconditions.checkArgument(width > 0, "width");
-        Preconditions.checkArgument(height > 0, "height");
-        tiles = new Tile[height][width];
+    public TileMapLayer(Dimension size) {
+        Preconditions.checkArgument(size.width > 0 && size.height > 0, "size; %s", size);
+        tiles = new Tile[size.height][size.width];
     }
 
-    public Tile getTile(int x, int y) {
-        if (y < 0 || y >= tiles.length ||
-            x < 0 || x >= tiles[y].length) {
+    public Tile getTile(Point p) {
+        if (p.y < 0 || p.y >= tiles.length ||
+            p.x < 0 || p.x >= tiles[p.y].length) {
             return null;
         }
-        return tiles[y][x];
+        return tiles[p.y][p.x];
     }
 
-    public Tile putTile(int x, int y, Tile tile) {
-        Preconditions.checkIndex(y, tiles.length);
-        Preconditions.checkIndex(x, tiles[y].length);
-        Tile oldTile = tiles[y][x];
-        tiles[y][x] = tile;
+    public Tile putTile(Point p, Tile tile) {
+        Preconditions.checkIndex(p.y, tiles.length);
+        Preconditions.checkIndex(p.x, tiles[p.y].length);
+        Tile oldTile = tiles[p.y][p.x];
+        tiles[p.y][p.x] = tile;
         return oldTile;
     }
 
     public void paint(Graphics2D g, Rectangle viewport, Rectangle mapRegion) {
-        int tileWidth = viewport.width / mapRegion.width;
-        int tileHeight = viewport.height / mapRegion.height;
+        Dimension tileSize = new Dimension(viewport.width / mapRegion.width,
+                                           viewport.height / mapRegion.height);
+        Rectangle viewportRegion = new Rectangle(tileSize);
 
-        int maxTileX = mapRegion.x + viewport.width / tileWidth + (viewport.width % tileWidth != 0 ? 1 : 0);
-        int maxTileY = mapRegion.y + viewport.height / tileHeight + (viewport.height % tileHeight != 0 ? 1 : 0);
-
-        int viewportY = viewport.y;
-        for (int tileY = mapRegion.y; tileY < maxTileY; ++tileY) {
-            int viewportX = viewport.x;
-            for (int tileX = mapRegion.x; tileX < maxTileX; ++tileX) {
-                Tile tile = getTile(tileX, tileY);
+        Point mapPos = new Point();
+        Point mapPosMax = new Point(mapRegion.x + (viewport.width + tileSize.width - 1) / tileSize.width,
+                                    mapRegion.y + (viewport.height + tileSize.height - 1) / tileSize.height);
+        for (mapPos.y = mapRegion.y; mapPos.y < mapPosMax.y; ++mapPos.y) {
+            viewportRegion.x = viewport.x;
+            for (mapPos.x = mapRegion.x; mapPos.x < mapPosMax.x; ++mapPos.x) {
+                Tile tile = getTile(mapPos);
                 if (tile != null) {
-                    tile.getTexture().paint(g, viewportX, viewportY, tileWidth, tileHeight);
+                    tile.getTexture().paint(g, viewport);
                 }
-                viewportX += tileWidth;
+                viewportRegion.x += tileSize.width;
             }
-            viewportY += tileHeight;
+            viewportRegion.y += tileSize.height;
         }
-   }
+    }
 }

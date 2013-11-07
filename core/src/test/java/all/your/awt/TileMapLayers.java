@@ -1,6 +1,8 @@
 package all.your.awt;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 /**
@@ -9,20 +11,20 @@ import java.awt.image.BufferedImage;
 public class TileMapLayers {
 
     public static TileMapLayer newColorGrid(Color[][] tiles) {
-        TileMapLayer map = new TileMapLayer(tiles[0].length, tiles.length);
+        TileMapLayer map = new TileMapLayer(new Dimension(tiles[0].length, tiles.length));
         fillColorGrid(map, tiles);
         return map;
     }
 
     public static void fillColorGrid(TileMapLayer out, Color[][] tiles) {
-        for (int y = 0; y < tiles.length; ++y) {
-            for (int x = 0; x < tiles[y].length; ++x) {
-                Color col = tiles[y][x];
+        for (Point p = new Point(0, 0); p.y < tiles.length; ++p.y) {
+            for (p.x = 0; p.x < tiles[p.y].length; ++p.x) {
+                Color col = tiles[p.y][p.x];
                 if (col == null) {
                     continue;
                 }
-                BufferedImage image = BufferedImages.newSquareGrid(1, 1, new Color[][] { { col } });
-                out.putTile(x, y, new SimpleTile(new SimpleTexture(image)));
+                BufferedImage image = BufferedImages.newSquareGrid(new Dimension(1, 1), new Color[][] { { col } });
+                out.putTile(p, new SimpleTile(new SimpleTexture(image)));
             }
         }
     }

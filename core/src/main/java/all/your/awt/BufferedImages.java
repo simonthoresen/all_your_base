@@ -4,7 +4,9 @@ import all.your.util.Preconditions;
 
 import javax.imageio.ImageIO;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,17 +18,16 @@ import java.util.Objects;
  */
 public class BufferedImages {
 
-    public static BufferedImage newSquareGrid(int squareWidth, int squareHeight, Color[][] squares) {
-        Preconditions.checkArgument(squareWidth > 0, "squareWidth must be positive; %s", squareWidth);
-        Preconditions.checkArgument(squareHeight > 0, "squareHeight must be positive; %s", squareHeight);
+    public static BufferedImage newSquareGrid(Dimension squareSize, Color[][] squares) {
+        Preconditions.checkArgument(squareSize.width > 0 && squareSize.height > 0, "squareSize; %s", squareSize);
         Objects.requireNonNull(squares, "squares");
-        BufferedImage image = new BufferedImage(squareWidth * squares[0].length, squareHeight * squares.length,
+        BufferedImage image = new BufferedImage(squareSize.width * squares[0].length, squareSize.height * squares.length,
                                                 BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
         for (int y = 0; y < squares.length; ++y) {
             for (int x = 0; x < squares[y].length; ++x) {
                 g.setColor(squares[y][x]);
-                g.fillRect(squareWidth * x, squareHeight * y, squareWidth, squareHeight);
+                g.fillRect(squareSize.width * x, squareSize.height * y, squareSize.width, squareSize.height);
             }
         }
         g.dispose();
@@ -40,5 +41,13 @@ public class BufferedImages {
             throw new FileNotFoundException(fileName);
         }
         return ImageIO.read(in);
+    }
+
+    public static Rectangle getBounds(BufferedImage image, Rectangle out) {
+        out.x = 0;
+        out.y = 0;
+        out.width = image.getWidth();
+        out.height = image.getHeight();
+        return out;
     }
 }

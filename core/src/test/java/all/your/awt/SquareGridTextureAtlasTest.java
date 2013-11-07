@@ -3,6 +3,7 @@ package all.your.awt;
 import org.junit.Test;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 
 import static all.your.awt.AssertTexture.assertPaint;
@@ -19,7 +20,7 @@ public class SquareGridTextureAtlasTest {
     @Test
     public void requireThatNullImageThrows() {
         try {
-            new SquareGridTextureAtlas(null, 32, 32);
+            new SquareGridTextureAtlas(null, new Dimension(32, 32));
             fail();
         } catch (NullPointerException e) {
             assertEquals("image", e.getMessage());
@@ -29,19 +30,19 @@ public class SquareGridTextureAtlasTest {
     @Test
     public void requireThatSquareWidthMustBePositive() {
         BufferedImage image = new BufferedImage(32, 32, BufferedImage.TYPE_INT_ARGB);
-        assertIllegalArgument(image, 0, 32, "squareWidth must be positive; 0");
-        assertIllegalArgument(image, 32, 0, "squareHeight must be positive; 0");
+        assertIllegalArgument(image, new Dimension(0, 32), "squareSize; java.awt.Dimension[width=0,height=32]");
+        assertIllegalArgument(image, new Dimension(32, 0), "squareSize; java.awt.Dimension[width=32,height=0]");
     }
 
     @Test
     public void requireThatTextureIdIsEncodedRowCol() {
-        BufferedImage atlasImage = BufferedImages.newSquareGrid(2, 2, new Color[][] {
+        BufferedImage atlasImage = BufferedImages.newSquareGrid(new Dimension(2, 2), new Color[][] {
                 { Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY },
                 { Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA },
                 { Color.ORANGE, Color.PINK, Color.RED, Color.WHITE },
                 { Color.YELLOW, Color.BLACK, Color.CYAN, Color.DARK_GRAY },
         });
-        SquareGridTextureAtlas atlas = new SquareGridTextureAtlas(atlasImage, 4, 4);
+        SquareGridTextureAtlas atlas = new SquareGridTextureAtlas(atlasImage, new Dimension(4, 4));
         for (int lhsRow = 0; lhsRow < 2; ++lhsRow) {
             for (int lhsCol = 0; lhsCol < 2; ++lhsCol) {
                 Texture lhs = atlas.getTexture(lhsRow, lhsCol);
@@ -61,13 +62,13 @@ public class SquareGridTextureAtlasTest {
 
     @Test
     public void requireThatAtlasTexturesCanBeRendered() {
-        BufferedImage atlasImage = BufferedImages.newSquareGrid(2, 2, new Color[][] {
+        BufferedImage atlasImage = BufferedImages.newSquareGrid(new Dimension(2, 2), new Color[][] {
                 { Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY },
                 { Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA },
                 { Color.ORANGE, Color.PINK, Color.RED, Color.WHITE },
                 { Color.YELLOW, Color.BLACK, Color.CYAN, Color.DARK_GRAY },
         });
-        SquareGridTextureAtlas atlas = new SquareGridTextureAtlas(atlasImage, 4, 4);
+        SquareGridTextureAtlas atlas = new SquareGridTextureAtlas(atlasImage, new Dimension(4, 4));
         assertPaint(atlas.getTexture(0, 0), new Color[][] {
                 { Color.BLACK, Color.BLACK, Color.BLUE, Color.BLUE, },
                 { Color.BLACK, Color.BLACK, Color.BLUE, Color.BLUE, },
@@ -94,10 +95,9 @@ public class SquareGridTextureAtlasTest {
         });
     }
 
-    private static void assertIllegalArgument(BufferedImage image, int squareWidth, int squareHeight,
-                                              String expectedException) {
+    private static void assertIllegalArgument(BufferedImage image, Dimension squareSize, String expectedException) {
         try {
-            new SquareGridTextureAtlas(image, squareWidth, squareHeight);
+            new SquareGridTextureAtlas(image, squareSize);
             fail();
         } catch (IllegalArgumentException e) {
             assertEquals(expectedException, e.getMessage());
