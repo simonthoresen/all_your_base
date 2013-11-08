@@ -3,6 +3,7 @@ package all.your.awt;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
+import java.util.Locale;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -27,6 +28,7 @@ public class Palette {
             new Color(0xBBBB00),
             new Color(0xFFFF00),
     };
+    public static final Color C_ = null;
     public static final Color C0 = COLORS[0x00];
     public static final Color C1 = COLORS[0x01];
     public static final Color C2 = COLORS[0x02];
@@ -52,7 +54,7 @@ public class Palette {
             }
             out.append('\n');
         }
-        return out.toString();
+        return out.toString().toUpperCase(Locale.US);
     }
 
     public static String render(BufferedImage image) {
@@ -63,7 +65,7 @@ public class Palette {
             }
             out.append('\n');
         }
-        return out.toString();
+        return out.toString().toUpperCase(Locale.US);
     }
 
     private static char resolveSymbol(int rgb) {

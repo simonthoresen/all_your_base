@@ -9,16 +9,8 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import static all.your.awt.AssertImage.assertPixels;
-import static java.awt.Color.BLUE;
-import static java.awt.Color.GREEN;
-import static java.awt.Color.ORANGE;
-import static java.awt.Color.RED;
-import static java.awt.Color.YELLOW;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static all.your.awt.Palette.*;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -77,29 +69,29 @@ public class TileMapTest {
     public void requireThatMapCanBePainted() {
         TileMap map = new TileMap(new Dimension(3, 3));
         TileMapLayers.fillColorGrid(map.newLayer("foo"), new Color[][] {
-                { RED, ORANGE, YELLOW },
-                { ORANGE, null, null },
-                { null, null, null },
+                { C1, C2, C3 },
+                { C2, C_, C_ },
+                { C_, C_, C_ },
         });
         TileMapLayers.fillColorGrid(map.newLayer("bar"), new Color[][] {
-                { BLUE, null, null },
-                { null, null, RED },
-                { YELLOW, RED, ORANGE },
+                { C4, C_, C_ },
+                { C_, C_, C1 },
+                { C3, C1, C2 },
         });
-        BufferedImage image = BufferedImages.newFilled(new Dimension(9, 9), GREEN);
+        BufferedImage image = BufferedImages.newFilled(new Dimension(9, 9), C0);
         Graphics2D g = image.createGraphics();
         map.paint(g, new Rectangle(3, 3, 6, 6), new Rectangle(0, 0, 3, 3));
         g.dispose();
         assertPixels(image, new Color[][] {
-                { GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN },
-                { GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN },
-                { GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN },
-                { GREEN, GREEN, GREEN, BLUE, BLUE, ORANGE, ORANGE, YELLOW, YELLOW },
-                { GREEN, GREEN, GREEN, BLUE, BLUE, ORANGE, ORANGE, YELLOW, YELLOW },
-                { GREEN, GREEN, GREEN, ORANGE, ORANGE, GREEN, GREEN, RED, RED },
-                { GREEN, GREEN, GREEN, ORANGE, ORANGE, GREEN, GREEN, RED, RED },
-                { GREEN, GREEN, GREEN, YELLOW, YELLOW, RED, RED, ORANGE, ORANGE },
-                { GREEN, GREEN, GREEN, YELLOW, YELLOW, RED, RED, ORANGE, ORANGE },
+                { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                { C0, C0, C0, C4, C4, C2, C2, C3, C3 },
+                { C0, C0, C0, C4, C4, C2, C2, C3, C3 },
+                { C0, C0, C0, C2, C2, C0, C0, C1, C1 },
+                { C0, C0, C0, C2, C2, C0, C0, C1, C1 },
+                { C0, C0, C0, C3, C3, C1, C1, C2, C2 },
+                { C0, C0, C0, C3, C3, C1, C1, C2, C2 },
         });
     }
 }

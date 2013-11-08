@@ -8,10 +8,8 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import static all.your.awt.AssertTexture.assertPaint;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static all.your.awt.Palette.*;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -70,22 +68,22 @@ public class FreeFormTextureAtlasTest {
     @Test
     public void requireThatTextureCanBePainted() {
         BufferedImage atlasImage = BufferedImages.newSquareGrid(new Dimension(1, 1), new Color[][] {
-                { Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY },
-                { Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA },
-                { Color.ORANGE, Color.PINK, Color.RED, Color.WHITE },
-                { Color.YELLOW, Color.BLACK, Color.CYAN, Color.DARK_GRAY },
+                { C0, C1, C2, C3 },
+                { C4, C5, C6, C7 },
+                { C8, C9, CA, CB },
+                { CC, CD, CE, CF },
         });
         FreeFormTextureAtlas atlas = new FreeFormTextureAtlas.Builder(atlasImage)
                 .addTexture(0, new Rectangle(0, 0, 3, 1))
                 .addTexture(1, new Rectangle(1, 1, 2, 3))
                 .build();
         assertPaint(atlas.getTexture(0), new Color[][] {
-                { Color.BLACK, Color.BLUE, Color.CYAN },
+                { C0, C1, C2 },
         });
         assertPaint(atlas.getTexture(1), new Color[][] {
-                { Color.GREEN, Color.LIGHT_GRAY },
-                { Color.PINK, Color.RED },
-                { Color.BLACK, Color.CYAN },
+                { C5, C6 },
+                { C9, CA },
+                { CD, CE },
         });
     }
 

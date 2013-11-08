@@ -9,10 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static all.your.awt.AssertImage.assertPixels;
-import static java.awt.Color.BLUE;
-import static java.awt.Color.GREEN;
-import static java.awt.Color.RED;
-import static java.awt.Color.YELLOW;
+import static all.your.awt.Palette.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -23,48 +20,48 @@ public class BufferedImagesTest {
 
     @Test
     public void requireThatFilledImagesCanBeCreated() {
-        BufferedImage image = BufferedImages.newFilled(new Dimension(2, 5), GREEN);
+        BufferedImage image = BufferedImages.newFilled(new Dimension(2, 5), C0);
         assertNotNull(image);
         assertPixels(image, new Color[][] {
-                { GREEN, GREEN },
-                { GREEN, GREEN },
-                { GREEN, GREEN },
-                { GREEN, GREEN },
-                { GREEN, GREEN },
+                { C0, C0 },
+                { C0, C0 },
+                { C0, C0 },
+                { C0, C0 },
+                { C0, C0 },
         });
     }
 
     @Test
     public void requireThatSquareGridsCanBeCreated() {
         Color[][] squares = new Color[][] {
-                { RED, YELLOW, RED, YELLOW },
-                { YELLOW, BLUE, YELLOW, BLUE },
-                { RED, YELLOW, RED, YELLOW },
-                { YELLOW, BLUE, YELLOW, BLUE },
+                { C1, C2, C1, C2 },
+                { C2, C3, C2, C3 },
+                { C1, C2, C1, C2 },
+                { C2, C3, C2, C3 },
         };
         BufferedImage image = BufferedImages.newSquareGrid(new Dimension(2, 5), squares);
         assertNotNull(image);
         assertPixels(image, new Color[][] {
-                { RED, RED, YELLOW, YELLOW, RED, RED, YELLOW, YELLOW },
-                { RED, RED, YELLOW, YELLOW, RED, RED, YELLOW, YELLOW },
-                { RED, RED, YELLOW, YELLOW, RED, RED, YELLOW, YELLOW },
-                { RED, RED, YELLOW, YELLOW, RED, RED, YELLOW, YELLOW },
-                { RED, RED, YELLOW, YELLOW, RED, RED, YELLOW, YELLOW },
-                { YELLOW, YELLOW, BLUE, BLUE, YELLOW, YELLOW, BLUE, BLUE },
-                { YELLOW, YELLOW, BLUE, BLUE, YELLOW, YELLOW, BLUE, BLUE },
-                { YELLOW, YELLOW, BLUE, BLUE, YELLOW, YELLOW, BLUE, BLUE },
-                { YELLOW, YELLOW, BLUE, BLUE, YELLOW, YELLOW, BLUE, BLUE },
-                { YELLOW, YELLOW, BLUE, BLUE, YELLOW, YELLOW, BLUE, BLUE },
-                { RED, RED, YELLOW, YELLOW, RED, RED, YELLOW, YELLOW },
-                { RED, RED, YELLOW, YELLOW, RED, RED, YELLOW, YELLOW },
-                { RED, RED, YELLOW, YELLOW, RED, RED, YELLOW, YELLOW },
-                { RED, RED, YELLOW, YELLOW, RED, RED, YELLOW, YELLOW },
-                { RED, RED, YELLOW, YELLOW, RED, RED, YELLOW, YELLOW },
-                { YELLOW, YELLOW, BLUE, BLUE, YELLOW, YELLOW, BLUE, BLUE },
-                { YELLOW, YELLOW, BLUE, BLUE, YELLOW, YELLOW, BLUE, BLUE },
-                { YELLOW, YELLOW, BLUE, BLUE, YELLOW, YELLOW, BLUE, BLUE },
-                { YELLOW, YELLOW, BLUE, BLUE, YELLOW, YELLOW, BLUE, BLUE },
-                { YELLOW, YELLOW, BLUE, BLUE, YELLOW, YELLOW, BLUE, BLUE },
+                { C1, C1, C2, C2, C1, C1, C2, C2 },
+                { C1, C1, C2, C2, C1, C1, C2, C2 },
+                { C1, C1, C2, C2, C1, C1, C2, C2 },
+                { C1, C1, C2, C2, C1, C1, C2, C2 },
+                { C1, C1, C2, C2, C1, C1, C2, C2 },
+                { C2, C2, C3, C3, C2, C2, C3, C3 },
+                { C2, C2, C3, C3, C2, C2, C3, C3 },
+                { C2, C2, C3, C3, C2, C2, C3, C3 },
+                { C2, C2, C3, C3, C2, C2, C3, C3 },
+                { C2, C2, C3, C3, C2, C2, C3, C3 },
+                { C1, C1, C2, C2, C1, C1, C2, C2 },
+                { C1, C1, C2, C2, C1, C1, C2, C2 },
+                { C1, C1, C2, C2, C1, C1, C2, C2 },
+                { C1, C1, C2, C2, C1, C1, C2, C2 },
+                { C1, C1, C2, C2, C1, C1, C2, C2 },
+                { C2, C2, C3, C3, C2, C2, C3, C3 },
+                { C2, C2, C3, C3, C2, C2, C3, C3 },
+                { C2, C2, C3, C3, C2, C2, C3, C3 },
+                { C2, C2, C3, C3, C2, C2, C3, C3 },
+                { C2, C2, C3, C3, C2, C2, C3, C3 },
         });
     }
 

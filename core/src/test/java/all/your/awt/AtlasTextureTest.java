@@ -8,9 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static all.your.awt.Palette.*;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:simon@hult-thoresen.com">Simon Thoresen Hult</a>
@@ -45,31 +44,31 @@ public class AtlasTextureTest {
     public void requireThatOnlySpecifiedRegionOfAtlasIsPainted() {
         BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
-        g.setColor(Color.BLACK);
+        g.setColor(C0);
         g.fillRect(0, 0, 100, 100);
         new AtlasTexture(BufferedImages.newSquareGrid(new Dimension(2, 2), new Color[][] {
-                { Color.RED, Color.ORANGE, Color.YELLOW, Color.GREEN },
-                { Color.ORANGE, Color.YELLOW, Color.GREEN, Color.RED },
-                { Color.YELLOW, Color.GREEN, Color.RED, Color.ORANGE },
-                { Color.GREEN, Color.RED, Color.ORANGE, Color.YELLOW }
+                { C1, C2, C3, C4 },
+                { C2, C3, C4, C1 },
+                { C3, C4, C1, C2 },
+                { C4, C1, C2, C3 }
         }), new Rectangle(2, 2, 4, 4)).paint(g, new Rectangle(25, 25, 50, 50));
         g.dispose();
 
         for (int y = 0; y < 100; ++y) {
             for (int x = 0; x < 100; ++x) {
                 Color actual = new Color(image.getRGB(x, y));
-                Color expected = Color.BLACK;
+                Color expected = C0;
                 if (y >= 25 && y < 50) {
                     if (x >= 25 && x < 50) {
-                        expected = Color.YELLOW;
+                        expected = C3;
                     } else if (x >= 50 && x < 75) {
-                        expected = Color.GREEN;
+                        expected = C4;
                     }
                 } else if (y >= 50 && y < 75) {
                     if (x >= 25 && x < 50) {
-                        expected = Color.GREEN;
+                        expected = C4;
                     } else if (x >= 50 && x < 75) {
-                        expected = Color.RED;
+                        expected = C1;
                     }
                 }
                 assertEquals("(" + x + "," + y + ")", expected, actual);

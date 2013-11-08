@@ -7,10 +7,8 @@ import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 
 import static all.your.awt.AssertTexture.assertPaint;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static all.your.awt.Palette.*;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:simon@hult-thoresen.com">Simon Thoresen Hult</a>
@@ -37,10 +35,10 @@ public class SquareGridTextureAtlasTest {
     @Test
     public void requireThatTextureIdIsEncodedRowCol() {
         BufferedImage atlasImage = BufferedImages.newSquareGrid(new Dimension(2, 2), new Color[][] {
-                { Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY },
-                { Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA },
-                { Color.ORANGE, Color.PINK, Color.RED, Color.WHITE },
-                { Color.YELLOW, Color.BLACK, Color.CYAN, Color.DARK_GRAY },
+                { C0, C1, C2, C3 },
+                { C4, C5, C6, C7 },
+                { C8, C9, CA, CB },
+                { CC, CD, CE, CF },
         });
         SquareGridTextureAtlas atlas = new SquareGridTextureAtlas(atlasImage, new Dimension(4, 4));
         for (int lhsRow = 0; lhsRow < 2; ++lhsRow) {
@@ -63,35 +61,35 @@ public class SquareGridTextureAtlasTest {
     @Test
     public void requireThatAtlasTexturesCanBeRendered() {
         BufferedImage atlasImage = BufferedImages.newSquareGrid(new Dimension(2, 2), new Color[][] {
-                { Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY },
-                { Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA },
-                { Color.ORANGE, Color.PINK, Color.RED, Color.WHITE },
-                { Color.YELLOW, Color.BLACK, Color.CYAN, Color.DARK_GRAY },
+                { C0, C1, C2, C3 },
+                { C4, C5, C6, C7 },
+                { C8, C9, CA, CB },
+                { CC, C0, C2, C3 },
         });
         SquareGridTextureAtlas atlas = new SquareGridTextureAtlas(atlasImage, new Dimension(4, 4));
         assertPaint(atlas.getTexture(0, 0), new Color[][] {
-                { Color.BLACK, Color.BLACK, Color.BLUE, Color.BLUE, },
-                { Color.BLACK, Color.BLACK, Color.BLUE, Color.BLUE, },
-                { Color.GRAY, Color.GRAY, Color.GREEN, Color.GREEN, },
-                { Color.GRAY, Color.GRAY, Color.GREEN, Color.GREEN, },
+                { C0, C0, C1, C1, },
+                { C0, C0, C1, C1, },
+                { C4, C4, C5, C5, },
+                { C4, C4, C5, C5, },
         });
         assertPaint(atlas.getTexture(0, 1), new Color[][] {
-                { Color.CYAN, Color.CYAN, Color.DARK_GRAY, Color.DARK_GRAY, },
-                { Color.CYAN, Color.CYAN, Color.DARK_GRAY, Color.DARK_GRAY, },
-                { Color.LIGHT_GRAY, Color.LIGHT_GRAY, Color.MAGENTA, Color.MAGENTA, },
-                { Color.LIGHT_GRAY, Color.LIGHT_GRAY, Color.MAGENTA, Color.MAGENTA, },
+                { C2, C2, C3, C3, },
+                { C2, C2, C3, C3, },
+                { C6, C6, C7, C7, },
+                { C6, C6, C7, C7, },
         });
         assertPaint(atlas.getTexture(1, 0), new Color[][] {
-                { Color.ORANGE, Color.ORANGE, Color.PINK, Color.PINK, },
-                { Color.ORANGE, Color.ORANGE, Color.PINK, Color.PINK, },
-                { Color.YELLOW, Color.YELLOW, Color.BLACK, Color.BLACK, },
-                { Color.YELLOW, Color.YELLOW, Color.BLACK, Color.BLACK, },
+                { C8, C8, C9, C9, },
+                { C8, C8, C9, C9, },
+                { CC, CC, C0, C0, },
+                { CC, CC, C0, C0, },
         });
         assertPaint(atlas.getTexture(1, 1), new Color[][] {
-                { Color.RED, Color.RED, Color.WHITE, Color.WHITE, },
-                { Color.RED, Color.RED, Color.WHITE, Color.WHITE, },
-                { Color.CYAN, Color.CYAN, Color.DARK_GRAY, Color.DARK_GRAY, },
-                { Color.CYAN, Color.CYAN, Color.DARK_GRAY, Color.DARK_GRAY, },
+                { CA, CA, CB, CB, },
+                { CA, CA, CB, CB, },
+                { C2, C2, C3, C3, },
+                { C2, C2, C3, C3, },
         });
     }
 
