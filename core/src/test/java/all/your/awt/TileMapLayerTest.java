@@ -11,10 +11,16 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import static all.your.awt.AssertImage.assertPixels;
-import static java.awt.Color.GREEN;
-import static java.awt.Color.ORANGE;
-import static java.awt.Color.RED;
-import static java.awt.Color.YELLOW;
+import static all.your.awt.MoreColors.C0;
+import static all.your.awt.MoreColors.C1;
+import static all.your.awt.MoreColors.C2;
+import static all.your.awt.MoreColors.C3;
+import static all.your.awt.MoreColors.C4;
+import static all.your.awt.MoreColors.C5;
+import static all.your.awt.MoreColors.C6;
+import static all.your.awt.MoreColors.C7;
+import static all.your.awt.MoreColors.C8;
+import static all.your.awt.MoreColors.C9;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -107,50 +113,132 @@ public class TileMapLayerTest {
     }
 
     @Test
-    public void requireThatLayerCanBePainted() {
-        TileMapLayer map = TileMapLayers.newColorGrid(new Color[][] {
-                { RED, ORANGE, YELLOW },
-                { ORANGE, YELLOW, RED },
-                { YELLOW, RED, ORANGE },
-        });
-        BufferedImage image = BufferedImages.newFilled(new Dimension(9, 9), GREEN);
-        Graphics2D g = image.createGraphics();
-        map.paint(g, new Rectangle(3, 3, 6, 6), new Rectangle(0, 0, 3, 3));
-        g.dispose();
-        assertPixels(image, new Color[][] {
-                { GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN },
-                { GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN },
-                { GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN, GREEN },
-                { GREEN, GREEN, GREEN, RED, RED, ORANGE, ORANGE, YELLOW, YELLOW },
-                { GREEN, GREEN, GREEN, RED, RED, ORANGE, ORANGE, YELLOW, YELLOW },
-                { GREEN, GREEN, GREEN, ORANGE, ORANGE, YELLOW, YELLOW, RED, RED },
-                { GREEN, GREEN, GREEN, ORANGE, ORANGE, YELLOW, YELLOW, RED, RED },
-                { GREEN, GREEN, GREEN, YELLOW, YELLOW, RED, RED, ORANGE, ORANGE },
-                { GREEN, GREEN, GREEN, YELLOW, YELLOW, RED, RED, ORANGE, ORANGE },
-        });
+    public void requireThatPaintOnlyRendersRegion() {
+        assertPaint(
+                new Rectangle(0, 0, 1, 1),
+                new Color[][] {
+                        { C1, C2, C3 },
+                        { C4, C5, C6 },
+                        { C7, C8, C9 } },
+                C0,
+                new Rectangle(3, 3, 6, 6),
+                new Color[][] {
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C1, C1, C1, C1, C1, C1 },
+                        { C0, C0, C0, C1, C1, C1, C1, C1, C1 },
+                        { C0, C0, C0, C1, C1, C1, C1, C1, C1 },
+                        { C0, C0, C0, C1, C1, C1, C1, C1, C1 },
+                        { C0, C0, C0, C1, C1, C1, C1, C1, C1 },
+                        { C0, C0, C0, C1, C1, C1, C1, C1, C1 },
+                });
+        assertPaint(
+                new Rectangle(0, 0, 2, 1),
+                new Color[][] {
+                        { C1, C2, C3 },
+                        { C4, C5, C6 },
+                        { C7, C8, C9 } },
+                C0,
+                new Rectangle(3, 3, 6, 6),
+                new Color[][] {
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C1, C1, C1, C2, C2, C2 },
+                        { C0, C0, C0, C1, C1, C1, C2, C2, C2 },
+                        { C0, C0, C0, C1, C1, C1, C2, C2, C2 },
+                        { C0, C0, C0, C1, C1, C1, C2, C2, C2 },
+                        { C0, C0, C0, C1, C1, C1, C2, C2, C2 },
+                        { C0, C0, C0, C1, C1, C1, C2, C2, C2 },
+                });
+        assertPaint(
+                new Rectangle(0, 0, 1, 2),
+                new Color[][] {
+                        { C1, C2, C3 },
+                        { C4, C5, C6 },
+                        { C7, C8, C9 } },
+                C0,
+                new Rectangle(3, 3, 6, 6),
+                new Color[][] {
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C1, C1, C1, C1, C1, C1 },
+                        { C0, C0, C0, C1, C1, C1, C1, C1, C1 },
+                        { C0, C0, C0, C1, C1, C1, C1, C1, C1 },
+                        { C0, C0, C0, C4, C4, C4, C4, C4, C4 },
+                        { C0, C0, C0, C4, C4, C4, C4, C4, C4 },
+                        { C0, C0, C0, C4, C4, C4, C4, C4, C4 },
+                });
+        assertPaint(
+                new Rectangle(0, 0, 2, 2),
+                new Color[][] {
+                        { C1, C2, C3 },
+                        { C4, C5, C6 },
+                        { C7, C8, C9 } },
+                C0,
+                new Rectangle(3, 3, 6, 6),
+                new Color[][] {
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C1, C1, C1, C2, C2, C2 },
+                        { C0, C0, C0, C1, C1, C1, C2, C2, C2 },
+                        { C0, C0, C0, C1, C1, C1, C2, C2, C2 },
+                        { C0, C0, C0, C4, C4, C4, C5, C5, C5 },
+                        { C0, C0, C0, C4, C4, C4, C5, C5, C5 },
+                        { C0, C0, C0, C4, C4, C4, C5, C5, C5 },
+                });
+        assertPaint(
+                new Rectangle(0, 0, 3, 2),
+                new Color[][] {
+                        { C1, C2, C3 },
+                        { C4, C5, C6 },
+                        { C7, C8, C9 } },
+                C0,
+                new Rectangle(3, 3, 6, 6),
+                new Color[][] {
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C1, C1, C2, C2, C3, C3 },
+                        { C0, C0, C0, C1, C1, C2, C2, C3, C3 },
+                        { C0, C0, C0, C1, C1, C2, C2, C3, C3 },
+                        { C0, C0, C0, C4, C4, C5, C5, C6, C6 },
+                        { C0, C0, C0, C4, C4, C5, C5, C6, C6 },
+                        { C0, C0, C0, C4, C4, C5, C5, C6, C6 },
+                });
+        assertPaint(
+                new Rectangle(0, 0, 3, 3),
+                new Color[][] {
+                        { C1, C2, C3 },
+                        { C4, C5, C6 },
+                        { C7, C8, C9 } },
+                C0,
+                new Rectangle(3, 3, 6, 6),
+                new Color[][] {
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C1, C1, C2, C2, C3, C3 },
+                        { C0, C0, C0, C1, C1, C2, C2, C3, C3 },
+                        { C0, C0, C0, C4, C4, C5, C5, C6, C6 },
+                        { C0, C0, C0, C4, C4, C5, C5, C6, C6 },
+                        { C0, C0, C0, C7, C7, C8, C8, C9, C9 },
+                        { C0, C0, C0, C7, C7, C8, C8, C9, C9 },
+                });
     }
 
-    @Test
-    public void requireThatPaintClipsToViewport() {
-        TileMapLayer map = TileMapLayers.newColorGrid(new Color[][] {
-                { RED, ORANGE, YELLOW },
-                { ORANGE, YELLOW, RED },
-                { YELLOW, RED, ORANGE },
-        });
-        BufferedImage image = BufferedImages.newFilled(new Dimension(6, 6), GREEN);
+    private static void assertPaint(Rectangle mapRegion, Color[][] mapLayer, Color background,
+                                    Rectangle viewport, Color[][] expectedPixels)
+    {
+        TileMapLayer map = TileMapLayers.newColorGrid(mapLayer);
+        BufferedImage image = BufferedImages.newFilled(new Dimension(expectedPixels[0].length, expectedPixels.length),
+                                                       background);
         Graphics2D g = image.createGraphics();
-        map.paint(g, new Rectangle(1, 1, 3, 5), new Rectangle(0, 0, 2, 2));
+        map.paint(g, viewport, mapRegion);
         g.dispose();
-
-        // TODO: this expectation might be wrong, and clipping is also not implemented
-        assertPixels(image, new Color[][] {
-                { GREEN, GREEN, GREEN, GREEN, GREEN, GREEN },
-                { GREEN, RED, RED, ORANGE, GREEN, GREEN },
-                { GREEN, RED, RED, ORANGE, GREEN, GREEN },
-                { GREEN, RED, RED, ORANGE, GREEN, GREEN },
-                { GREEN, ORANGE, ORANGE, RED, GREEN, GREEN },
-                { GREEN, ORANGE, ORANGE, RED, GREEN, GREEN },
-        });
-
+        assertPixels(image, expectedPixels);
     }
 }
