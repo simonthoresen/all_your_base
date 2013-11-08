@@ -247,6 +247,44 @@ public class TileMapLayerTest {
                         { C0, C0, C0, C8, C8, C8, C9, C9, C9 },
                         { C0, C0, C0, C8, C8, C8, C9, C9, C9 },
                 });
+        assertPaint(
+                new Rectangle(1, 1, 2, 2),
+                new Color[][] {
+                        { C1, C2, C3 },
+                        { C4, C5, C6 },
+                        { C7, C8, C9 } },
+                C0,
+                new Rectangle(3, 3, 5, 5),
+                new Color[][] {
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C5, C5, C6, C6, C0, C0 },
+                        { C0, C0, C0, C5, C5, C6, C6, C0, C0 },
+                        { C0, C0, C0, C8, C8, C9, C9, C0, C0 },
+                        { C0, C0, C0, C8, C8, C9, C9, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                });
+        assertPaint(
+                new Rectangle(0, 0, 2, 2),
+                new Color[][] {
+                        { C1, C2, C3 },
+                        { C4, C5, C6 },
+                        { C7, C8, C9 } },
+                C0,
+                new Rectangle(3, 3, 5, 5),
+                new Color[][] {
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C1, C1, C2, C2, C3, C0 },
+                        { C0, C0, C0, C1, C1, C2, C2, C3, C0 },
+                        { C0, C0, C0, C4, C4, C5, C5, C6, C0 },
+                        { C0, C0, C0, C4, C4, C5, C5, C6, C0 },
+                        { C0, C0, C0, C7, C7, C8, C8, C9, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                });
     }
 
     private static void assertPaint(Rectangle mapRegion, Color[][] mapLayer, Color background,
