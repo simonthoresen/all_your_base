@@ -16,6 +16,7 @@ public class AtlasTexture implements Texture {
     private final BufferedImage image;
     private final Rectangle atlasRegion;
 
+    // TODO: replace image with texture
     AtlasTexture(BufferedImage image, Rectangle region) {
         Objects.requireNonNull(image, "image");
         Preconditions.checkArgument(BufferedImages.getBounds(image, new Rectangle()).contains(region),

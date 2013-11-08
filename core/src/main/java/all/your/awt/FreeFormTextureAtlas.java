@@ -33,6 +33,7 @@ public class FreeFormTextureAtlas implements TextureAtlas {
         private final BufferedImage image;
         private final Map<String, AtlasTexture> textures = new HashMap<>();
 
+        // TODO: replace image with texture
         public Builder(BufferedImage image) {
             Objects.requireNonNull(image, "image");
             this.image = image;

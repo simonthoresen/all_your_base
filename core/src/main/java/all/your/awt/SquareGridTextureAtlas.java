@@ -18,6 +18,7 @@ public class SquareGridTextureAtlas implements TextureAtlas {
     private final BufferedImage image;
     private final Dimension squareSize;
 
+    // TODO: replace image with texture
     public SquareGridTextureAtlas(BufferedImage image, Dimension squareSize) {
         Objects.requireNonNull(image, "image");
         Preconditions.checkArgument(squareSize.width > 0 && squareSize.height > 0, "squareSize; %s", squareSize);
