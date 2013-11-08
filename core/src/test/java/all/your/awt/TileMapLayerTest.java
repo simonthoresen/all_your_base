@@ -113,7 +113,7 @@ public class TileMapLayerTest {
     }
 
     @Test
-    public void requireThatPaintOnlyRendersRegion() {
+    public void requireThatMapLayerCanBePainted() {
         assertPaint(
                 new Rectangle(0, 0, 1, 1),
                 new Color[][] {
