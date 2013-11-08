@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.Objects;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -13,16 +14,19 @@ import java.awt.Rectangle;
 public class TileMapLayer {
 
     private final Tile[][] tiles;
+    private final Tile nullTile;
 
-    public TileMapLayer(Dimension size) {
+    public TileMapLayer(Dimension size, Tile nullTile) {
         Preconditions.checkArgument(size.width > 0 && size.height > 0, "size; %s", size);
-        tiles = new Tile[size.height][size.width];
+        Objects.requireNonNull(nullTile, "nullTile");
+        this.tiles = new Tile[size.height][size.width];
+        this.nullTile = nullTile;
     }
 
     public Tile getTile(Point p) {
         if (p.y < 0 || p.y >= tiles.length ||
             p.x < 0 || p.x >= tiles[p.y].length) {
-            return null;
+            return nullTile;
         }
         return tiles[p.y][p.x];
     }
@@ -47,11 +51,7 @@ public class TileMapLayer {
         for (mapPos.y = mapRegion.y; mapPos.y < mapPosMax.y; ++mapPos.y) {
             viewportRegion.x = viewport.x;
             for (mapPos.x = mapRegion.x; mapPos.x < mapPosMax.x; ++mapPos.x) {
-                Tile tile = getTile(mapPos);
-                if (tile != null) {
-                    tile.getTexture().paint(g, viewportRegion);
-                    // TODO: clipping
-                }
+                getTile(mapPos).getTexture().paint(g, viewportRegion);
                 viewportRegion.x += tileSize.width;
             }
             viewportRegion.y += tileSize.height;
