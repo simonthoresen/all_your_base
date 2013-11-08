@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static all.your.awt.AssertImage.assertPixels;
-import static all.your.awt.Palette.*;
+import static all.your.awt.MoreColors.*;
 import static org.junit.Assert.*;
 
 /**

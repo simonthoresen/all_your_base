@@ -9,7 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static all.your.awt.AssertImage.assertPixels;
-import static all.your.awt.Palette.*;
+import static all.your.awt.MoreColors.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 

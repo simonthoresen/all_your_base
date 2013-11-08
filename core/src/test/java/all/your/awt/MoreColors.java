@@ -8,7 +8,7 @@ import java.util.Locale;
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */
-public class Palette {
+public class MoreColors {
 
     public static final Color[] COLORS = new Color[] {
             new Color(0x000033),

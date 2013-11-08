@@ -19,7 +19,7 @@ public class AssertImage {
                 int expected = expectedPixels[p.y][p.x].getRGB();
                 int actual = actualImage.getRGB(p.x, p.y);
                 if (expected != actual) {
-                    assertEquals(Palette.render(expectedPixels), Palette.render(actualImage));
+                    assertEquals(MoreColors.render(expectedPixels), MoreColors.render(actualImage));
                     assertEquals(String.format("0x%08X", expected),
                                  String.format("0x%08X", actual));
                 }
