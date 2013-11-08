@@ -44,6 +44,10 @@ public class TileMapLayer {
                                            viewport.height / mapRegion.height);
         Rectangle viewportRegion = new Rectangle(tileSize);
 
+        // TODO: cap map pos to valid positions to avoid having to call getTile()
+        // TODO: explicitly render null tile as a different pass
+
+
         Point mapPos = new Point();
         Point mapPosMax = new Point(mapRegion.x + (viewport.width + tileSize.width - 1) / tileSize.width,
                                     mapRegion.y + (viewport.height + tileSize.height - 1) / tileSize.height);
