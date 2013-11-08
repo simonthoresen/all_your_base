@@ -7,7 +7,7 @@ import java.awt.Rectangle;
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */
-public enum NullTexture implements Texture {
+enum NullTexture implements Texture {
 
     INSTANCE;
 

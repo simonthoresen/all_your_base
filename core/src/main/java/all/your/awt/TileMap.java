@@ -24,9 +24,9 @@ public class TileMap {
         return layers.get(id);
     }
 
-    public TileMapLayer newLayer(String id, Tile nullTile) {
+    public TileMapLayer newLayer(String id) {
         Preconditions.checkState(!layers.containsKey(id), "id '" + id + "' already in use");
-        TileMapLayer layer = new TileMapLayer(size, nullTile);
+        TileMapLayer layer = new TileMapLayer(size);
         layers.put(id, layer);
         return layer;
     }
