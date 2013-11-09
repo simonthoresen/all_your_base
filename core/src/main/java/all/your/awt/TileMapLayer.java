@@ -61,20 +61,21 @@ public class TileMapLayer {
         int tileHeight = viewport.height / mapRegion.height;
 
         // clip the requested map region to the bounds of this map layer, and translate the viewport accordingly
-        Rectangle subRegion = bounds.intersection(mapRegion);
-        viewport = new Rectangle(viewport.x + (subRegion.x - mapRegion.x) * tileWidth,
-                                 viewport.y + (subRegion.y - mapRegion.y) * tileHeight,
-                                 viewport.width + (subRegion.width - mapRegion.width) * tileWidth,
-                                 viewport.height + (subRegion.height - mapRegion.height) * tileHeight);
-        int mapRegionLeft = mapRegion.x;
-        int mapRegionRight = mapRegionLeft + mapRegion.width;
-        int mapRegionTop = mapRegion.y;
-        int mapRegionBottom = mapRegionTop + mapRegion.height;
+        Rectangle intersection = bounds.intersection(mapRegion);
+        viewport = new Rectangle(viewport.x + (intersection.x - mapRegion.x) * tileWidth,
+                                 viewport.y + (intersection.y - mapRegion.y) * tileHeight,
+                                 viewport.width + (intersection.width - mapRegion.width) * tileWidth,
+                                 viewport.height + (intersection.height - mapRegion.height) * tileHeight);
+        mapRegion = intersection;
+        int xMin = mapRegion.x;
+        int xMax = xMin + mapRegion.width;
+        int yMin = mapRegion.y;
+        int yMax = yMin + mapRegion.height;
 
         // we then go ahead and render all the tiles of the map region
         Rectangle viewportRegion = new Rectangle(viewport.x, viewport.y, tileWidth, tileHeight);
-        for (int y = mapRegionTop; y < mapRegionBottom; ++y) {
-            for (int x = mapRegionLeft; x < mapRegionRight; ++x) {
+        for (int y = yMin; y < yMax; ++y) {
+            for (int x = xMin; x < xMax; ++x) {
                 paint(g, viewportRegion, x, y);
                 viewportRegion.x += tileWidth;
             }
@@ -85,31 +86,31 @@ public class TileMapLayer {
         // in case the viewport width is not dividable by the map region width, the painted layer will have an empty
         // right column. cover this by painting a fraction of the next map column, if any
         int fracWidth = viewport.width % tileWidth;
-        if (fracWidth > 0 && mapRegionRight < bounds.width) {
+        if (fracWidth > 0 && xMax < bounds.width) {
             viewportRegion.setBounds(viewport.x + mapRegion.width * tileWidth, viewport.y, fracWidth, tileHeight);
-            for (int y = mapRegionTop; y < mapRegionBottom; ++y) {
-                paint(g, viewportRegion, mapRegionRight, y);
+            for (int y = yMin; y < yMax; ++y) {
+                paint(g, viewportRegion, xMax, y);
                 viewportRegion.y += tileHeight;
             }
         }
 
         // similarly, cover the empty bottom row if applicable
         int fracHeight = viewport.height % tileHeight;
-        if (fracHeight > 0 && mapRegionBottom < bounds.height) {
+        if (fracHeight > 0 && yMax < bounds.height) {
             viewportRegion.setBounds(viewport.x, viewport.y + mapRegion.height * tileHeight, tileWidth, fracHeight);
-            for (int x = mapRegionLeft; x < mapRegionRight; ++x) {
-                paint(g, viewportRegion, x, mapRegionBottom);
+            for (int x = xMin; x < xMax; ++x) {
+                paint(g, viewportRegion, x, yMax);
                 viewportRegion.x += tileWidth;
             }
         }
 
         // if there is both an empty right column and an empty bottom row, we also need to cover the bottom right tile
         // when possible
-        if (fracWidth > 0 && fracHeight > 0 && mapRegionRight < bounds.width && mapRegionBottom < bounds.height) {
+        if (fracWidth > 0 && fracHeight > 0 && xMax < bounds.width && yMax < bounds.height) {
             viewportRegion.setBounds(viewport.x + mapRegion.width * tileWidth,
                                      viewport.y + mapRegion.height * tileHeight,
                                      fracWidth, fracHeight);
-            paint(g, viewportRegion, mapRegionRight, mapRegionBottom);
+            paint(g, viewportRegion, xMax, yMax);
         }
     }
 
