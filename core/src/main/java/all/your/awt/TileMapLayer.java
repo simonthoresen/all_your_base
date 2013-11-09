@@ -86,10 +86,7 @@ public class TileMapLayer {
         // right column. cover this by painting a fraction of the next map column, if any
         int fracWidth = viewport.width % tileWidth;
         if (fracWidth > 0 && mapRegionRight < bounds.width) {
-            viewportRegion.x = viewport.x + mapRegion.width * tileWidth;
-            viewportRegion.y = viewport.y;
-            viewportRegion.width = fracWidth;
-            viewportRegion.height = tileHeight;
+            viewportRegion.setBounds(viewport.x + mapRegion.width * tileWidth, viewport.y, fracWidth, tileHeight);
             for (int y = mapRegionTop; y < mapRegionBottom; ++y) {
                 paint(g, viewportRegion, mapRegionRight, y);
                 viewportRegion.y += tileHeight;
@@ -99,10 +96,7 @@ public class TileMapLayer {
         // similarly, cover the empty bottom row if applicable
         int fracHeight = viewport.height % tileHeight;
         if (fracHeight > 0 && mapRegionBottom < bounds.height) {
-            viewportRegion.x = viewport.x;
-            viewportRegion.y = viewport.y + mapRegion.height * tileHeight;
-            viewportRegion.width = tileWidth;
-            viewportRegion.height = fracHeight;
+            viewportRegion.setBounds(viewport.x, viewport.y + mapRegion.height * tileHeight, tileWidth, fracHeight);
             for (int x = mapRegionLeft; x < mapRegionRight; ++x) {
                 paint(g, viewportRegion, x, mapRegionBottom);
                 viewportRegion.x += tileWidth;
@@ -112,10 +106,9 @@ public class TileMapLayer {
         // if there is both an empty right column and an empty bottom row, we also need to cover the bottom right tile
         // when possible
         if (fracWidth > 0 && fracHeight > 0 && mapRegionRight < bounds.width && mapRegionBottom < bounds.height) {
-            viewportRegion.x = viewport.x + mapRegion.width * tileWidth;
-            viewportRegion.y = viewport.y + mapRegion.height * tileHeight;
-            viewportRegion.width = fracWidth;
-            viewportRegion.height = fracHeight;
+            viewportRegion.setBounds(viewport.x + mapRegion.width * tileWidth,
+                                     viewport.y + mapRegion.height * tileHeight,
+                                     fracWidth, fracHeight);
             paint(g, viewportRegion, mapRegionRight, mapRegionBottom);
         }
     }
