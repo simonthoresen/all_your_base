@@ -10,6 +10,16 @@ import java.awt.image.BufferedImage;
  */
 public class TileMapLayers {
 
+    public static TileMapLayer newInstance(Tile[][] tiles) {
+        TileMapLayer map = new TileMapLayer(new Dimension(tiles[0].length, tiles.length));
+        for (Point p = new Point(0, 0); p.y < tiles.length; ++p.y) {
+            for (p.x = 0; p.x < tiles[p.y].length; ++p.x) {
+                map.putTile(p, tiles[p.y][p.x]);
+            }
+        }
+        return map;
+    }
+
     public static TileMapLayer newColorGrid(Color[][] tiles) {
         TileMapLayer map = new TileMapLayer(new Dimension(tiles[0].length, tiles.length));
         fillColorGrid(map, tiles);

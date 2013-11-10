@@ -33,27 +33,27 @@ public class TileMapLayerTest {
 
     @Test
     public void requireThatPutChecksPosition() {
-        TileMapLayer map = new TileMapLayer(new Dimension(6, 9));
+        TileMapLayer layer = new TileMapLayer(new Dimension(6, 9));
         try {
-            map.putTile(new Point(-1, 0), Mockito.mock(Tile.class));
+            layer.putTile(new Point(-1, 0), Mockito.mock(Tile.class));
             fail();
         } catch (IndexOutOfBoundsException e) {
             assertEquals("-1", e.getMessage());
         }
         try {
-            map.putTile(new Point(6, 0), Mockito.mock(Tile.class));
+            layer.putTile(new Point(6, 0), Mockito.mock(Tile.class));
             fail();
         } catch (IndexOutOfBoundsException e) {
             assertEquals("6", e.getMessage());
         }
         try {
-            map.putTile(new Point(0, -1), Mockito.mock(Tile.class));
+            layer.putTile(new Point(0, -1), Mockito.mock(Tile.class));
             fail();
         } catch (IndexOutOfBoundsException e) {
             assertEquals("-1", e.getMessage());
         }
         try {
-            map.putTile(new Point(0, 9), Mockito.mock(Tile.class));
+            layer.putTile(new Point(0, 9), Mockito.mock(Tile.class));
             fail();
         } catch (IndexOutOfBoundsException e) {
             assertEquals("9", e.getMessage());
@@ -62,38 +62,38 @@ public class TileMapLayerTest {
 
     @Test
     public void requireThatTileCanBePut() {
-        TileMapLayer map = new TileMapLayer(new Dimension(6, 9));
+        TileMapLayer layer = new TileMapLayer(new Dimension(6, 9));
         Tile tile = Mockito.mock(Tile.class);
-        assertNull(map.putTile(new Point(0, 0), tile));
-        assertSame(tile, map.getTile(new Point(0, 0)));
+        assertNull(layer.putTile(new Point(0, 0), tile));
+        assertSame(tile, layer.getTile(new Point(0, 0)));
     }
 
     @Test
     public void requireThatPutTileReturnsPreviousTile() {
-        TileMapLayer map = new TileMapLayer(new Dimension(6, 9));
+        TileMapLayer layer = new TileMapLayer(new Dimension(6, 9));
         Tile tile = Mockito.mock(Tile.class);
-        assertNull(map.putTile(new Point(0, 0), tile));
-        assertSame(tile, map.putTile(new Point(0, 0), Mockito.mock(Tile.class)));
+        assertNull(layer.putTile(new Point(0, 0), tile));
+        assertSame(tile, layer.putTile(new Point(0, 0), Mockito.mock(Tile.class)));
     }
 
     @Test
     public void requireThatNullCanBePut() {
-        TileMapLayer map = new TileMapLayer(new Dimension(6, 9));
-        map.putTile(new Point(0, 0), Mockito.mock(Tile.class));
-        map.putTile(new Point(0, 0), null);
-        assertNull(map.getTile(new Point(0, 0)));
+        TileMapLayer layer = new TileMapLayer(new Dimension(6, 9));
+        layer.putTile(new Point(0, 0), Mockito.mock(Tile.class));
+        layer.putTile(new Point(0, 0), null);
+        assertNull(layer.getTile(new Point(0, 0)));
     }
 
     @Test
     public void requireThatGetTileReturnsNullOutsideBoundaries() {
-        TileMapLayer map = new TileMapLayer(new Dimension(1, 1));
-        map.putTile(new Point(0, 0), Mockito.mock(Tile.class));
-        assertNull(map.getTile(new Point(-1, -1)));
-        assertNull(map.getTile(new Point(-1, 0)));
-        assertNull(map.getTile(new Point(0, -1)));
-        assertNull(map.getTile(new Point(1, 1)));
-        assertNull(map.getTile(new Point(1, 0)));
-        assertNull(map.getTile(new Point(0, 1)));
+        TileMapLayer layer = new TileMapLayer(new Dimension(1, 1));
+        layer.putTile(new Point(0, 0), Mockito.mock(Tile.class));
+        assertNull(layer.getTile(new Point(-1, -1)));
+        assertNull(layer.getTile(new Point(-1, 0)));
+        assertNull(layer.getTile(new Point(0, -1)));
+        assertNull(layer.getTile(new Point(1, 1)));
+        assertNull(layer.getTile(new Point(1, 0)));
+        assertNull(layer.getTile(new Point(0, 1)));
     }
 
     @Test
@@ -231,6 +231,71 @@ public class TileMapLayerTest {
                         { C0, C0, C0, C8, C8, C8, C9, C9, C9 },
                         { C0, C0, C0, C8, C8, C8, C9, C9, C9 },
                 });
+    }
+
+    @Test
+    public void requireThatMapRegionIsClippedToMap() {
+        assertPaint(
+                new Rectangle(-2, 0, 4, 4),
+                new Color[][] {
+                        { C1, C2, C3 },
+                        { C4, C5, C6 },
+                        { C7, C8, C9 } },
+                C0,
+                new Rectangle(1, 1, 8, 8),
+                new Color[][] {
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C1, C1, C2, C2 },
+                        { C0, C0, C0, C0, C0, C1, C1, C2, C2 },
+                        { C0, C0, C0, C0, C0, C4, C4, C5, C5 },
+                        { C0, C0, C0, C0, C0, C4, C4, C5, C5 },
+                        { C0, C0, C0, C0, C0, C7, C7, C8, C8 },
+                        { C0, C0, C0, C0, C0, C7, C7, C8, C8 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                });
+        assertPaint(
+                new Rectangle(0, -2, 4, 4),
+                new Color[][] {
+                        { C1, C2, C3 },
+                        { C4, C5, C6 },
+                        { C7, C8, C9 } },
+                C0,
+                new Rectangle(1, 1, 8, 8),
+                new Color[][] {
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C1, C1, C2, C2, C3, C3, C0, C0 },
+                        { C0, C1, C1, C2, C2, C3, C3, C0, C0 },
+                        { C0, C4, C4, C5, C5, C6, C6, C0, C0 },
+                        { C0, C4, C4, C5, C5, C6, C6, C0, C0 },
+                });
+        assertPaint(
+                new Rectangle(-1, -2, 3, 4),
+                new Color[][] {
+                        { C1, C2, C3 },
+                        { C4, C5, C6 },
+                        { C7, C8, C9 } },
+                C0,
+                new Rectangle(0, 0, 6, 8),
+                new Color[][] {
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C1, C1, C2, C2, C0, C0, C0 },
+                        { C0, C0, C1, C1, C2, C2, C0, C0, C0 },
+                        { C0, C0, C4, C4, C5, C5, C0, C0, C0 },
+                        { C0, C0, C4, C4, C5, C5, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                });
+    }
+
+    @Test
+    public void requireThatPaintClipsToViewport() {
         assertPaint(
                 new Rectangle(1, 1, 2, 2),
                 new Color[][] {
@@ -269,16 +334,103 @@ public class TileMapLayerTest {
                         { C0, C0, C0, C7, C7, C8, C8, C9, C0 },
                         { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
                 });
+
+    }
+
+    @Test
+    public void requireThatClippedTilesClipTexture() {
+        Tile T1 = new SimpleTile(new SimpleTexture(BufferedImages.newSquareGrid(
+                new Dimension(1, 1),
+                new Color[][] {
+                        { C1, C2, C3 },
+                        { C4, C5, C6 },
+                        { C7, C8, C9 },
+                })));
+        Tile T2 = new SimpleTile(new SimpleTexture(BufferedImages.newFilled(
+                new Dimension(1, 1),
+                CF)));
+        TileMapLayer layer = TileMapLayers.newInstance(new Tile[][] {
+                { T1, T2, T1 },
+                { T2, T1, T2 },
+                { T1, T2, T1 },
+        });
+        assertPaint(
+                new Rectangle(0, 0, 3, 3),
+                layer,
+                C0,
+                new Rectangle(0, 0, 9, 9),
+                new Color[][] {
+                        { C1, C2, C3, CF, CF, CF, C1, C2, C3 },
+                        { C4, C5, C6, CF, CF, CF, C4, C5, C6 },
+                        { C7, C8, C9, CF, CF, CF, C7, C8, C9 },
+                        { CF, CF, CF, C1, C2, C3, CF, CF, CF },
+                        { CF, CF, CF, C4, C5, C6, CF, CF, CF },
+                        { CF, CF, CF, C7, C8, C9, CF, CF, CF },
+                        { C1, C2, C3, CF, CF, CF, C1, C2, C3 },
+                        { C4, C5, C6, CF, CF, CF, C4, C5, C6 },
+                        { C7, C8, C9, CF, CF, CF, C7, C8, C9 },
+                });
+        assertPaint(
+                new Rectangle(0, 0, 3, 3),
+                layer,
+                C0,
+                new Rectangle(0, 0, 8, 8),
+                new Color[][] {
+                        { C1, C2, C3, CF, CF, CF, C1, C2, C0 },
+                        { C4, C5, C6, CF, CF, CF, C4, C5, C0 },
+                        { C7, C8, C9, CF, CF, CF, C7, C8, C0 },
+                        { CF, CF, CF, C1, C2, C3, CF, CF, C0 },
+                        { CF, CF, CF, C4, C5, C6, CF, CF, C0 },
+                        { CF, CF, CF, C7, C8, C9, CF, CF, C0 },
+                        { C1, C2, C3, CF, CF, CF, C1, C2, C0 },
+                        { C4, C5, C6, CF, CF, CF, C4, C5, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                });
+        assertPaint(
+                new Rectangle(0, 0, 3, 3),
+                layer,
+                C0,
+                new Rectangle(0, 0, 7, 7),
+                new Color[][] {
+                        { C1, C2, C3, CF, CF, CF, C1, C0, C0 },
+                        { C4, C5, C6, CF, CF, CF, C4, C0, C0 },
+                        { C7, C8, C9, CF, CF, CF, C7, C0, C0 },
+                        { CF, CF, CF, C1, C2, C3, CF, C0, C0 },
+                        { CF, CF, CF, C4, C5, C6, CF, C0, C0 },
+                        { CF, CF, CF, C7, C8, C9, CF, C0, C0 },
+                        { C1, C2, C3, CF, CF, CF, C1, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                });
+        assertPaint(
+                new Rectangle(0, 0, 3, 3),
+                layer,
+                C0,
+                new Rectangle(0, 0, 6, 6),
+                new Color[][] {
+                        { C1, C2, CF, CF, C1, C2, C0, C0, C0 },
+                        { C4, C5, CF, CF, C4, C5, C0, C0, C0 },
+                        { CF, CF, C1, C2, CF, CF, C0, C0, C0 },
+                        { CF, CF, C4, C5, CF, CF, C0, C0, C0 },
+                        { C1, C2, CF, CF, C1, C2, C0, C0, C0 },
+                        { C4, C5, CF, CF, C4, C5, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                });
     }
 
     private static void assertPaint(Rectangle mapRegion, Color[][] mapLayer, Color background,
-                                    Rectangle viewport, Color[][] expectedPixels)
-    {
-        TileMapLayer map = TileMapLayers.newColorGrid(mapLayer);
+                                    Rectangle viewport, Color[][] expectedPixels) {
+        assertPaint(mapRegion, TileMapLayers.newColorGrid(mapLayer), background, viewport, expectedPixels);
+    }
+
+    private static void assertPaint(Rectangle mapRegion, TileMapLayer layer, Color background,
+                                    Rectangle viewport, Color[][] expectedPixels) {
         BufferedImage image = BufferedImages.newFilled(new Dimension(expectedPixels[0].length, expectedPixels.length),
                                                        background);
         Graphics2D g = image.createGraphics();
-        map.paint(g, viewport, mapRegion);
+        layer.paint(g, viewport, mapRegion);
         g.dispose();
         assertPixels(image, expectedPixels);
     }
