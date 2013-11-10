@@ -76,7 +76,7 @@ public class MapLayer {
         Rectangle viewportRegion = new Rectangle(viewport.x, viewport.y, tileWidth, tileHeight);
         for (int y = yMin; y < yMax; ++y) {
             for (int x = xMin; x < xMax; ++x) {
-                paint(g, viewportRegion, x, y);
+                tiles.get(y * bounds.width + x).getTexture().paint(g, viewportRegion);
                 viewportRegion.x += tileWidth;
             }
             viewportRegion.x = viewport.x;
@@ -89,9 +89,6 @@ public class MapLayer {
         if (fracWidth > 0 && xMax < bounds.width) {
             viewportRegion.setBounds(viewport.x + mapRegion.width * tileWidth, viewport.y, fracWidth, tileHeight);
             for (int y = yMin; y < yMax; ++y) {
-                // paint(g, viewportRegion, xMax, y);
-                // viewportRegion.y += tileHeight;
-
                 Dimension textureSize = new Dimension();
                 Texture texture = tiles.get(y * bounds.width + xMax).getTexture();
                 texture.getSize(textureSize);
@@ -108,9 +105,6 @@ public class MapLayer {
         if (fracHeight > 0 && yMax < bounds.height) {
             viewportRegion.setBounds(viewport.x, viewport.y + mapRegion.height * tileHeight, tileWidth, fracHeight);
             for (int x = xMin; x < xMax; ++x) {
-                //paint(g, viewportRegion, x, yMax);
-                //viewportRegion.x += tileWidth;
-
                 Dimension textureSize = new Dimension();
                 Texture texture = tiles.get(yMax * bounds.width + x).getTexture();
                 texture.getSize(textureSize);
@@ -128,8 +122,6 @@ public class MapLayer {
             viewportRegion.setBounds(viewport.x + mapRegion.width * tileWidth,
                                      viewport.y + mapRegion.height * tileHeight,
                                      fracWidth, fracHeight);
-            //paint(g, viewportRegion, xMax, yMax);
-
             Dimension textureSize = new Dimension();
             Texture texture = tiles.get(yMax * bounds.width + xMax).getTexture();
             texture.getSize(textureSize);
@@ -138,9 +130,5 @@ public class MapLayer {
                                                     Math.max(1, (textureSize.height * fracHeight) / tileHeight));
             texture.paint(g, viewportRegion, textureRegion);
         }
-    }
-
-    private void paint(Graphics2D g, Rectangle viewport, /* TODO: Rectangle textureRegion */ int tileX, int tileY) {
-        tiles.get(tileY * bounds.width + tileX).getTexture().paint(g, viewport /* TODO: textureRegion */);
     }
 }
