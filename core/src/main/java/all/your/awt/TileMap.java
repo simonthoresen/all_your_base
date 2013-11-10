@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
  */
 public class TileMap {
 
-    private final LinkedHashMap<String, TileMapLayer> layers = new LinkedHashMap<>();
+    private final LinkedHashMap<String, MapLayer> layers = new LinkedHashMap<>();
     private final Dimension size;
 
     public TileMap(Dimension size) {
@@ -20,23 +20,23 @@ public class TileMap {
         this.size = new Dimension(size);
     }
 
-    public TileMapLayer getLayer(String id) {
+    public MapLayer getLayer(String id) {
         return layers.get(id);
     }
 
-    public TileMapLayer newLayer(String id) {
+    public MapLayer newLayer(String id) {
         Preconditions.checkState(!layers.containsKey(id), "id '" + id + "' already in use");
-        TileMapLayer layer = new TileMapLayer(size);
+        MapLayer layer = new MapLayer(size);
         layers.put(id, layer);
         return layer;
     }
 
-    public TileMapLayer removeLayer(String id) {
+    public MapLayer removeLayer(String id) {
         return layers.remove(id);
     }
 
     public void paint(Graphics2D g, Rectangle viewport, Rectangle mapRegion) {
-        for (TileMapLayer layer : layers.values()) {
+        for (MapLayer layer : layers.values()) {
             layer.paint(g, viewport, mapRegion);
         }
     }

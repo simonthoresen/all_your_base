@@ -13,12 +13,12 @@ import java.util.List;
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */
-public class TileMapLayer {
+public class MapLayer {
 
     private final List<Tile> tiles;
     private final Rectangle bounds;
 
-    public TileMapLayer(Dimension size) {
+    public MapLayer(Dimension size) {
         Preconditions.checkArgument(size.width > 0 && size.height > 0, "size; %s", size);
         this.bounds = new Rectangle(size);
         this.tiles = Arrays.asList(new Tile[size.height * size.width]);

@@ -48,9 +48,9 @@ public class TileMapTest {
     @Test
     public void requireThatLayerCanBeRetrieved() {
         TileMap map = new TileMap(new Dimension(1, 1));
-        TileMapLayer foo = map.newLayer("foo");
+        MapLayer foo = map.newLayer("foo");
         assertNotNull(foo);
-        TileMapLayer bar = map.newLayer("bar");
+        MapLayer bar = map.newLayer("bar");
         assertNotNull(bar);
         assertSame(foo, map.getLayer("foo"));
         assertSame(bar, map.getLayer("bar"));
@@ -59,7 +59,7 @@ public class TileMapTest {
     @Test
     public void requireThatLayerCanBeRemoved() {
         TileMap map = new TileMap(new Dimension(1, 1));
-        TileMapLayer foo = map.newLayer("foo");
+        MapLayer foo = map.newLayer("foo");
         assertSame(foo, map.removeLayer("foo"));
         assertNull(map.getLayer("foo"));
         assertNull(map.removeLayer("foo"));

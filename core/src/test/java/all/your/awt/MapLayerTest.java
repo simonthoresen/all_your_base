@@ -13,18 +13,18 @@ import static org.junit.Assert.*;
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */
-public class TileMapLayerTest {
+public class MapLayerTest {
 
     @Test
     public void requireThatConstructorChecksDimensions() {
         try {
-            new TileMapLayer(new Dimension(0, 1));
+            new MapLayer(new Dimension(0, 1));
             fail();
         } catch (IllegalArgumentException e) {
             assertEquals("size; java.awt.Dimension[width=0,height=1]", e.getMessage());
         }
         try {
-            new TileMapLayer(new Dimension(1, 0));
+            new MapLayer(new Dimension(1, 0));
             fail();
         } catch (IllegalArgumentException e) {
             assertEquals("size; java.awt.Dimension[width=1,height=0]", e.getMessage());
@@ -33,7 +33,7 @@ public class TileMapLayerTest {
 
     @Test
     public void requireThatPutChecksPosition() {
-        TileMapLayer layer = new TileMapLayer(new Dimension(6, 9));
+        MapLayer layer = new MapLayer(new Dimension(6, 9));
         try {
             layer.putTile(new Point(-1, 0), Mockito.mock(Tile.class));
             fail();
@@ -62,7 +62,7 @@ public class TileMapLayerTest {
 
     @Test
     public void requireThatTileCanBePut() {
-        TileMapLayer layer = new TileMapLayer(new Dimension(6, 9));
+        MapLayer layer = new MapLayer(new Dimension(6, 9));
         Tile tile = Mockito.mock(Tile.class);
         assertNull(layer.putTile(new Point(0, 0), tile));
         assertSame(tile, layer.getTile(new Point(0, 0)));
@@ -70,7 +70,7 @@ public class TileMapLayerTest {
 
     @Test
     public void requireThatPutTileReturnsPreviousTile() {
-        TileMapLayer layer = new TileMapLayer(new Dimension(6, 9));
+        MapLayer layer = new MapLayer(new Dimension(6, 9));
         Tile tile = Mockito.mock(Tile.class);
         assertNull(layer.putTile(new Point(0, 0), tile));
         assertSame(tile, layer.putTile(new Point(0, 0), Mockito.mock(Tile.class)));
@@ -78,7 +78,7 @@ public class TileMapLayerTest {
 
     @Test
     public void requireThatNullCanBePut() {
-        TileMapLayer layer = new TileMapLayer(new Dimension(6, 9));
+        MapLayer layer = new MapLayer(new Dimension(6, 9));
         layer.putTile(new Point(0, 0), Mockito.mock(Tile.class));
         layer.putTile(new Point(0, 0), null);
         assertNull(layer.getTile(new Point(0, 0)));
@@ -86,7 +86,7 @@ public class TileMapLayerTest {
 
     @Test
     public void requireThatGetTileReturnsNullOutsideBoundaries() {
-        TileMapLayer layer = new TileMapLayer(new Dimension(1, 1));
+        MapLayer layer = new MapLayer(new Dimension(1, 1));
         layer.putTile(new Point(0, 0), Mockito.mock(Tile.class));
         assertNull(layer.getTile(new Point(-1, -1)));
         assertNull(layer.getTile(new Point(-1, 0)));
@@ -349,7 +349,7 @@ public class TileMapLayerTest {
         Tile T2 = new SimpleTile(new SimpleTexture(BufferedImages.newFilled(
                 new Dimension(1, 1),
                 CF)));
-        TileMapLayer layer = TileMapLayers.newInstance(new Tile[][] {
+        MapLayer layer = TileMapLayers.newInstance(new Tile[][] {
                 { T1, T2, T1 },
                 { T2, T1, T2 },
                 { T1, T2, T1 },
@@ -474,7 +474,7 @@ public class TileMapLayerTest {
         assertPaint(mapRegion, TileMapLayers.newColorGrid(mapLayer), background, viewport, expectedPixels);
     }
 
-    private static void assertPaint(Rectangle mapRegion, TileMapLayer layer, Color background,
+    private static void assertPaint(Rectangle mapRegion, MapLayer layer, Color background,
                                     Rectangle viewport, Color[][] expectedPixels) {
         BufferedImage image = BufferedImages.newFilled(new Dimension(expectedPixels[0].length, expectedPixels.length),
                                                        background);
