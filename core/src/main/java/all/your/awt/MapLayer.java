@@ -89,18 +89,18 @@ public class MapLayer {
         if (fracWidth > 0 && xMax < bounds.width) {
             viewportRegion.setBounds(viewport.x + mapRegion.width * tileWidth, viewport.y, fracWidth, tileHeight);
             for (int y = yMin; y < yMax; ++y) {
-                paint(g, viewportRegion, xMax, y);
-                viewportRegion.y += tileHeight;
-            }
-            /*Dimension textureSize = new Dimension();
-            for (int y = yMin; y < yMax; ++y) {
+                // paint(g, viewportRegion, xMax, y);
+                // viewportRegion.y += tileHeight;
+
+                Dimension textureSize = new Dimension();
                 Texture texture = tiles.get(y * bounds.width + xMax).getTexture();
                 texture.getSize(textureSize);
-                Rectangle textureRegion = new Rectangle(0, 0, (textureSize.width * fracWidth) / tileWidth, textureSize.height);
+                Rectangle textureRegion = new Rectangle(0, 0,
+                                                        Math.max(1, (textureSize.width * fracWidth) / tileWidth),
+                                                        textureSize.height);
                 texture.paint(g, viewportRegion, textureRegion);
-                paint(g, viewportRegion, xMax, y);
                 viewportRegion.y += tileHeight;
-            }*/
+            }
         }
 
         // similarly, cover the empty bottom row if applicable
@@ -108,7 +108,16 @@ public class MapLayer {
         if (fracHeight > 0 && yMax < bounds.height) {
             viewportRegion.setBounds(viewport.x, viewport.y + mapRegion.height * tileHeight, tileWidth, fracHeight);
             for (int x = xMin; x < xMax; ++x) {
-                paint(g, viewportRegion, x, yMax);
+                //paint(g, viewportRegion, x, yMax);
+                //viewportRegion.x += tileWidth;
+
+                Dimension textureSize = new Dimension();
+                Texture texture = tiles.get(yMax * bounds.width + x).getTexture();
+                texture.getSize(textureSize);
+                Rectangle textureRegion = new Rectangle(0, 0,
+                                                        textureSize.width,
+                                                        Math.max(1, (textureSize.height * fracHeight) / tileHeight));
+                texture.paint(g, viewportRegion, textureRegion);
                 viewportRegion.x += tileWidth;
             }
         }
@@ -119,7 +128,15 @@ public class MapLayer {
             viewportRegion.setBounds(viewport.x + mapRegion.width * tileWidth,
                                      viewport.y + mapRegion.height * tileHeight,
                                      fracWidth, fracHeight);
-            paint(g, viewportRegion, xMax, yMax);
+            //paint(g, viewportRegion, xMax, yMax);
+
+            Dimension textureSize = new Dimension();
+            Texture texture = tiles.get(yMax * bounds.width + xMax).getTexture();
+            texture.getSize(textureSize);
+            Rectangle textureRegion = new Rectangle(0, 0,
+                                                    Math.max(1, (textureSize.width * fracWidth) / tileWidth),
+                                                    Math.max(1, (textureSize.height * fracHeight) / tileHeight));
+            texture.paint(g, viewportRegion, textureRegion);
         }
     }
 
