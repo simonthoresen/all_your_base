@@ -85,17 +85,26 @@ public class TileMapLayer {
 
         // in case the viewport width is not dividable by the map region width, the painted layer will have an empty
         // right column. cover this by painting a fraction of the next map column, if any
-        int fracWidth = viewport.width % tileWidth;
+        int fracWidth = viewport.width - mapRegion.width * tileWidth;
         if (fracWidth > 0 && xMax < bounds.width) {
             viewportRegion.setBounds(viewport.x + mapRegion.width * tileWidth, viewport.y, fracWidth, tileHeight);
             for (int y = yMin; y < yMax; ++y) {
                 paint(g, viewportRegion, xMax, y);
                 viewportRegion.y += tileHeight;
             }
+            /*Dimension textureSize = new Dimension();
+            for (int y = yMin; y < yMax; ++y) {
+                Texture texture = tiles.get(y * bounds.width + xMax).getTexture();
+                texture.getSize(textureSize);
+                Rectangle textureRegion = new Rectangle(0, 0, (textureSize.width * fracWidth) / tileWidth, textureSize.height);
+                texture.paint(g, viewportRegion, textureRegion);
+                paint(g, viewportRegion, xMax, y);
+                viewportRegion.y += tileHeight;
+            }*/
         }
 
         // similarly, cover the empty bottom row if applicable
-        int fracHeight = viewport.height % tileHeight;
+        int fracHeight = viewport.height - mapRegion.height * tileHeight;
         if (fracHeight > 0 && yMax < bounds.height) {
             viewportRegion.setBounds(viewport.x, viewport.y + mapRegion.height * tileHeight, tileWidth, fracHeight);
             for (int x = xMin; x < xMax; ++x) {
