@@ -1,17 +1,51 @@
 package all.your.awt;
 
-import java.awt.Dimension;
+import all.your.util.Preconditions;
+
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */
-public interface Texture {
+public class Texture {
 
-    public void paint(Graphics2D g, Rectangle viewport);
+    private final BufferedImage image;
+    private final Rectangle region;
 
-    public void paint(Graphics2D g, Rectangle viewport, Rectangle textureRegion);
+    public Texture(BufferedImage image) {
+        Objects.requireNonNull(image, "image");
+        this.image = image;
+        this.region = BufferedImages.getBounds(image, new Rectangle());
+    }
 
-    public Dimension getSize(Dimension out);
+    public Texture(Texture texture, Rectangle region) {
+        Objects.requireNonNull(texture, "texture");
+        Preconditions.checkArgument(texture.region.contains(region), "region; %s", region);
+        this.image = texture.image;
+        this.region = new Rectangle(texture.region.x + region.x, texture.region.y + region.y,
+                                    region.width, region.height);
+    }
+
+    public void paint(Graphics2D g, Rectangle viewport) {
+        paint(g, viewport, region.x, region.y, region.width, region.height);
+    }
+
+    public void paint(Graphics2D g, Rectangle viewport, Rectangle textureRegion) {
+        paint(g, viewport,
+              region.x + textureRegion.x, region.y + textureRegion.y,
+              textureRegion.width, textureRegion.height);
+    }
+
+    private void paint(Graphics2D g, Rectangle viewport, int x, int y, int width, int height) {
+        g.drawImage(image, viewport.x, viewport.y, viewport.x + viewport.width, viewport.y + viewport.height,
+                    x, y, x + width, y + height, null);
+    }
+
+    public Rectangle getBounds(Rectangle out) {
+        out.setBounds(region);
+        return out;
+    }
 }

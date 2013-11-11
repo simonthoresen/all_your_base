@@ -3,12 +3,29 @@ package all.your.awt;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import static all.your.awt.AssertImage.assertPixels;
-import static all.your.awt.MoreColors.*;
-import static org.junit.Assert.*;
+import static all.your.awt.MoreColors.C0;
+import static all.your.awt.MoreColors.C1;
+import static all.your.awt.MoreColors.C2;
+import static all.your.awt.MoreColors.C3;
+import static all.your.awt.MoreColors.C4;
+import static all.your.awt.MoreColors.C5;
+import static all.your.awt.MoreColors.C6;
+import static all.your.awt.MoreColors.C7;
+import static all.your.awt.MoreColors.C8;
+import static all.your.awt.MoreColors.C9;
+import static all.your.awt.MoreColors.CF;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -339,14 +356,14 @@ public class MapLayerTest {
 
     @Test
     public void requireThatClippedTilesClipTexture() {
-        Tile T1 = new SimpleTile(new SimpleTexture(BufferedImages.newSquareGrid(
+        Tile T1 = new SimpleTile(new Texture(BufferedImages.newSquareGrid(
                 new Dimension(1, 1),
                 new Color[][] {
                         { C1, C2, C3 },
                         { C4, C5, C6 },
                         { C7, C8, C9 },
                 })));
-        Tile T2 = new SimpleTile(new SimpleTexture(BufferedImages.newFilled(
+        Tile T2 = new SimpleTile(new Texture(BufferedImages.newFilled(
                 new Dimension(1, 1),
                 CF)));
         MapLayer layer = TileMapLayers.newInstance(new Tile[][] {

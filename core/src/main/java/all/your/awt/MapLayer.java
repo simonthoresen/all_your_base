@@ -89,9 +89,9 @@ public class MapLayer {
         if (fracWidth > 0 && xMax < bounds.width) {
             viewportRegion.setBounds(viewport.x + mapRegion.width * tileWidth, viewport.y, fracWidth, tileHeight);
             for (int y = yMin; y < yMax; ++y) {
-                Dimension textureSize = new Dimension();
+                Rectangle textureSize = new Rectangle();
                 Texture texture = tiles.get(y * bounds.width + xMax).getTexture();
-                texture.getSize(textureSize);
+                texture.getBounds(textureSize);
                 Rectangle textureRegion = new Rectangle(0, 0,
                                                         Math.max(1, (textureSize.width * fracWidth) / tileWidth),
                                                         textureSize.height);
@@ -105,9 +105,9 @@ public class MapLayer {
         if (fracHeight > 0 && yMax < bounds.height) {
             viewportRegion.setBounds(viewport.x, viewport.y + mapRegion.height * tileHeight, tileWidth, fracHeight);
             for (int x = xMin; x < xMax; ++x) {
-                Dimension textureSize = new Dimension();
+                Rectangle textureSize = new Rectangle();
                 Texture texture = tiles.get(yMax * bounds.width + x).getTexture();
-                texture.getSize(textureSize);
+                texture.getBounds(textureSize);
                 Rectangle textureRegion = new Rectangle(0, 0,
                                                         textureSize.width,
                                                         Math.max(1, (textureSize.height * fracHeight) / tileHeight));
@@ -122,9 +122,9 @@ public class MapLayer {
             viewportRegion.setBounds(viewport.x + mapRegion.width * tileWidth,
                                      viewport.y + mapRegion.height * tileHeight,
                                      fracWidth, fracHeight);
-            Dimension textureSize = new Dimension();
+            Rectangle textureSize = new Rectangle();
             Texture texture = tiles.get(yMax * bounds.width + xMax).getTexture();
-            texture.getSize(textureSize);
+            texture.getBounds(textureSize);
             Rectangle textureRegion = new Rectangle(0, 0,
                                                     Math.max(1, (textureSize.width * fracWidth) / tileWidth),
                                                     Math.max(1, (textureSize.height * fracHeight) / tileHeight));

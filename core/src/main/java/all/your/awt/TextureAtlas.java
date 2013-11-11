@@ -5,5 +5,5 @@ package all.your.awt;
  */
 public interface TextureAtlas {
 
-    public AtlasTexture getTexture(int id);
+    public Texture getTexture(int id);
 }

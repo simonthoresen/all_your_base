@@ -34,7 +34,7 @@ public class TileMapLayers {
                     continue;
                 }
                 BufferedImage image = BufferedImages.newSquareGrid(new Dimension(1, 1), new Color[][] { { col } });
-                out.putTile(p, new SimpleTile(new SimpleTexture(image)));
+                out.putTile(p, new SimpleTile(new Texture(image)));
             }
         }
     }

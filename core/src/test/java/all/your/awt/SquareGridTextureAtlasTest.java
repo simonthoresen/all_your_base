@@ -7,8 +7,26 @@ import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 
 import static all.your.awt.AssertTexture.assertPaint;
-import static all.your.awt.MoreColors.*;
-import static org.junit.Assert.*;
+import static all.your.awt.MoreColors.C0;
+import static all.your.awt.MoreColors.C1;
+import static all.your.awt.MoreColors.C2;
+import static all.your.awt.MoreColors.C3;
+import static all.your.awt.MoreColors.C4;
+import static all.your.awt.MoreColors.C5;
+import static all.your.awt.MoreColors.C6;
+import static all.your.awt.MoreColors.C7;
+import static all.your.awt.MoreColors.C8;
+import static all.your.awt.MoreColors.C9;
+import static all.your.awt.MoreColors.CA;
+import static all.your.awt.MoreColors.CB;
+import static all.your.awt.MoreColors.CC;
+import static all.your.awt.MoreColors.CD;
+import static all.your.awt.MoreColors.CE;
+import static all.your.awt.MoreColors.CF;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 /**
  * @author <a href="mailto:simon@hult-thoresen.com">Simon Thoresen Hult</a>
@@ -21,7 +39,7 @@ public class SquareGridTextureAtlasTest {
             new SquareGridTextureAtlas(null, new Dimension(32, 32));
             fail();
         } catch (NullPointerException e) {
-            assertEquals("image", e.getMessage());
+            assertEquals("atlas", e.getMessage());
         }
     }
 
@@ -40,7 +58,7 @@ public class SquareGridTextureAtlasTest {
                 { C8, C9, CA, CB },
                 { CC, CD, CE, CF },
         });
-        SquareGridTextureAtlas atlas = new SquareGridTextureAtlas(atlasImage, new Dimension(4, 4));
+        SquareGridTextureAtlas atlas = new SquareGridTextureAtlas(new Texture(atlasImage), new Dimension(4, 4));
         for (int lhsRow = 0; lhsRow < 2; ++lhsRow) {
             for (int lhsCol = 0; lhsCol < 2; ++lhsCol) {
                 Texture lhs = atlas.getTexture(lhsRow, lhsCol);
@@ -66,7 +84,7 @@ public class SquareGridTextureAtlasTest {
                 { C8, C9, CA, CB },
                 { CC, C0, C2, C3 },
         });
-        SquareGridTextureAtlas atlas = new SquareGridTextureAtlas(atlasImage, new Dimension(4, 4));
+        SquareGridTextureAtlas atlas = new SquareGridTextureAtlas(new Texture(atlasImage), new Dimension(4, 4));
         assertPaint(atlas.getTexture(0, 0), new Color[][] {
                 { C0, C0, C1, C1, },
                 { C0, C0, C1, C1, },
@@ -95,7 +113,7 @@ public class SquareGridTextureAtlasTest {
 
     private static void assertIllegalArgument(BufferedImage image, Dimension squareSize, String expectedException) {
         try {
-            new SquareGridTextureAtlas(image, squareSize);
+            new SquareGridTextureAtlas(new Texture(image), squareSize);
             fail();
         } catch (IllegalArgumentException e) {
             assertEquals(expectedException, e.getMessage());

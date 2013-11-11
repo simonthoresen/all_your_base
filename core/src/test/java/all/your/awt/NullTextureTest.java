@@ -3,7 +3,6 @@ package all.your.awt;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
@@ -16,13 +15,13 @@ public class NullTextureTest {
 
     @Test
     public void requireThatInstanceIsATexture() {
-        assertTrue(NullTexture.INSTANCE instanceof Texture);
+        assertTrue(Texture.class.isAssignableFrom(NullTexture.INSTANCE.getClass()));
     }
 
     @Test
     public void requireThatInstanceHasZeroInteractions() {
-        Dimension out = Mockito.mock(Dimension.class);
-        NullTexture.INSTANCE.getSize(out);
+        Rectangle out = Mockito.mock(Rectangle.class);
+        NullTexture.INSTANCE.getBounds(out);
         Mockito.verifyZeroInteractions(out);
 
         Graphics2D g = Mockito.mock(Graphics2D.class);

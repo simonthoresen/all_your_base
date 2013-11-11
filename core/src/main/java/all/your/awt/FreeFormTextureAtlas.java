@@ -3,7 +3,6 @@ package all.your.awt;
 import all.your.util.Preconditions;
 
 import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -13,30 +12,29 @@ import java.util.Objects;
  */
 public class FreeFormTextureAtlas implements TextureAtlas {
 
-    private final Map<String, AtlasTexture> textures = new HashMap<>();
+    private final Map<String, Texture> textures = new HashMap<>();
 
     private FreeFormTextureAtlas(Builder builder) {
         textures.putAll(builder.textures);
     }
 
     @Override
-    public AtlasTexture getTexture(int id) {
+    public Texture getTexture(int id) {
         return getTexture(String.valueOf(id));
     }
 
-    public AtlasTexture getTexture(String id) {
+    public Texture getTexture(String id) {
         return textures.get(id);
     }
 
     public static class Builder {
 
-        private final BufferedImage image;
-        private final Map<String, AtlasTexture> textures = new HashMap<>();
+        private final Texture atlas;
+        private final Map<String, Texture> textures = new HashMap<>();
 
-        // TODO: replace image with texture
-        public Builder(BufferedImage image) {
-            Objects.requireNonNull(image, "image");
-            this.image = image;
+        public Builder(Texture atlas) {
+            Objects.requireNonNull(atlas, "atlas");
+            this.atlas = atlas;
         }
 
         public Builder addTexture(int id, Rectangle region) {
@@ -45,9 +43,7 @@ public class FreeFormTextureAtlas implements TextureAtlas {
 
         public Builder addTexture(String id, Rectangle region) {
             Preconditions.checkState(!textures.containsKey(id), "id '" + id + "' already in use");
-            Preconditions.checkArgument(BufferedImages.getBounds(image, new Rectangle()).contains(region),
-                                        "region; %s", region);
-            textures.put(id, new AtlasTexture(image, region));
+            textures.put(id, new Texture(atlas, region));
             return this;
         }
 
