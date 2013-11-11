@@ -1,13 +1,19 @@
 package all.your.base.tiled;
 
-import all.your.awt.BufferedImages;
 import com.google.common.base.Preconditions;
 
+import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.*;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -78,7 +84,7 @@ public class TileSet {
     public static TileSet loadFromImageFile(String fileName, int tileWidth, int tileHeight) throws IOException {
         Preconditions.checkArgument(tileWidth > 0, "tileWidth <= 0");
         Preconditions.checkArgument(tileHeight > 0, "tileHeight <= 0");
-        return new TileSet(Collections.<Tile>emptyList(), BufferedImages.fromFile(fileName), tileWidth, tileHeight);
+        return new TileSet(Collections.<Tile>emptyList(), loadImage(fileName), tileWidth, tileHeight);
     }
 
     public static class Builder {
@@ -89,7 +95,7 @@ public class TileSet {
         private int tileHeight = 1;
 
         public Builder loadImage(String fileName) throws IOException {
-            this.image = BufferedImages.fromFile(fileName);
+            this.image = TileSet.loadImage(fileName);
             return this;
         }
 
@@ -116,5 +122,14 @@ public class TileSet {
         public TileSet build() {
             return new TileSet(tiles, image, tileWidth, tileHeight);
         }
+    }
+
+    private static BufferedImage loadImage(String fileName) throws IOException {
+        Objects.requireNonNull(fileName, "fileName");
+        InputStream in = TileSet.class.getResourceAsStream(fileName);
+        if (in == null) {
+            throw new FileNotFoundException(fileName);
+        }
+        return ImageIO.read(in);
     }
 }
