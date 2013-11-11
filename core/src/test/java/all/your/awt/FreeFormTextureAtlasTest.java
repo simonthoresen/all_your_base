@@ -85,13 +85,13 @@ public class FreeFormTextureAtlasTest {
 
     @Test
     public void requireThatTextureCanBePainted() {
-        BufferedImage atlasImage = BufferedImages.newSquareGrid(new Dimension(1, 1), new Color[][] {
+        Texture atlasTexture = Textures.newSquareGrid(new Dimension(1, 1), new Color[][] {
                 { C0, C1, C2, C3 },
                 { C4, C5, C6, C7 },
                 { C8, C9, CA, CB },
                 { CC, CD, CE, CF },
         });
-        FreeFormTextureAtlas atlas = new FreeFormTextureAtlas.Builder(new Texture(atlasImage))
+        FreeFormTextureAtlas atlas = new FreeFormTextureAtlas.Builder(atlasTexture)
                 .addTexture(0, new Rectangle(0, 0, 3, 1))
                 .addTexture(1, new Rectangle(1, 1, 2, 3))
                 .build();

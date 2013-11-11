@@ -356,17 +356,17 @@ public class MapLayerTest {
 
     @Test
     public void requireThatClippedTilesClipTexture() {
-        Tile T1 = new SimpleTile(new Texture(BufferedImages.newSquareGrid(
+        Tile T1 = new SimpleTile(Textures.newSquareGrid(
                 new Dimension(1, 1),
                 new Color[][] {
                         { C1, C2, C3 },
                         { C4, C5, C6 },
                         { C7, C8, C9 },
-                })));
-        Tile T2 = new SimpleTile(new Texture(BufferedImages.newFilled(
+                }));
+        Tile T2 = new SimpleTile(Textures.newFilled(
                 new Dimension(1, 1),
-                CF)));
-        MapLayer layer = TileMapLayers.newInstance(new Tile[][] {
+                CF));
+        MapLayer layer = MapLayers.newInstance(new Tile[][] {
                 { T1, T2, T1 },
                 { T2, T1, T2 },
                 { T1, T2, T1 },
@@ -488,13 +488,13 @@ public class MapLayerTest {
 
     private static void assertPaint(Rectangle mapRegion, Color[][] mapLayer, Color background,
                                     Rectangle viewport, Color[][] expectedPixels) {
-        assertPaint(mapRegion, TileMapLayers.newColorGrid(mapLayer), background, viewport, expectedPixels);
+        assertPaint(mapRegion, MapLayers.newColorGrid(mapLayer), background, viewport, expectedPixels);
     }
 
     private static void assertPaint(Rectangle mapRegion, MapLayer layer, Color background,
                                     Rectangle viewport, Color[][] expectedPixels) {
-        BufferedImage image = BufferedImages.newFilled(new Dimension(expectedPixels[0].length, expectedPixels.length),
-                                                       background);
+        BufferedImage image = Images.newInstance(new Dimension(expectedPixels[0].length, expectedPixels.length),
+                                                 background);
         Graphics2D g = image.createGraphics();
         layer.paint(g, viewport, mapRegion);
         g.dispose();

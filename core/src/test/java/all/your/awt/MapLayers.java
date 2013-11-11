@@ -3,12 +3,11 @@ package all.your.awt;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.image.BufferedImage;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */
-public class TileMapLayers {
+public class MapLayers {
 
     public static MapLayer newInstance(Tile[][] tiles) {
         MapLayer map = new MapLayer(new Dimension(tiles[0].length, tiles.length));
@@ -33,8 +32,7 @@ public class TileMapLayers {
                 if (col == null) {
                     continue;
                 }
-                BufferedImage image = BufferedImages.newSquareGrid(new Dimension(1, 1), new Color[][] { { col } });
-                out.putTile(p, new SimpleTile(new Texture(image)));
+                out.putTile(p, new SimpleTile(Textures.newFilled(new Dimension(1, 1), col)));
             }
         }
     }

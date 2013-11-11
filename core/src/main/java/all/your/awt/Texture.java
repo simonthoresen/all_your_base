@@ -3,6 +3,7 @@ package all.your.awt;
 import all.your.util.Preconditions;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
@@ -18,7 +19,7 @@ public class Texture {
     public Texture(BufferedImage image) {
         Objects.requireNonNull(image, "image");
         this.image = image;
-        this.region = BufferedImages.getBounds(image, new Rectangle());
+        this.region = new Rectangle(0, 0, image.getWidth(), image.getHeight());
     }
 
     public Texture(Texture texture, Rectangle region) {
@@ -47,5 +48,9 @@ public class Texture {
     public Rectangle getBounds(Rectangle out) {
         out.setBounds(region);
         return out;
+    }
+
+    int getRGB(Point p) {
+        return image.getRGB(p.x, p.y);
     }
 }

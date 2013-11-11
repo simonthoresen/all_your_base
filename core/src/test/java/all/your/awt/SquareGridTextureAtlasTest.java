@@ -52,13 +52,13 @@ public class SquareGridTextureAtlasTest {
 
     @Test
     public void requireThatTextureIdIsEncodedRowCol() {
-        BufferedImage atlasImage = BufferedImages.newSquareGrid(new Dimension(2, 2), new Color[][] {
+        Texture atlasImage = Textures.newSquareGrid(new Dimension(2, 2), new Color[][] {
                 { C0, C1, C2, C3 },
                 { C4, C5, C6, C7 },
                 { C8, C9, CA, CB },
                 { CC, CD, CE, CF },
         });
-        SquareGridTextureAtlas atlas = new SquareGridTextureAtlas(new Texture(atlasImage), new Dimension(4, 4));
+        SquareGridTextureAtlas atlas = new SquareGridTextureAtlas(atlasImage, new Dimension(4, 4));
         for (int lhsRow = 0; lhsRow < 2; ++lhsRow) {
             for (int lhsCol = 0; lhsCol < 2; ++lhsCol) {
                 Texture lhs = atlas.getTexture(lhsRow, lhsCol);
@@ -78,13 +78,13 @@ public class SquareGridTextureAtlasTest {
 
     @Test
     public void requireThatAtlasTexturesCanBeRendered() {
-        BufferedImage atlasImage = BufferedImages.newSquareGrid(new Dimension(2, 2), new Color[][] {
+        Texture atlasImage = Textures.newSquareGrid(new Dimension(2, 2), new Color[][] {
                 { C0, C1, C2, C3 },
                 { C4, C5, C6, C7 },
                 { C8, C9, CA, CB },
                 { CC, C0, C2, C3 },
         });
-        SquareGridTextureAtlas atlas = new SquareGridTextureAtlas(new Texture(atlasImage), new Dimension(4, 4));
+        SquareGridTextureAtlas atlas = new SquareGridTextureAtlas(atlasImage, new Dimension(4, 4));
         assertPaint(atlas.getTexture(0, 0), new Color[][] {
                 { C0, C0, C1, C1, },
                 { C0, C0, C1, C1, },

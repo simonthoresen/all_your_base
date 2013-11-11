@@ -9,8 +9,17 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import static all.your.awt.AssertImage.assertPixels;
-import static all.your.awt.MoreColors.*;
-import static org.junit.Assert.*;
+import static all.your.awt.MoreColors.C0;
+import static all.your.awt.MoreColors.C1;
+import static all.your.awt.MoreColors.C2;
+import static all.your.awt.MoreColors.C3;
+import static all.your.awt.MoreColors.C4;
+import static all.your.awt.MoreColors.C_;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -68,17 +77,17 @@ public class TileMapTest {
     @Test
     public void requireThatMapCanBePainted() {
         TileMap map = new TileMap(new Dimension(3, 3));
-        TileMapLayers.fillColorGrid(map.newLayer("foo"), new Color[][] {
+        MapLayers.fillColorGrid(map.newLayer("foo"), new Color[][] {
                 { C1, C2, C3 },
                 { C2, C_, C_ },
                 { C_, C_, C_ },
         });
-        TileMapLayers.fillColorGrid(map.newLayer("bar"), new Color[][] {
+        MapLayers.fillColorGrid(map.newLayer("bar"), new Color[][] {
                 { C4, C_, C_ },
                 { C_, C_, C1 },
                 { C3, C1, C2 },
         });
-        BufferedImage image = BufferedImages.newFilled(new Dimension(9, 9), C0);
+        BufferedImage image = Images.newInstance(new Dimension(9, 9), C0);
         Graphics2D g = image.createGraphics();
         map.paint(g, new Rectangle(3, 3, 6, 6), new Rectangle(0, 0, 3, 3));
         g.dispose();

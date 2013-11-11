@@ -6,7 +6,6 @@ import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -16,13 +15,13 @@ import java.util.Objects;
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */
-public class BufferedImages {
+public class Textures {
 
-    public static BufferedImage newFilled(Dimension imageSize, Color fillColor) {
+    public static Texture newFilled(Dimension imageSize, Color fillColor) {
         return newSquareGrid(imageSize, new Color[][] { { fillColor } });
     }
 
-    public static BufferedImage newSquareGrid(Dimension squareSize, Color[][] squares) {
+    public static Texture newSquareGrid(Dimension squareSize, Color[][] squares) {
         Preconditions.checkArgument(squareSize.width > 0 && squareSize.height > 0, "squareSize; %s", squareSize);
         Objects.requireNonNull(squares, "squares");
         BufferedImage image = new BufferedImage(squareSize.width * squares[0].length,
@@ -36,23 +35,15 @@ public class BufferedImages {
             }
         }
         g.dispose();
-        return image;
+        return new Texture(image);
     }
 
-    public static BufferedImage fromFile(String fileName) throws IOException {
+    public static Texture fromFile(String fileName) throws IOException {
         Objects.requireNonNull(fileName, "fileName");
-        InputStream in = BufferedImages.class.getResourceAsStream(fileName);
+        InputStream in = Textures.class.getResourceAsStream(fileName);
         if (in == null) {
             throw new FileNotFoundException(fileName);
         }
-        return ImageIO.read(in);
-    }
-
-    public static Rectangle getBounds(BufferedImage image, Rectangle out) {
-        out.x = 0;
-        out.y = 0;
-        out.width = image.getWidth();
-        out.height = image.getHeight();
-        return out;
+        return new Texture(ImageIO.read(in));
     }
 }

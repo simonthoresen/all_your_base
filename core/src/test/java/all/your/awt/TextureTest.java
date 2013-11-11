@@ -55,16 +55,14 @@ public class TextureTest {
 
     @Test
     public void requireThatOnlySpecifiedRegionOfAtlasIsPainted() {
-        BufferedImage image = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image = Images.newInstance(new Dimension(100, 100), C0);
         Graphics2D g = image.createGraphics();
-        g.setColor(C0);
-        g.fillRect(0, 0, 100, 100);
-        new Texture(new Texture(BufferedImages.newSquareGrid(new Dimension(2, 2), new Color[][] {
+        new Texture(Textures.newSquareGrid(new Dimension(2, 2), new Color[][] {
                 { C1, C2, C3, C4 },
                 { C2, C3, C4, C1 },
                 { C3, C4, C1, C2 },
                 { C4, C1, C2, C3 }
-        })), new Rectangle(2, 2, 4, 4)).paint(g, new Rectangle(25, 25, 50, 50));
+        }), new Rectangle(2, 2, 4, 4)).paint(g, new Rectangle(25, 25, 50, 50));
         g.dispose();
 
         for (int y = 0; y < 100; ++y) {
@@ -95,10 +93,10 @@ public class TextureTest {
         Graphics2D g = image.createGraphics();
         g.setColor(C0);
         g.fillRect(0, 0, 100, 100);
-        new Texture(BufferedImages.newSquareGrid(new Dimension(2, 2), new Color[][] {
+        Textures.newSquareGrid(new Dimension(2, 2), new Color[][] {
                 { C1, C2 },
                 { C3, C4 }
-        })).paint(g, new Rectangle(25, 25, 50, 50));
+        }).paint(g, new Rectangle(25, 25, 50, 50));
         g.dispose();
 
         Color[][] expected = new Color[100][100];
