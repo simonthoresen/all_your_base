@@ -42,7 +42,7 @@ public class TexturesTest {
     @Test
     public void requireThatSquareGridsCanBeCreated() {
         assertPaint(
-                Textures.newSquareGrid(new Dimension(2, 5), new Color[][] {
+                Textures.newSquareGrid(new Color[][] {
                         { C1, C2, C1, C2 },
                         { C2, C3, C2, C3 },
                         { C1, C2, C1, C2 },

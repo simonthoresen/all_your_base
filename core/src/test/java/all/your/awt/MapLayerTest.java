@@ -357,7 +357,6 @@ public class MapLayerTest {
     @Test
     public void requireThatClippedTilesClipTexture() {
         Tile T1 = new SimpleTile(Textures.newSquareGrid(
-                new Dimension(1, 1),
                 new Color[][] {
                         { C1, C2, C3 },
                         { C4, C5, C6 },

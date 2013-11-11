@@ -1,7 +1,5 @@
 package all.your.awt;
 
-import all.your.util.Preconditions;
-
 import javax.imageio.ImageIO;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,20 +16,22 @@ import java.util.Objects;
 public class Textures {
 
     public static Texture newFilled(Dimension imageSize, Color fillColor) {
-        return newSquareGrid(imageSize, new Color[][] { { fillColor } });
+        BufferedImage image = new BufferedImage(imageSize.width, imageSize.height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = image.createGraphics();
+        g.setColor(fillColor);
+        g.fillRect(0, 0, image.getWidth(), image.getHeight());
+        g.dispose();
+        return new Texture(image);
     }
 
-    public static Texture newSquareGrid(Dimension squareSize, Color[][] squares) {
-        Preconditions.checkArgument(squareSize.width > 0 && squareSize.height > 0, "squareSize; %s", squareSize);
+    public static Texture newSquareGrid(Color[][] squares) {
         Objects.requireNonNull(squares, "squares");
-        BufferedImage image = new BufferedImage(squareSize.width * squares[0].length,
-                                                squareSize.height * squares.length,
-                                                BufferedImage.TYPE_INT_ARGB);
+        BufferedImage image = new BufferedImage(squares[0].length, squares.length, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
         for (int y = 0; y < squares.length; ++y) {
             for (int x = 0; x < squares[y].length; ++x) {
                 g.setColor(squares[y][x]);
-                g.fillRect(squareSize.width * x, squareSize.height * y, squareSize.width, squareSize.height);
+                g.fillRect(x, y, 1, 1);
             }
         }
         g.dispose();

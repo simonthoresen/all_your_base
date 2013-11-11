@@ -57,12 +57,12 @@ public class TextureTest {
     public void requireThatOnlySpecifiedRegionOfAtlasIsPainted() {
         BufferedImage image = Images.newInstance(new Dimension(100, 100), C0);
         Graphics2D g = image.createGraphics();
-        new Texture(Textures.newSquareGrid(new Dimension(2, 2), new Color[][] {
+        new Texture(Textures.newSquareGrid(new Color[][] {
                 { C1, C2, C3, C4 },
                 { C2, C3, C4, C1 },
                 { C3, C4, C1, C2 },
                 { C4, C1, C2, C3 }
-        }), new Rectangle(2, 2, 4, 4)).paint(g, new Rectangle(25, 25, 50, 50));
+        }), new Rectangle(1, 1, 2, 2)).paint(g, new Rectangle(25, 25, 50, 50));
         g.dispose();
 
         for (int y = 0; y < 100; ++y) {
@@ -93,7 +93,7 @@ public class TextureTest {
         Graphics2D g = image.createGraphics();
         g.setColor(C0);
         g.fillRect(0, 0, 100, 100);
-        Textures.newSquareGrid(new Dimension(2, 2), new Color[][] {
+        Textures.newSquareGrid(new Color[][] {
                 { C1, C2 },
                 { C3, C4 }
         }).paint(g, new Rectangle(25, 25, 50, 50));

@@ -104,13 +104,13 @@ public class TextureAtlasTest {
     @Test
     public void requireThatGridTexturesCanBeRendered() {
         TextureAtlas atlas = new TextureAtlas.Builder()
-                .setAtlasTexture(Textures.newSquareGrid(new Dimension(2, 2), new Color[][] {
+                .setAtlasTexture(Textures.newSquareGrid(new Color[][] {
                         { C0, C1, C2, C3 },
                         { C4, C5, C6, C7 },
                         { C8, C9, CA, CB },
                         { CC, C0, C2, C3 },
                 }))
-                .setSquareSize(new Dimension(4, 4))
+                .setSquareSize(new Dimension(2, 2))
                 .build();
         assertPaint(atlas.getTexture(new Point(0, 0)), new Color[][] {
                 { C0, C0, C1, C1, },
@@ -141,7 +141,7 @@ public class TextureAtlasTest {
     @Test
     public void requireThatFreeFormTextureCanBePainted() {
         TextureAtlas atlas = new TextureAtlas.Builder()
-                .setAtlasTexture(Textures.newSquareGrid(new Dimension(1, 1), new Color[][] {
+                .setAtlasTexture(Textures.newSquareGrid(new Color[][] {
                         { C0, C1, C2, C3 },
                         { C4, C5, C6, C7 },
                         { C8, C9, CA, CB },
