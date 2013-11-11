@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.Dimension2D;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -50,19 +49,15 @@ public class MapLayer {
         return tile;
     }
 
-    public void paint(Graphics2D g, Point viewportPos, Rectangle mapRegion, Dimension2D tileSize) {
-        Rectangle viewportRegion = new Rectangle((int)Math.ceil(tileSize.getWidth()),
-                                                 (int)Math.ceil(tileSize.getHeight()));
-        double viewportY = viewportPos.y;
+    public void paint(Graphics2D g, Point viewportPos, Rectangle mapRegion, Dimension tileSize) {
+        Rectangle viewportRegion = new Rectangle(viewportPos.x, viewportPos.y, tileSize.width, tileSize.height);
         for (int y = 0; y < mapRegion.height; ++y) {
-            double viewportX = viewportPos.x;
             for (int x = 0; x < mapRegion.width; ++x) {
-                viewportRegion.setLocation((int)viewportX, (int)viewportY);
                 tiles.get((mapRegion.y + y) * bounds.width + (mapRegion.x + x)).getTexture().paint(g, viewportRegion);
                 viewportRegion.x += tileSize.getWidth();
             }
+            viewportRegion.x = viewportPos.x;
             viewportRegion.y += tileSize.getHeight();
         }
-
     }
 }
