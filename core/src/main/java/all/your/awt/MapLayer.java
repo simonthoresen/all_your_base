@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -49,81 +50,44 @@ public class MapLayer {
         return tile;
     }
 
-    public void paint(Graphics2D g, Rectangle viewport, Rectangle mapRegion) {
+    public void paint(Graphics2D g, Rectangle viewport, Rectangle2D mapRegion) {
         // if the requested map region does not intersect with the bounds of this map layer, then nothing will be
         // painted. return immediately
-        if (!bounds.intersects(mapRegion)) {
+        if (!mapRegion.intersects(bounds)) {
             return;
         }
 
         // calculate size of each tile so that the request region covers the viewport
-        int tileWidth = viewport.width / mapRegion.width;
-        int tileHeight = viewport.height / mapRegion.height;
+        int tileWidth = Math.max(1, (int)(viewport.width / mapRegion.getWidth()));
+        int tileHeight = Math.max(1, (int)(viewport.height / mapRegion.getHeight()));
 
         // clip the requested map region to the bounds of this map layer, and translate the viewport accordingly
-        Rectangle intersection = bounds.intersection(mapRegion);
-        viewport = new Rectangle(viewport.x + (intersection.x - mapRegion.x) * tileWidth,
-                                 viewport.y + (intersection.y - mapRegion.y) * tileHeight,
-                                 viewport.width + (intersection.width - mapRegion.width) * tileWidth,
-                                 viewport.height + (intersection.height - mapRegion.height) * tileHeight);
+        Rectangle2D intersection = mapRegion.createIntersection(bounds);
+        viewport = new Rectangle(viewport.x + (int)((intersection.getX() - mapRegion.getX()) * tileWidth),
+                                 viewport.y + (int)((intersection.getY() - mapRegion.getY()) * tileHeight),
+                                 viewport.width + (int)((intersection.getWidth() - mapRegion.getWidth()) * tileWidth),
+                                 viewport.height + (int)((intersection.getHeight() - mapRegion.getHeight()) * tileHeight));
         mapRegion = intersection;
-        int xMin = mapRegion.x;
-        int xMax = xMin + mapRegion.width;
-        int yMin = mapRegion.y;
-        int yMax = yMin + mapRegion.height;
 
-        // we then go ahead and render all the tiles of the map region
-        Rectangle viewportRegion = new Rectangle(viewport.x, viewport.y, tileWidth, tileHeight);
+        // create a local graphics object that translates to and clips to the given viewport
+        g = (Graphics2D)g.create(viewport.x, viewport.y, viewport.width, viewport.height);
+
+
+        int xMin = (int)Math.floor(mapRegion.getX()); // 0.5 -> 0
+        int yMin = (int)Math.floor(mapRegion.getY());
+        int xMax = (int)Math.ceil(mapRegion.getX() + mapRegion.getWidth()); // 0.5 + 2 -> 3
+        int yMax = (int)Math.ceil(mapRegion.getY() + mapRegion.getHeight());
+
+        Rectangle viewportRegion = new Rectangle(tileWidth, tileHeight);
+        viewportRegion.y = (int)((yMin - mapRegion.getY()) * tileHeight);
         for (int y = yMin; y < yMax; ++y) {
+            viewportRegion.x = (int)((xMin - mapRegion.getX()) * tileWidth);
             for (int x = xMin; x < xMax; ++x) {
                 tiles.get(y * bounds.width + x).getTexture().paint(g, viewportRegion);
                 viewportRegion.x += tileWidth;
             }
-            viewportRegion.x = viewport.x;
             viewportRegion.y += tileHeight;
         }
-
-        int fracWidth = viewport.width - mapRegion.width * tileWidth;
-        int fracHeight = viewport.height - mapRegion.height * tileHeight;
-        if (fracWidth > 0 || fracHeight > 0) {
-            // in case the viewport width is not dividable by the map region width, the painted layer will have an empty
-            // right column. cover this by painting a fraction of the next map column, if any
-            Rectangle textureRegion = new Rectangle();
-            if (fracWidth > 0 && xMax < bounds.width) {
-                viewportRegion.setBounds(viewport.x + mapRegion.width * tileWidth, viewport.y, fracWidth, tileHeight);
-                for (int y = yMin; y < yMax; ++y) {
-                    Texture texture = tiles.get(y * bounds.width + xMax).getTexture();
-                    texture.getBounds(textureRegion);
-                    textureRegion.width = Math.max(1, (textureRegion.width * fracWidth) / tileWidth);
-                    texture.paint(g, viewportRegion, textureRegion);
-                    viewportRegion.y += tileHeight;
-                }
-            }
-
-            // similarly, cover the empty bottom row if applicable
-            if (fracHeight > 0 && yMax < bounds.height) {
-                viewportRegion.setBounds(viewport.x, viewport.y + mapRegion.height * tileHeight, tileWidth, fracHeight);
-                for (int x = xMin; x < xMax; ++x) {
-                    Texture texture = tiles.get(yMax * bounds.width + x).getTexture();
-                    texture.getBounds(textureRegion);
-                    textureRegion.height = Math.max(1, (textureRegion.height * fracHeight) / tileHeight);
-                    texture.paint(g, viewportRegion, textureRegion);
-                    viewportRegion.x += tileWidth;
-                }
-            }
-
-            // if there is both an empty right column and an empty bottom row, we also need to cover the bottom right
-            // tile when possible
-            if (fracWidth > 0 && fracHeight > 0 && xMax < bounds.width && yMax < bounds.height) {
-                viewportRegion.setBounds(viewport.x + mapRegion.width * tileWidth,
-                                         viewport.y + mapRegion.height * tileHeight,
-                                         fracWidth, fracHeight);
-                Texture texture = tiles.get(yMax * bounds.width + xMax).getTexture();
-                texture.getBounds(textureRegion);
-                textureRegion.width = Math.max(1, (textureRegion.width * fracWidth) / tileWidth);
-                textureRegion.height = Math.max(1, (textureRegion.height * fracHeight) / tileHeight);
-                texture.paint(g, viewportRegion, textureRegion);
-            }
-        }
-    }
+        g.dispose();
+   }
 }

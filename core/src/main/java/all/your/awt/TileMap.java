@@ -5,6 +5,7 @@ import all.your.util.Preconditions;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.util.LinkedHashMap;
 
 /**
@@ -35,7 +36,7 @@ public class TileMap {
         return layers.remove(id);
     }
 
-    public void paint(Graphics2D g, Rectangle viewport, Rectangle mapRegion) {
+    public void paint(Graphics2D g, Rectangle viewport, Rectangle2D mapRegion) {
         for (MapLayer layer : layers.values()) {
             layer.paint(g, viewport, mapRegion);
         }
