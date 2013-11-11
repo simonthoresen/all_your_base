@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
  */
-public class NullTexture extends Texture {
+class NullTexture extends Texture {
 
     public static final NullTexture INSTANCE = new NullTexture();
 
