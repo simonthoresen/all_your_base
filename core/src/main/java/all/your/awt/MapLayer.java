@@ -49,6 +49,10 @@ public class MapLayer {
         return tile;
     }
 
+    public Rectangle getBounds() {
+        return bounds;
+    }
+
     public void paint(Graphics2D g, Point viewportPos, Rectangle mapRegion, Dimension tileSize) {
         Rectangle viewportRegion = new Rectangle(viewportPos.x, viewportPos.y, tileSize.width, tileSize.height);
         for (int y = 0; y < mapRegion.height; ++y) {

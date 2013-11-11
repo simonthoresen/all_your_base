@@ -26,6 +26,10 @@ public class TileMap {
         return layers.get(id);
     }
 
+    public void putLayer(String id, MapLayer layer) {
+        layers.put(id, layer);
+    }
+
     public MapLayer newLayer(String id) {
         Preconditions.checkState(!layers.containsKey(id), "id '" + id + "' already in use");
         MapLayer layer = new MapLayer(bounds.getSize());

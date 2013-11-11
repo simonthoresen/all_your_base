@@ -3,29 +3,12 @@ package all.your.awt;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 import static all.your.awt.AssertImage.assertPixels;
-import static all.your.awt.MoreColors.C0;
-import static all.your.awt.MoreColors.C1;
-import static all.your.awt.MoreColors.C2;
-import static all.your.awt.MoreColors.C3;
-import static all.your.awt.MoreColors.C4;
-import static all.your.awt.MoreColors.C5;
-import static all.your.awt.MoreColors.C6;
-import static all.your.awt.MoreColors.C7;
-import static all.your.awt.MoreColors.C8;
-import static all.your.awt.MoreColors.C9;
-import static all.your.awt.MoreColors.CF;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.fail;
+import static all.your.awt.MoreColors.*;
+import static org.junit.Assert.*;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -495,7 +478,9 @@ public class MapLayerTest {
         BufferedImage image = Images.newInstance(new Dimension(expectedPixels[0].length, expectedPixels.length),
                                                  background);
         Graphics2D g = image.createGraphics();
-        layer.paint(g, viewport, mapRegion);
+        TileMap map = new TileMap(layer.getBounds().getSize());
+        map.putLayer("id", layer);
+        map.paint(g, viewport, mapRegion);
         g.dispose();
         assertPixels(image, expectedPixels);
     }
