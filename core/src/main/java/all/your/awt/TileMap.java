@@ -4,6 +4,7 @@ import all.your.util.Preconditions;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedHashMap;
@@ -14,11 +15,11 @@ import java.util.LinkedHashMap;
 public class TileMap {
 
     private final LinkedHashMap<String, MapLayer> layers = new LinkedHashMap<>();
-    private final Dimension size;
+    private final Rectangle bounds;
 
     public TileMap(Dimension size) {
         Preconditions.checkArgument(size.width > 0 && size.height > 0, "size; %s", size);
-        this.size = new Dimension(size);
+        this.bounds = new Rectangle(size);
     }
 
     public MapLayer getLayer(String id) {
@@ -27,7 +28,7 @@ public class TileMap {
 
     public MapLayer newLayer(String id) {
         Preconditions.checkState(!layers.containsKey(id), "id '" + id + "' already in use");
-        MapLayer layer = new MapLayer(size);
+        MapLayer layer = new MapLayer(bounds.getSize());
         layers.put(id, layer);
         return layer;
     }
@@ -37,8 +38,53 @@ public class TileMap {
     }
 
     public void paint(Graphics2D g, Rectangle viewport, Rectangle2D mapRegion) {
-        for (MapLayer layer : layers.values()) {
-            layer.paint(g, viewport, mapRegion);
+        // in case the map region is outside of the map, there is no work to do
+        if (!mapRegion.intersects(bounds)) {
+            return;
         }
+
+        // because the map layers paint from origin, we prepare a local graphics object that clips to the given viewport
+        g = (Graphics2D)g.create(viewport.x, viewport.y, viewport.width, viewport.height);
+
+        // restrict the size of the requested map region to the number of pixels in the viewport. this ensures that
+        // neither tile width nor height will ever be less than 1
+        mapRegion = new Rectangle2D.Double(mapRegion.getX(), mapRegion.getY(),
+                                           Math.min(mapRegion.getWidth(), viewport.width),
+                                           Math.min(mapRegion.getHeight(), viewport.height));
+
+        // divide the available number of viewport pixels over the requested map region to find the number of pixels to
+        // use for each tile. due to the above restriction, neither dimension will ever be less than 1
+        Dimension tileSize = new Dimension((int)(viewport.width / mapRegion.getWidth()),
+                                           (int)(viewport.height / mapRegion.getHeight()));
+
+        // to avoid conditions in the inner paint loop, we cap the requested map region to hold only valid indexes.
+        Rectangle2D validRegion = bounds.createIntersection(mapRegion);
+
+        // because the valid region might differ from the requested region, we must set up a translation on the local
+        // graphics object so that each layer can still paint from origin
+        g.translate((int)((validRegion.getX() - mapRegion.getX()) * tileSize.width),
+                    (int)((validRegion.getY() - mapRegion.getY()) * tileSize.height));
+
+        // because we only wish to paint full tiles, we round the region location down to include any fractional tile
+        // that we might start off in. we also round the region size up to include any fractional tile we end in
+        Rectangle paintRegion = new Rectangle();
+        paintRegion.x = (int)Math.floor(validRegion.getX());
+        paintRegion.y = (int)Math.floor(validRegion.getY());
+        paintRegion.width = (int)Math.ceil(validRegion.getWidth() + (validRegion.getX() - paintRegion.x));
+        paintRegion.height = (int)Math.ceil(validRegion.getHeight() + (validRegion.getY() - paintRegion.y));
+
+        // determine where to start painting the tiles so that whatever fraction was requested acually ends up being
+        // rendered appropriately at origin. this is simply a translation from the requested to painted region
+        Point viewportPos = new Point((int)((paintRegion.x - validRegion.getX()) * tileSize.width),
+                                      (int)((paintRegion.y - validRegion.getY()) * tileSize.height));
+
+        // invoke paint() on all layers in order. because we have pre-calculated the viewport and the map region, this
+        // becomes trivial -- which is great news for the inner loop
+        for (MapLayer layer : layers.values()) {
+            layer.paint(g, viewportPos, paintRegion, tileSize);
+        }
+
+        // all done, discard of the temporary graphics object
+        g.dispose();
     }
 }

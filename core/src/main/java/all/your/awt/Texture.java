@@ -30,18 +30,8 @@ public class Texture {
     }
 
     public void paint(Graphics2D g, Rectangle viewport) {
-        paint(g, viewport, region.x, region.y, region.width, region.height);
-    }
-
-    public void paint(Graphics2D g, Rectangle viewport, Rectangle textureRegion) {
-        paint(g, viewport,
-              region.x + textureRegion.x, region.y + textureRegion.y,
-              textureRegion.width, textureRegion.height);
-    }
-
-    private void paint(Graphics2D g, Rectangle viewport, int x, int y, int width, int height) {
         g.drawImage(image, viewport.x, viewport.y, viewport.x + viewport.width, viewport.y + viewport.height,
-                    x, y, x + width, y + height, null);
+                    region.x, region.y, region.x + region.width, region.y + region.height, null);
     }
 
     public Rectangle getBounds(Rectangle out) {

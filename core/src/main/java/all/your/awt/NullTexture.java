@@ -21,11 +21,6 @@ class NullTexture extends Texture {
     }
 
     @Override
-    public void paint(Graphics2D g, Rectangle viewport, Rectangle textureRegion) {
-
-    }
-
-    @Override
     public Rectangle getBounds(Rectangle out) {
         return out;
     }

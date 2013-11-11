@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.Dimension2D;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -50,44 +50,19 @@ public class MapLayer {
         return tile;
     }
 
-    public void paint(Graphics2D g, Rectangle viewport, Rectangle2D mapRegion) {
-        // if the requested map region does not intersect with the bounds of this map layer, then nothing will be
-        // painted. return immediately
-        if (!mapRegion.intersects(bounds)) {
-            return;
-        }
-
-        // calculate size of each tile so that the request region covers the viewport
-        int tileWidth = Math.max(1, (int)(viewport.width / mapRegion.getWidth()));
-        int tileHeight = Math.max(1, (int)(viewport.height / mapRegion.getHeight()));
-
-        // clip the requested map region to the bounds of this map layer, and translate the viewport accordingly
-        Rectangle2D intersection = mapRegion.createIntersection(bounds);
-        viewport = new Rectangle(viewport.x + (int)((intersection.getX() - mapRegion.getX()) * tileWidth),
-                                 viewport.y + (int)((intersection.getY() - mapRegion.getY()) * tileHeight),
-                                 viewport.width + (int)((intersection.getWidth() - mapRegion.getWidth()) * tileWidth),
-                                 viewport.height + (int)((intersection.getHeight() - mapRegion.getHeight()) * tileHeight));
-        mapRegion = intersection;
-
-        // create a local graphics object that translates to and clips to the given viewport
-        g = (Graphics2D)g.create(viewport.x, viewport.y, viewport.width, viewport.height);
-
-
-        int xMin = (int)Math.floor(mapRegion.getX()); // 0.5 -> 0
-        int yMin = (int)Math.floor(mapRegion.getY());
-        int xMax = (int)Math.ceil(mapRegion.getX() + mapRegion.getWidth()); // 0.5 + 2 -> 3
-        int yMax = (int)Math.ceil(mapRegion.getY() + mapRegion.getHeight());
-
-        Rectangle viewportRegion = new Rectangle(tileWidth, tileHeight);
-        viewportRegion.y = (int)((yMin - mapRegion.getY()) * tileHeight);
-        for (int y = yMin; y < yMax; ++y) {
-            viewportRegion.x = (int)((xMin - mapRegion.getX()) * tileWidth);
-            for (int x = xMin; x < xMax; ++x) {
-                tiles.get(y * bounds.width + x).getTexture().paint(g, viewportRegion);
-                viewportRegion.x += tileWidth;
+    public void paint(Graphics2D g, Point viewportPos, Rectangle mapRegion, Dimension2D tileSize) {
+        Rectangle viewportRegion = new Rectangle((int)Math.ceil(tileSize.getWidth()),
+                                                 (int)Math.ceil(tileSize.getHeight()));
+        double viewportY = viewportPos.y;
+        for (int y = 0; y < mapRegion.height; ++y) {
+            double viewportX = viewportPos.x;
+            for (int x = 0; x < mapRegion.width; ++x) {
+                viewportRegion.setLocation((int)viewportX, (int)viewportY);
+                tiles.get((mapRegion.y + y) * bounds.width + (mapRegion.x + x)).getTexture().paint(g, viewportRegion);
+                viewportRegion.x += tileSize.getWidth();
             }
-            viewportRegion.y += tileHeight;
+            viewportRegion.y += tileSize.getHeight();
         }
-        g.dispose();
-   }
+
+    }
 }
