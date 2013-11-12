@@ -65,10 +65,11 @@ public class TileMap {
         }
         Point cursor = new Point((int)(((int)mapX - mapX) * tile.width),
                                  (int)(((int)mapY - mapY) * tile.height));
-        Rectangle region = new Rectangle(
-                (int)mapX, (int)mapY,
-                min((int)ceil((viewport.width - cursor.x) / (double)tile.width), bounds.width - (int)mapX),
-                min((int)ceil((viewport.height - cursor.y) / (double)tile.height), bounds.height - (int)mapY));
+        Rectangle region = new Rectangle((int)mapX, (int)mapY,
+                                         (int)ceil((viewport.width - cursor.x) / (double)tile.width),
+                                         (int)ceil((viewport.height - cursor.y) / (double)tile.height));
+        region.width = min(region.width, bounds.width - region.x);
+        region.height = min(region.height, bounds.height - region.y);
         for (MapLayer layer : layers.values()) {
             layer.paint(g, cursor, region, tile);
         }
