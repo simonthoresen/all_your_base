@@ -72,16 +72,17 @@ public class TileMap {
 
         // because we only wish to paint full tiles, we round the region location down to include any fractional tile
         // that we might start off in
-        Rectangle paintRegion = new Rectangle();
-        paintRegion.x = (int)validRegion.getX();
-        paintRegion.y = (int)validRegion.getY();
-        paintRegion.width = Math.min(bounds.width - paintRegion.x, viewport.width / tileSize.width + 2);
-        paintRegion.height = Math.min(bounds.height - paintRegion.y, viewport.height / tileSize.height + 2);
+        Rectangle paintRegion = new Rectangle((int)validRegion.getX(), (int)validRegion.getY(), 0, 0);
 
         // determine where to start painting the tiles so that whatever fraction was requested acually ends up being
         // rendered appropriately at origin. this is simply a translation from the requested to painted region
         Point viewportPos = new Point((int)((paintRegion.x - validRegion.getX()) * tileSize.width),
                                       (int)((paintRegion.y - validRegion.getY()) * tileSize.height));
+
+        paintRegion.width = Math.min((int)Math.ceil((viewport.width - viewportPos.x) / (double)tileSize.width),
+                                     bounds.width - paintRegion.x);
+        paintRegion.height = Math.min((int)Math.ceil((viewport.height - viewportPos.y) / (double)tileSize.height),
+                                     bounds.height - paintRegion.y);
 
         // invoke paint() on all layers in order with the pre-calculated viewport and map region
         for (MapLayer layer : layers.values()) {
