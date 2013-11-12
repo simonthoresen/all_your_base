@@ -26,6 +26,11 @@ public class TileMap {
         return layers.get(id);
     }
 
+    public TileMap addLayer(String id, MapLayer layer) {
+        layers.put(id, layer);
+        return this;
+    }
+
     public MapLayer newLayer(String id) {
         Preconditions.checkState(!layers.containsKey(id), "id '" + id + "' already in use");
         MapLayer layer = new MapLayer(bounds.getSize());
@@ -70,8 +75,8 @@ public class TileMap {
         Rectangle paintRegion = new Rectangle();
         paintRegion.x = (int)Math.floor(validRegion.getX());
         paintRegion.y = (int)Math.floor(validRegion.getY());
-        paintRegion.width = (int)Math.ceil(validRegion.getWidth() + (validRegion.getX() - paintRegion.x));
-        paintRegion.height = (int)Math.ceil(validRegion.getHeight() + (validRegion.getY() - paintRegion.y));
+        paintRegion.width = Math.min(bounds.width - paintRegion.x, viewport.width / tileSize.width + 2);
+        paintRegion.height = Math.min(bounds.height - paintRegion.y, viewport.height / tileSize.height + 2);
 
         // determine where to start painting the tiles so that whatever fraction was requested acually ends up being
         // rendered appropriately at origin. this is simply a translation from the requested to painted region

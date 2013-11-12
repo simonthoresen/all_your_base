@@ -495,7 +495,7 @@ public class MapLayerTest {
         BufferedImage image = Images.newInstance(new Dimension(expectedPixels[0].length, expectedPixels.length),
                                                  background);
         Graphics2D g = image.createGraphics();
-        layer.paint(g, viewport, mapRegion);
+        new TileMap(layer.getBounds().getSize()).addLayer("id", layer).paint(g, viewport, mapRegion);
         g.dispose();
         assertPixels(image, expectedPixels);
     }

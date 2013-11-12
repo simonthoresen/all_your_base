@@ -29,13 +29,5 @@ public class NullTextureTest {
         NullTexture.INSTANCE.paint(g, viewport);
         Mockito.verifyZeroInteractions(g);
         Mockito.verifyZeroInteractions(viewport);
-
-        g = Mockito.mock(Graphics2D.class);
-        viewport = Mockito.mock(Rectangle.class);
-        Rectangle textureRegion = Mockito.mock(Rectangle.class);
-        NullTexture.INSTANCE.paint(g, viewport, textureRegion);
-        Mockito.verifyZeroInteractions(g);
-        Mockito.verifyZeroInteractions(viewport);
-        Mockito.verifyZeroInteractions(textureRegion);
     }
 }
