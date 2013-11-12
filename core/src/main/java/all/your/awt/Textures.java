@@ -15,6 +15,10 @@ import java.util.Objects;
  */
 public class Textures {
 
+    public static Texture newFilled(Color fillColor) {
+        return newFilled(new Dimension(1, 1), fillColor);
+    }
+
     public static Texture newFilled(Dimension imageSize, Color fillColor) {
         BufferedImage image = new BufferedImage(imageSize.width, imageSize.height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();

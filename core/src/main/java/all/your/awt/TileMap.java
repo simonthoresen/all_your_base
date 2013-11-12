@@ -70,4 +70,8 @@ public class TileMap {
         }
         g.dispose();
     }
+
+    public Rectangle getBounds() {
+        return bounds;
+    }
 }
