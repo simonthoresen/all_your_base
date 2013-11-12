@@ -11,7 +11,6 @@ import java.util.LinkedHashMap;
 
 import static java.lang.Math.ceil;
 import static java.lang.Math.max;
-import static java.lang.Math.min;
 
 /**
  * @author <a href="mailto:simon@yahoo-inc.com">Simon Thoresen Hult</a>
@@ -65,11 +64,10 @@ public class TileMap {
         }
         Point cursor = new Point((int)(((int)mapX - mapX) * tile.width),
                                  (int)(((int)mapY - mapY) * tile.height));
-        Rectangle region = new Rectangle((int)mapX, (int)mapY,
-                                         (int)ceil((viewport.width - cursor.x) / (double)tile.width),
-                                         (int)ceil((viewport.height - cursor.y) / (double)tile.height));
-        region.width = min(region.width, bounds.width - region.x);
-        region.height = min(region.height, bounds.height - region.y);
+        Rectangle region = bounds.intersection(
+                new Rectangle((int)mapX, (int)mapY,
+                              (int)ceil((double)(viewport.width - cursor.x) / tile.width),
+                              (int)ceil((double)(viewport.height - cursor.y) / tile.height)));
         for (MapLayer layer : layers.values()) {
             layer.paint(g, cursor, region, tile);
         }
