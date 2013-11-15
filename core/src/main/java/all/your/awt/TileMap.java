@@ -26,8 +26,14 @@ public class TileMap {
         return layers.get(id);
     }
 
+<<<<<<< HEAD
     public void putLayer(String id, MapLayer layer) {
         layers.put(id, layer);
+=======
+    public TileMap addLayer(String id, MapLayer layer) {
+        layers.put(id, layer);
+        return this;
+>>>>>>> 2819a975d7406a539e5c4197e0081f16fefa7610
     }
 
     public MapLayer newLayer(String id) {
@@ -42,53 +48,35 @@ public class TileMap {
     }
 
     public void paint(Graphics2D g, Rectangle viewport, Rectangle2D mapRegion) {
-        // in case the map region is outside of the map, there is no work to do
         if (!mapRegion.intersects(bounds)) {
             return;
         }
-
-        // because the map layers paint from origin, we prepare a local graphics object that clips to the given viewport
+        Dimension tile = new Dimension((int)Math.max(1, viewport.width / mapRegion.getWidth()),
+                                       (int)Math.max(1, viewport.height / mapRegion.getHeight()));
         g = (Graphics2D)g.create(viewport.x, viewport.y, viewport.width, viewport.height);
-
-        // restrict the size of the requested map region to the number of pixels in the viewport. this ensures that
-        // neither tile width nor height will ever be less than 1
-        mapRegion = new Rectangle2D.Double(mapRegion.getX(), mapRegion.getY(),
-                                           Math.min(mapRegion.getWidth(), viewport.width),
-                                           Math.min(mapRegion.getHeight(), viewport.height));
-
-        // divide the available number of viewport pixels over the requested map region to find the number of pixels to
-        // use for each tile. due to the above restriction, neither dimension will ever be less than 1
-        Dimension tileSize = new Dimension((int)(viewport.width / mapRegion.getWidth()),
-                                           (int)(viewport.height / mapRegion.getHeight()));
-
-        // to avoid conditions in the inner paint loop, we cap the requested map region to hold only valid indexes.
-        Rectangle2D validRegion = bounds.createIntersection(mapRegion);
-
-        // because the valid region might differ from the requested region, we must set up a translation on the local
-        // graphics object so that each layer can still paint from origin
-        g.translate((int)((validRegion.getX() - mapRegion.getX()) * tileSize.width),
-                    (int)((validRegion.getY() - mapRegion.getY()) * tileSize.height));
-
-        // because we only wish to paint full tiles, we round the region location down to include any fractional tile
-        // that we might start off in. we also round the region size up to include any fractional tile we end in
-        Rectangle paintRegion = new Rectangle();
-        paintRegion.x = (int)Math.floor(validRegion.getX());
-        paintRegion.y = (int)Math.floor(validRegion.getY());
-        paintRegion.width = (int)Math.ceil(validRegion.getWidth() + (validRegion.getX() - paintRegion.x));
-        paintRegion.height = (int)Math.ceil(validRegion.getHeight() + (validRegion.getY() - paintRegion.y));
-
-        // determine where to start painting the tiles so that whatever fraction was requested acually ends up being
-        // rendered appropriately at origin. this is simply a translation from the requested to painted region
-        Point viewportPos = new Point((int)((paintRegion.x - validRegion.getX()) * tileSize.width),
-                                      (int)((paintRegion.y - validRegion.getY()) * tileSize.height));
-
-        // invoke paint() on all layers in order. because we have pre-calculated the viewport and the map region, this
-        // becomes trivial -- which is great news for the inner loop
-        for (MapLayer layer : layers.values()) {
-            layer.paint(g, viewportPos, paintRegion, tileSize);
+        double mapX = mapRegion.getX();
+        if (mapX < 0) {
+            g.translate(-mapX * tile.width, 0);
+            mapX = 0;
         }
-
-        // all done, discard of the temporary graphics object
+        double mapY = mapRegion.getY();
+        if (mapY < 0) {
+            g.translate(0, -mapY * tile.height);
+            mapY = 0;
+        }
+        Point cursor = new Point((int)(((int)mapX - mapX) * tile.width),
+                                 (int)(((int)mapY - mapY) * tile.height));
+        Rectangle region = bounds.intersection(
+                new Rectangle((int)mapX, (int)mapY,
+                              (int)Math.ceil((double)(viewport.width - cursor.x) / tile.width),
+                              (int)Math.ceil((double)(viewport.height - cursor.y) / tile.height)));
+        for (MapLayer layer : layers.values()) {
+            layer.paint(g, cursor, region, tile);
+        }
         g.dispose();
+    }
+
+    public Rectangle getBounds() {
+        return bounds;
     }
 }

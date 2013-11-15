@@ -3,7 +3,16 @@ package all.your.awt;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+<<<<<<< HEAD
 import java.awt.*;
+=======
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
+>>>>>>> 2819a975d7406a539e5c4197e0081f16fefa7610
 import java.awt.image.BufferedImage;
 
 import static all.your.awt.AssertImage.assertPixels;
@@ -466,21 +475,89 @@ public class MapLayerTest {
                         { CF, CF, CF, CF, C7, C8, C8, C9, C0 },
                         { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
                 });
+        assertPaint(
+                new Rectangle2D.Double(0.5, 0.5, 2, 2),
+                layer,
+                C0,
+                new Rectangle(1, 1, 6, 6),
+                new Color[][] {
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C5, C6, CF, CF, CF, C4, C0, C0 },
+                        { C0, C8, C9, CF, CF, CF, C7, C0, C0 },
+                        { C0, CF, CF, C1, C2, C3, CF, C0, C0 },
+                        { C0, CF, CF, C4, C5, C6, CF, C0, C0 },
+                        { C0, CF, CF, C7, C8, C9, CF, C0, C0 },
+                        { C0, C2, C3, CF, CF, CF, C1, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                });
+        assertPaint(
+                new Rectangle2D.Double(1.5, 0.5, 2, 2),
+                layer,
+                C0,
+                new Rectangle(1, 1, 6, 6),
+                new Color[][] {
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, CF, CF, C4, C5, C6, C0, C0, C0 },
+                        { C0, CF, CF, C7, C8, C9, C0, C0, C0 },
+                        { C0, C2, C3, CF, CF, CF, C0, C0, C0 },
+                        { C0, C5, C6, CF, CF, CF, C0, C0, C0 },
+                        { C0, C8, C9, CF, CF, CF, C0, C0, C0 },
+                        { C0, CF, CF, C1, C2, C3, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                });
+        assertPaint(
+                new Rectangle2D.Double(0.5, 1.5, 2, 2),
+                layer,
+                C0,
+                new Rectangle(1, 1, 6, 6),
+                new Color[][] {
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, CF, CF, C4, C5, C6, CF, C0, C0 },
+                        { C0, CF, CF, C7, C8, C9, CF, C0, C0 },
+                        { C0, C2, C3, CF, CF, CF, C1, C0, C0 },
+                        { C0, C5, C6, CF, CF, CF, C4, C0, C0 },
+                        { C0, C8, C9, CF, CF, CF, C7, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                });
+        assertPaint(
+                new Rectangle2D.Double(1.5, 1.5, 2, 2),
+                layer,
+                C0,
+                new Rectangle(1, 1, 6, 6),
+                new Color[][] {
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C5, C6, CF, CF, CF, C0, C0, C0 },
+                        { C0, C8, C9, CF, CF, CF, C0, C0, C0 },
+                        { C0, CF, CF, C1, C2, C3, C0, C0, C0 },
+                        { C0, CF, CF, C4, C5, C6, C0, C0, C0 },
+                        { C0, CF, CF, C7, C8, C9, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                        { C0, C0, C0, C0, C0, C0, C0, C0, C0 },
+                });
     }
 
-    private static void assertPaint(Rectangle mapRegion, Color[][] mapLayer, Color background,
+    private static void assertPaint(Rectangle2D mapRegion, Color[][] mapLayer, Color background,
                                     Rectangle viewport, Color[][] expectedPixels) {
         assertPaint(mapRegion, MapLayers.newColorGrid(mapLayer), background, viewport, expectedPixels);
     }
 
-    private static void assertPaint(Rectangle mapRegion, MapLayer layer, Color background,
+    private static void assertPaint(Rectangle2D mapRegion, MapLayer layer, Color background,
                                     Rectangle viewport, Color[][] expectedPixels) {
         BufferedImage image = Images.newInstance(new Dimension(expectedPixels[0].length, expectedPixels.length),
                                                  background);
         Graphics2D g = image.createGraphics();
+<<<<<<< HEAD
         TileMap map = new TileMap(layer.getBounds().getSize());
         map.putLayer("id", layer);
         map.paint(g, viewport, mapRegion);
+=======
+        new TileMap(layer.getBounds().getSize()).addLayer("id", layer).paint(g, viewport, mapRegion);
+>>>>>>> 2819a975d7406a539e5c4197e0081f16fefa7610
         g.dispose();
         assertPixels(image, expectedPixels);
     }
