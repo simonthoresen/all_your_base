@@ -3,16 +3,8 @@ package all.your.awt;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-<<<<<<< HEAD
 import java.awt.*;
-=======
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
->>>>>>> 2819a975d7406a539e5c4197e0081f16fefa7610
 import java.awt.image.BufferedImage;
 
 import static all.your.awt.AssertImage.assertPixels;
@@ -551,13 +543,9 @@ public class MapLayerTest {
         BufferedImage image = Images.newInstance(new Dimension(expectedPixels[0].length, expectedPixels.length),
                                                  background);
         Graphics2D g = image.createGraphics();
-<<<<<<< HEAD
         TileMap map = new TileMap(layer.getBounds().getSize());
         map.putLayer("id", layer);
         map.paint(g, viewport, mapRegion);
-=======
-        new TileMap(layer.getBounds().getSize()).addLayer("id", layer).paint(g, viewport, mapRegion);
->>>>>>> 2819a975d7406a539e5c4197e0081f16fefa7610
         g.dispose();
         assertPixels(image, expectedPixels);
     }

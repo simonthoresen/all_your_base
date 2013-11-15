@@ -49,7 +49,6 @@ public class MapLayer {
         return tile;
     }
 
-<<<<<<< HEAD
     public Rectangle getBounds() {
         return bounds;
     }
@@ -57,13 +56,6 @@ public class MapLayer {
     public void paint(Graphics2D g, Point viewportPos, Rectangle mapRegion, Dimension tileSize) {
         Rectangle viewportRegion = new Rectangle(viewportPos.x, viewportPos.y, tileSize.width, tileSize.height);
         for (int y = 0; y < mapRegion.height; ++y) {
-=======
-    public void paint(Graphics2D g, Point viewportPos, Rectangle mapRegion, Dimension tileSize) {
-        Rectangle viewportRegion = new Rectangle(tileSize);
-        viewportRegion.y = viewportPos.y;
-        for (int y = 0; y < mapRegion.height; ++y) {
-            viewportRegion.x = viewportPos.x;
->>>>>>> 2819a975d7406a539e5c4197e0081f16fefa7610
             for (int x = 0; x < mapRegion.width; ++x) {
                 tiles.get((mapRegion.y + y) * bounds.width + (mapRegion.x + x)).getTexture().paint(g, viewportRegion);
                 viewportRegion.x += tileSize.getWidth();
@@ -71,12 +63,5 @@ public class MapLayer {
             viewportRegion.x = viewportPos.x;
             viewportRegion.y += tileSize.getHeight();
         }
-<<<<<<< HEAD
-=======
-    }
-
-    public Rectangle getBounds() {
-        return bounds;
->>>>>>> 2819a975d7406a539e5c4197e0081f16fefa7610
     }
 }

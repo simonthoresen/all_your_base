@@ -26,14 +26,8 @@ public class TileMap {
         return layers.get(id);
     }
 
-<<<<<<< HEAD
-    public void putLayer(String id, MapLayer layer) {
-        layers.put(id, layer);
-=======
-    public TileMap addLayer(String id, MapLayer layer) {
-        layers.put(id, layer);
-        return this;
->>>>>>> 2819a975d7406a539e5c4197e0081f16fefa7610
+    public MapLayer putLayer(String id, MapLayer layer) {
+        return layers.put(id, layer);
     }
 
     public MapLayer newLayer(String id) {
